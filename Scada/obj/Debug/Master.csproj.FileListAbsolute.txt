@@ -1,0 +1,10 @@
+D:\Fakultet\Praksa\Project\Scada\Scada\obj\Debug\Master.csproj.AssemblyReference.cache
+D:\Fakultet\Praksa\Project\Scada\Scada\obj\Debug\Master.csproj.CoreCompileInputs.cache
+D:\Fakultet\Praksa\Project\Scada\Scada\obj\Debug\Scada.exe
+D:\Fakultet\Praksa\Project\Scada\Scada\obj\Debug\Scada.pdb
+D:\Fakultet\Praksa\Project\Scada\Scada\bin\Debug\Scada.exe.config
+D:\Fakultet\Praksa\Project\Scada\Scada\bin\Debug\Scada.exe
+D:\Fakultet\Praksa\Project\Scada\Scada\bin\Debug\Scada.pdb
+D:\Fakultet\Praksa\Project\Scada\Scada\bin\Debug\Common.dll
+D:\Fakultet\Praksa\Project\Scada\Scada\bin\Debug\Common.pdb
+D:\Fakultet\Praksa\Project\Scada\Scada\obj\Debug\Master.csproj.Up2Date
