@@ -6,30 +6,29 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master.TcpCommunication
+namespace Slave.Communication.TCPCommunication
 {
-    public class TCPConfiguration : ITcpCommunicationOptions
+    public class TCPCommunicationOptions : ITcpCommunicationOptions
     {
         #region Attributes
 
         private IPAddress address;
         private CommunicationType communicationType;
         private SecurityMode securityMode;
-        private int lengthAttributePosition = 7;
+        private int lengthAttributePosition;
         private int portNumber;
 
         #endregion
 
         #region Constructor
 
-        public TCPConfiguration(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode)
+        public TCPCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode,int lengthAttributePosition)
         {
             this.address = address;
-            this.portNumber= portNumber;
+            this.portNumber = portNumber;
             this.communicationType = communicationType;
             this.securityMode = securityMode;
-
-            //if(SecurityMode) bcs we will have our length attribute in a different place
+            this.lengthAttributePosition = lengthAttributePosition;
         }
 
         #endregion

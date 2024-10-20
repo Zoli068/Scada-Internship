@@ -1,5 +1,6 @@
 ﻿using Common;
 using Master.TcpCommunication;
+using Scada.Communication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,16 +14,23 @@ namespace Master
 {
     public class CommunicationHandler
     {
+        //CHANGE BACK TO PRIVATE, JUST FOR TESTING!!!!
+        public ICommunicationStream communicationStream;
 
-        //CHANGE BACK TO PRIV, JUST FOR TESTING!!!!
-        public CommunicationStream communicationStream;
+        public CommunicationHandler(ICommunicationOptions options)
+        {
 
-        public CommunicationHandler(ICommunicationOptions communication) {
-
-            if (communication.CommunicationType == CommunicationType.TCP)
+            if (options.CommunicationType == CommunicationType.TCP)
             {
-                communicationStream=new CommunicationStream(communication as ITcpCommunicationOptions);
+                communicationStream = new TcpCommunicationStream(options as ITcpCommunicationOptions);
             }
+
+            //MessageBytesConverter(The logic for converting a type of the messagepackets to network<->host order
+            //Because we wont want to CommunicationStream care about the format of the messages
+            //just to recv/send
+
+            //the MessageBytesConverter will be the Network-Host order converter
+            //Plus it will reCreate that kind of the message Object
         }
     }
 }

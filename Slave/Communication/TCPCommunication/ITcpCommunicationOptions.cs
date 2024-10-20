@@ -6,9 +6,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master.TcpCommunication
+namespace Slave.Communication
 {
-    public interface ITcpCommunicationOptions: ICommunicationOptions
+    public interface ITcpCommunicationOptions : ICommunicationOptions
     {
         IPAddress Address { get; }
 

@@ -11,8 +11,5 @@ namespace Common
         CommunicationType CommunicationType { get; }
 
         SecurityMode SecurityMode { get; }
-
-        //needed for the messages, to know where to find the length value in the responses
-        int LengthAttributePosition { get; }
     }
 }

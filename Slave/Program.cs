@@ -7,17 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Slave.Communication;
+using Slave.Communication.TCPCommunication;
 
 namespace Slave
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
 
-            CommunicationStream stream = new CommunicationStream();
+            TCPCommunicationOptions options = new TCPCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE,11);
+            TcpCommunicationStream stream = new TcpCommunicationStream(options);
 
-            Console.WriteLine(Encoding.UTF8.GetString(stream.RecvBytes(11)));
+            Console.WriteLine(Encoding.UTF8.GetString(stream.RecvBytes()));
             Console.ReadKey();
         }
     }

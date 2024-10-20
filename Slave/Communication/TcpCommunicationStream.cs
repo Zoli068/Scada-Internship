@@ -1,4 +1,5 @@
 ﻿using Common;
+using Slave.Communication.TCPCommunication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,20 +11,22 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
-    public class CommunicationStream
-    {
+    public class TcpCommunicationStream : ICommunicationStream
+    { 
         #region Atributes
 
         private Stream stream;
         private bool disposedValue;
         private ConnectionState state;
+        private ITcpCommunicationOptions options;
 
         #endregion
 
         #region Constructors
 
-        public CommunicationStream()
+        public TcpCommunicationStream(ITcpCommunicationOptions options)
         {
+            this.options= options;
             CreateStream();
         }
 
@@ -32,13 +35,13 @@ namespace Slave.Communication
         #region Methods
 
         //for each new kind of streamCommunication just need to use a constructor overloading
-        private void CreateStream( )
+        private void CreateStream()
         {
             Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
             //Config for server values
 
-            IPEndPoint endPoint = new IPEndPoint(IPAddress.Loopback, 8000);
+            IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
 
             socket.Bind(endPoint);
            
@@ -50,6 +53,11 @@ namespace Slave.Communication
             state = ConnectionState.CONNECTED;
 
             stream = new NetworkStream(master);
+        }
+
+        public void SecureStream()
+        {
+
         }
 
         public void ConnectionRestart()
@@ -68,11 +76,14 @@ namespace Slave.Communication
 
         }
 
-        public byte[] RecvBytes(int numberOfBytes)
+        public byte[] RecvBytes()
         {
             //first we need to read the header, and then check in the header, the
             //all length and like that we will know how much data we will need
             //or just do both of those stuff here
+
+
+            int numberOfBytes = options.LengthAttributePosition;
 
             //Maybe adding a plus param for the position of the length value
 
@@ -102,7 +113,18 @@ namespace Slave.Communication
 
         public Stream Stream
         {
-            get { return stream; }
+            get 
+            { 
+                return stream; 
+            }
+        }
+
+        public ConnectionState State
+        {
+            get
+            {
+                return state;
+            }
         }
 
         #endregion
@@ -126,6 +148,7 @@ namespace Slave.Communication
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

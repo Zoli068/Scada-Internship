@@ -6,44 +6,52 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Master.TcpCommunication;
+using Scada.Communication;
 using Common;
 
-namespace Master
+
+namespace Master.TcpCommunication
 {
-    public class CommunicationStream:IDisposable
+    public class TcpCommunicationStream: ICommunicationStream
     {
         #region Atributes
-        
+
         private Stream stream;
-        ICommunicationOptions options;
+        ITcpCommunicationOptions options;
         private bool disposedValue;
         private ConnectionState state;
 
         #endregion
 
         #region Constructors
-       
-        public CommunicationStream(ITcpCommunicationOptions communication)
+
+        public TcpCommunicationStream(ITcpCommunicationOptions options)
         {
-            options = communication;
-            CreateStream(communication);
+            this.options = options;
+            CreateStream();
+
+            if (options.SecurityMode == SecurityMode.SECURE)
+            {
+                //TODO
+                SecureStream();
+            }
         }
 
         #endregion
 
         #region Methods
 
-        //for each new kind of streamCommunication just need to use a constructor overloading
-        private void CreateStream(ITcpCommunicationOptions communication)
-        {
+        private void CreateStream()
+        { 
             Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-            socket.Connect(communication.Address,communication.PortNumber);
-            
+            socket.Connect(options.Address, options.PortNumber);
             state = ConnectionState.CONNECTED;
-
             stream = new NetworkStream(socket);
+        }
+
+        private void SecureStream()
+        {
+
         }
 
         public void ConnectionRestart()
@@ -59,16 +67,15 @@ namespace Master
 
             //maybe a plus check for the state of the connection
             stream.Write(bytesToSend, currentlySent, bytesToSend.Length - currentlySent);
-       
+            stream.Flush();
+
         }
 
-        public byte[] RecvBytes(int numberOfBytes)
+        public byte[] RecvBytes()
         {
-            //first we need to read the header, and then check in the header, the
-            //all length and like that we will know how much data we will need
-            //or just do both of those stuff here
+            int numberOfBytes = (options as ITcpCommunicationOptions).LengthAttributePosition;
+            //like that we will know where to find the length attribute
 
-            //Maybe adding a plus param for the position of the length value
 
             int numberOfReceivedBytes = 0;
             byte[] retval = new byte[numberOfBytes];
@@ -79,9 +86,9 @@ namespace Master
                 numOfReceived = 0;
 
                 //again check for the state
-                
-                numOfReceived = stream.Read(retval, numberOfReceivedBytes,(int)numberOfBytes - numberOfReceivedBytes);
-                
+
+                numOfReceived = stream.Read(retval, numberOfReceivedBytes, (int)numberOfBytes - numberOfReceivedBytes);
+
                 if (numOfReceived > 0)
                 {
                     numberOfReceivedBytes += numOfReceived;
@@ -97,6 +104,16 @@ namespace Master
         public Stream Stream
         {
             get { return stream; }
+        }
+
+
+
+        public ConnectionState State
+        {
+            get
+            {
+                return state;
+            }
         }
 
         #endregion
