@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.ICommunication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,5 @@ namespace Slave.Communication
         IPAddress Address { get; }
 
         int PortNumber { get; }
-
-        int LengthAttributePosition { get; }
     }
 }

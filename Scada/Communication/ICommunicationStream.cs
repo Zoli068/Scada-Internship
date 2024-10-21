@@ -1,5 +1,4 @@
 ﻿using Common;
-using Master.TcpCommunication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,20 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scada.Communication
+namespace Master.Communication
 {
-    public  interface ICommunicationStream:IDisposable
+    public interface ICommunicationStream:IDisposable,IStateHandler<CommunicationState>
     {
+        void Connect();
 
-        void SendBytes(byte[] bytesToSend);
+        void Disconnect();
+    
+        void Send(byte[] data);
 
-        byte[] RecvBytes();
+        void Receive(byte[] data);
 
-        //???Idk it have to be accessable or not
-        Stream Stream { get; }
-
-        ConnectionState State { get; }
-
-        void ConnectionRestart();
     }
 }

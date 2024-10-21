@@ -17,8 +17,10 @@ namespace Slave.Communication
 
         private Stream stream;
         private bool disposedValue;
-        private ConnectionState state;
         private ITcpCommunicationOptions options;
+        private CommunicationState state;
+
+        public event Action StateChanged;
 
         #endregion
 
@@ -50,7 +52,6 @@ namespace Slave.Communication
 
             Socket master = socket.Accept();
 
-            state = ConnectionState.CONNECTED;
 
             stream = new NetworkStream(master);
         }
@@ -62,64 +63,25 @@ namespace Slave.Communication
 
         public void ConnectionRestart()
         {
-            //stream.Close();
-            //if(CommOption.Type==tcp) then options as ITcpConnection 
-            //stream=createStream
+
         }
 
         public void SendBytes(byte[] bytesToSend)
         {
-            int currentlySent = 0;
 
-            //maybe a plus check for the state of the connection
-            stream.Write(bytesToSend, currentlySent, bytesToSend.Length - currentlySent);
 
         }
 
         public byte[] RecvBytes()
         {
-            //first we need to read the header, and then check in the header, the
-            //all length and like that we will know how much data we will need
-            //or just do both of those stuff here
-
-
-            int numberOfBytes = options.LengthAttributePosition;
-
-            //Maybe adding a plus param for the position of the length value
-
-            int numberOfReceivedBytes = 0;
-            byte[] retval = new byte[numberOfBytes];
-            int numOfReceived;
-
-            while (numberOfReceivedBytes < numberOfBytes)
-            {
-                numOfReceived = 0;
-
-                //again check for the state
-
-                numOfReceived = stream.Read(retval, numberOfReceivedBytes, (int)numberOfBytes - numberOfReceivedBytes);
-
-                if (numOfReceived > 0)
-                {
-                    numberOfReceivedBytes += numOfReceived;
-                }
-            }
-            return retval;
+            return null;
         }
 
         #endregion
 
         #region Properties
 
-        public Stream Stream
-        {
-            get 
-            { 
-                return stream; 
-            }
-        }
-
-        public ConnectionState State
+        public CommunicationState State
         {
             get
             {
@@ -147,6 +109,31 @@ namespace Slave.Communication
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public void Listening()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Send(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Receive(byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeState(CommunicationState newState)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

@@ -18,8 +18,10 @@ namespace Common
         INSECURE
     }
 
-    public enum ConnectionState: short
+    public enum CommunicationState: short
     {
+        CLOSED,
+        UNSUCCESSFULL_CONNECTION,
         CONNECTED,
         DISCONNECTED
     }

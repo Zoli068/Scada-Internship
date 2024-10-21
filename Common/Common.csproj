@@ -41,8 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICommunicationOptions.cs" />
+    <Compile Include="ICommunication\ICommunicationOptions.cs" />
     <Compile Include="Enums.cs" />
+    <Compile Include="IStateHandler.cs" />
+    <Compile Include="IStateUpdater.cs" />
+    <Compile Include="ICommunication\IReconnectStream.cs" />
+    <Compile Include="ICommunication\ISecureCommunication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

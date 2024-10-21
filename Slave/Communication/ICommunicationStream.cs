@@ -8,18 +8,14 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
-    public interface ICommunicationStream:IDisposable
+    public interface ICommunicationStream:IDisposable,IStateHandler<CommunicationState>
     {
-        void SendBytes(byte[] bytesToSend);
+        void Listening();
 
-        byte[] RecvBytes();
+        void Disconnect();
 
+        void Send(byte[] data);
 
-        //???Idk it have to be accessable or not
-        Stream Stream { get; }
-
-        ConnectionState State { get; }
-
-        void ConnectionRestart();
+        void Receive(byte[] data);
     }
 }

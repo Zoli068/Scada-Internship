@@ -16,19 +16,19 @@ namespace Master.TcpCommunication
         private CommunicationType communicationType;
         private SecurityMode securityMode;
         private int portNumber;
-        private int lengthAttributePosition;
+        private int reconnectInterval;
 
         #endregion
 
         #region Constructor
 
-        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode, int lengthAttributePosition)
+        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode, int reconnectInterval)
         {
             this.address = address;
             this.portNumber = portNumber;
             this.communicationType = communicationType;
             this.securityMode = securityMode;
-            this.lengthAttributePosition = lengthAttributePosition;
+            this.reconnectInterval = reconnectInterval;
         }
 
         #endregion
@@ -67,11 +67,11 @@ namespace Master.TcpCommunication
             }
         }
 
-        public int LengthAttributePosition
+        public int ReconnectInterval
         {
             get
             {
-                return lengthAttributePosition;
+                return reconnectInterval;
             }
         }
 

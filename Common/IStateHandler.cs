@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public interface ICommunicationOptions
+    public interface IStateHandler<T>
     {
-        CommunicationType CommunicationType { get; }
+        event Action StateChanged;
 
-        SecurityMode SecurityMode { get; }
+        void ChangeState(T newState);
+
+        T State { get; }
     }
 }

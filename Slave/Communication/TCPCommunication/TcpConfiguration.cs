@@ -15,20 +15,18 @@ namespace Slave.Communication.TCPCommunication
         private IPAddress address;
         private CommunicationType communicationType;
         private SecurityMode securityMode;
-        private int lengthAttributePosition;
         private int portNumber;
 
         #endregion
 
         #region Constructor
 
-        public TCPCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode,int lengthAttributePosition)
+        public TCPCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode)
         {
             this.address = address;
             this.portNumber = portNumber;
             this.communicationType = communicationType;
             this.securityMode = securityMode;
-            this.lengthAttributePosition = lengthAttributePosition;
         }
 
         #endregion
@@ -57,14 +55,6 @@ namespace Slave.Communication.TCPCommunication
             get
             {
                 return securityMode;
-            }
-        }
-
-        public int LengthAttributePosition
-        {
-            get
-            {
-                return lengthAttributePosition;
             }
         }
 
