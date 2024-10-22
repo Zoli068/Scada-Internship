@@ -20,24 +20,17 @@ namespace Master
 
         public CommunicationHandler(ICommunicationOptions options)
         {
-
             if (options.CommunicationType == CommunicationType.TCP)
             {
                 communicationStream = new TcpCommunicationStream(options as ITcpCommunicationOptions);
 
-
-                //Dev purpose        
+                //Dev purpose, but later with that event we can stop proccess ...      
                 communicationStream.StateChanged += stateGotChangedSoDoSomething;
                 communicationStream.Connect();
             }
-
-            //communicationStream.ChangeState(CommunicationState.DISCONNECTED);
-
-
-
         }
 
-
+        //like this we can stop a thread from trying sending out messages...
         private void stateGotChangedSoDoSomething()
         {
             Console.WriteLine("Changed state to " + communicationStream.State);

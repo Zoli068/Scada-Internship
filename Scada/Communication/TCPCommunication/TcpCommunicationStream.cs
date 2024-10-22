@@ -10,70 +10,51 @@ using Common;
 using Common.ICommunication;
 using Master.Communication;
 
-
 namespace Master.TcpCommunication
 {
-    public class TcpCommunicationStream : ICommunicationStream, IReconnectStream, ISecureCommunication
+    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream, IReconnectStream, ISecureCommunication
     {
         private Stream stream;
         private TcpClient client;
-        private bool disposedValue;
-        private CommunicationState state;
         private ITcpCommunicationOptions options;
 
-        public event Action StateChanged;
-
-        public TcpCommunicationStream(ICommunicationOptions options) 
+        public TcpCommunicationStream(ICommunicationOptions options)
         { 
             this.options=options as ITcpCommunicationOptions;
-            client = new TcpClient();
             state = CommunicationState.CLOSED;
         }
 
-        public void ChangeState(CommunicationState newState)
+        public async Task Connect()
         {
-            if (state != newState)
-            {
-                state = newState;
+            client = new TcpClient();
 
-                if (StateChanged != null)
-                {
-                    StateChanged();
-                }
+            await client.ConnectAsync(options.Address, options.PortNumber);
+
+            if (client.Connected)
+            {
+                ChangeState(CommunicationState.CONNECTED);
+                stream = client.GetStream();
             }
-        }
-
-        public void Connect()
-        {
-            client.ConnectAsync(options.Address, options.PortNumber).ContinueWith(t => 
+            else
             {
-                if (client.Connected)
-                {
-                    ChangeState(CommunicationState.CONNECTED);
-                    stream = client.GetStream();
-                }
-                else
-                {
-                    ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
-                }
-
-            }).Wait(options.TimeOut);
+                ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+            }
         }
 
         public void Disconnect()
         {
             stream.Close();
             client.Close();
-
             ChangeState(CommunicationState.DISCONNECTED);
         }
 
         public void MakeSecure()
         {
-            throw new NotImplementedException();
+           //maybe to put inside an abstract class,which one does have a constructor param
+           //param:stream obj.
         }
 
-        public async  Task<byte[]> Receive()
+        public async Task<byte[]> Receive()
         {
             byte[] recvData = new byte[options.BufferSize];
             int readedBytes = 0;
@@ -83,29 +64,32 @@ namespace Master.TcpCommunication
                 readedBytes=await stream.ReadAsync(recvData, 0, options.BufferSize);
             }
 
-            //return the data, but not all the empty bytes, where didn't got written anything
-            return null;
+            byte[] data= new byte[readedBytes];
+            
+            if(readedBytes > 0)
+            {
+                //like that we will send the bytes + the info of num of recv bytes.
+                Array.Copy(recvData,data,readedBytes);
+            }
+
+            return data;
         }
 
         public void Reconnect()
         {
-            throw new NotImplementedException();
+            //TODO
         }
 
         public async Task Send(byte[] data)
         {
-            await stream.WriteAsync(data,0,data.Count());
-        }
-
-        public CommunicationState State
-        {
-            get
+            if (stream != null && state == CommunicationState.CONNECTED)
             {
-                return state;
+                await stream.WriteAsync(data, 0, data.Count());
             }
         }
 
         #region Dispose
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -115,6 +99,7 @@ namespace Master.TcpCommunication
                 {
                     stream.Close();
                     client.Close();
+                    ChangeState(CommunicationState.CLOSED);
                 }
 
                 disposedValue = true;

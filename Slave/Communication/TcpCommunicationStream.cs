@@ -11,18 +11,14 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
-    public class TcpCommunicationStream : ICommunicationStream
+    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream
     {
         #region Atributes
 
-        private TcpListener tcpListener;
-        private TcpClient tcpClient;
         private Stream stream;
-        private bool disposedValue;
+        private TcpClient tcpClient;
+        private TcpListener tcpListener;
         private ITcpCommunicationOptions options;
-        private CommunicationState state;
-
-        public event Action StateChanged;
 
         #endregion
 
@@ -39,31 +35,32 @@ namespace Slave.Communication
 
         #region Methods
 
-        //for each new kind of streamCommunication just need to use a constructor overloading
-        public void Listening()
+        public async Task Listening()
         {
             tcpListener.Start(1);
 
-            tcpClient = tcpListener.AcceptTcpClient();
+            tcpClient = await tcpListener.AcceptTcpClientAsync();
 
             stream = tcpClient.GetStream();
+            ChangeState(CommunicationState.CONNECTED);
         }
 
         public void Disconnect()
         {
             stream.Close();
             tcpClient.Close();
+            ChangeState(CommunicationState.DISCONNECTED);
         }
 
 
         public void SecureStream()
         {
-
+            //TODO
         }
 
         public void ConnectionRestart()
         {
-
+            //TODO
         }
 
         public async Task Send(byte[] data)
@@ -76,44 +73,29 @@ namespace Slave.Communication
 
         public async Task<byte[]> Receive()
         {
-            byte[] recvData=new byte[options.BufferSize];
+            byte[] recvData = new byte[options.BufferSize];
+            int readedBytes = 0;
 
-            if(stream!=null && state == CommunicationState.CONNECTED)
+            if (stream != null && state == CommunicationState.CONNECTED)
             {
-               await stream.ReadAsync(recvData, 0, options.BufferSize);
+                readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
             }
 
-            return null;
-        }
+            byte[] data = new byte[readedBytes];
 
-        public void ChangeState(CommunicationState newState)
-        {
-            if (state != newState)
+            if (readedBytes > 0)
             {
-                state = newState;
-
-                if (StateChanged != null)
-                {
-                    StateChanged();
-                }
+                //like that we will send the bytes + the info of num of recv bytes.
+                Array.Copy(recvData, data, readedBytes);
             }
-        }
 
-        #endregion
-
-        #region Properties
-
-        public CommunicationState State
-        {
-            get
-            {
-                return state;
-            }
+            return data;
         }
 
         #endregion
 
         #region Dispose
+        private bool disposedValue;
 
         protected virtual void Dispose(bool disposing)
         {

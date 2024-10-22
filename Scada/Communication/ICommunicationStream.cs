@@ -10,7 +10,7 @@ namespace Master.Communication
 {
     public interface ICommunicationStream:IDisposable,IStateHandler<CommunicationState>
     {
-        void Connect();
+        Task Connect();
 
         void Disconnect();
 

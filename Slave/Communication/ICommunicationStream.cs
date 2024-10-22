@@ -10,7 +10,7 @@ namespace Slave.Communication
 {
     public interface ICommunicationStream:IDisposable,IStateHandler<CommunicationState>
     {
-        void Listening();
+        Task Listening();
 
         void Disconnect();
 
