@@ -1,6 +1,0 @@
-D:\Fakultet\Praksa\Project\Scada\Common\bin\Debug\Common.dll
-D:\Fakultet\Praksa\Project\Scada\Common\bin\Debug\Common.pdb
-D:\Fakultet\Praksa\Project\Scada\Common\obj\Debug\Common.csproj.AssemblyReference.cache
-D:\Fakultet\Praksa\Project\Scada\Common\obj\Debug\Common.csproj.CoreCompileInputs.cache
-D:\Fakultet\Praksa\Project\Scada\Common\obj\Debug\Common.dll
-D:\Fakultet\Praksa\Project\Scada\Common\obj\Debug\Common.pdb
