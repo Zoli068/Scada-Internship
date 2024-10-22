@@ -14,5 +14,7 @@ namespace Slave.Communication
         IPAddress Address { get; }
 
         int PortNumber { get; }
+
+        int BufferSize { get; }
     }
 }

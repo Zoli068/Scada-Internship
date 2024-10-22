@@ -24,11 +24,16 @@ namespace Master
             if (options.CommunicationType == CommunicationType.TCP)
             {
                 communicationStream = new TcpCommunicationStream(options as ITcpCommunicationOptions);
+
+
+                //Dev purpose        
+                communicationStream.StateChanged += stateGotChangedSoDoSomething;
+                communicationStream.Connect();
             }
 
-           //Dev purpose        
-           //communicationStream.StateChanged += stateGotChangedSoDoSomething;
-           //communicationStream.ChangeState(CommunicationState.DISCONNECTED);
+            //communicationStream.ChangeState(CommunicationState.DISCONNECTED);
+
+
 
         }
 

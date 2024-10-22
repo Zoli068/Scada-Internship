@@ -12,9 +12,11 @@ using System.Threading.Tasks;
 namespace Slave.Communication
 {
     public class TcpCommunicationStream : ICommunicationStream
-    { 
+    {
         #region Atributes
 
+        private TcpListener tcpListener;
+        private TcpClient tcpClient;
         private Stream stream;
         private bool disposedValue;
         private ITcpCommunicationOptions options;
@@ -29,7 +31,8 @@ namespace Slave.Communication
         public TcpCommunicationStream(ITcpCommunicationOptions options)
         {
             this.options= options;
-            CreateStream();
+            IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
+            tcpListener = new TcpListener(endPoint);
         }
 
         #endregion
@@ -37,24 +40,21 @@ namespace Slave.Communication
         #region Methods
 
         //for each new kind of streamCommunication just need to use a constructor overloading
-        private void CreateStream()
+        public void Listening()
         {
-            Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            tcpListener.Start(1);
 
-            //Config for server values
+            tcpClient = tcpListener.AcceptTcpClient();
 
-            IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
-
-            socket.Bind(endPoint);
-           
-            socket.Blocking = true;
-            socket.Listen(1);
-
-            Socket master = socket.Accept();
-
-
-            stream = new NetworkStream(master);
+            stream = tcpClient.GetStream();
         }
+
+        public void Disconnect()
+        {
+            stream.Close();
+            tcpClient.Close();
+        }
+
 
         public void SecureStream()
         {
@@ -66,15 +66,37 @@ namespace Slave.Communication
 
         }
 
-        public void SendBytes(byte[] bytesToSend)
+        public async Task Send(byte[] data)
         {
-
-
+            if (stream != null && state == CommunicationState.CONNECTED)
+            {
+                await stream.WriteAsync(data, 0, data.Count());
+            }
         }
 
-        public byte[] RecvBytes()
+        public async Task<byte[]> Receive()
         {
+            byte[] recvData=new byte[options.BufferSize];
+
+            if(stream!=null && state == CommunicationState.CONNECTED)
+            {
+               await stream.ReadAsync(recvData, 0, options.BufferSize);
+            }
+
             return null;
+        }
+
+        public void ChangeState(CommunicationState newState)
+        {
+            if (state != newState)
+            {
+                state = newState;
+
+                if (StateChanged != null)
+                {
+                    StateChanged();
+                }
+            }
         }
 
         #endregion
@@ -92,6 +114,7 @@ namespace Slave.Communication
         #endregion
 
         #region Dispose
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -109,31 +132,6 @@ namespace Slave.Communication
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        public void Listening()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Disconnect()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Send(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Receive(byte[] data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ChangeState(CommunicationState newState)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

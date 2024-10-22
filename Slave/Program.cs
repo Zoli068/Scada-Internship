@@ -16,11 +16,13 @@ namespace Slave
         static void Main(string[] args)
         {
 
-            TCPCommunicationOptions options = new TCPCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE,11);
+            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE, 8192);
             TcpCommunicationStream stream = new TcpCommunicationStream(options);
+            stream.Listening();
 
-            Console.WriteLine(Encoding.UTF8.GetString(stream.RecvBytes()));
+            Console.WriteLine("Enter to close");
             Console.ReadKey();
+
         }
     }
 }

@@ -32,19 +32,19 @@ namespace Master.TcpCommunication
 
         public void ChangeState(CommunicationState newState)
         {
-            state = newState;
-
-            if (StateChanged != null)
+            if (state != newState)
             {
-                StateChanged();
+                state = newState;
+
+                if (StateChanged != null)
+                {
+                    StateChanged();
+                }
             }
         }
 
         public void Connect()
         {
-            //Little TODO here
-            //if (!client.ConnectAsync("remotehost", remotePort).Wait(1000)) for timeout trying also like that we get back a bool for indication it was successfull or not
-            //or EndConnect();
             client.ConnectAsync(options.Address, options.PortNumber).ContinueWith(t => 
             {
                 if (client.Connected)
@@ -57,8 +57,7 @@ namespace Master.TcpCommunication
                     ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
                 }
 
-            });
-
+            }).Wait(options.TimeOut);
         }
 
         public void Disconnect()
@@ -74,9 +73,18 @@ namespace Master.TcpCommunication
             throw new NotImplementedException();
         }
 
-        public void Receive(byte[] data)
+        public async  Task<byte[]> Receive()
         {
-            throw new NotImplementedException();
+            byte[] recvData = new byte[options.BufferSize];
+            int readedBytes = 0;
+
+            if (stream != null && state == CommunicationState.CONNECTED)
+            {
+                readedBytes=await stream.ReadAsync(recvData, 0, options.BufferSize);
+            }
+
+            //return the data, but not all the empty bytes, where didn't got written anything
+            return null;
         }
 
         public void Reconnect()
@@ -84,9 +92,9 @@ namespace Master.TcpCommunication
             throw new NotImplementedException();
         }
 
-        public void Send(byte[] data)
+        public async Task Send(byte[] data)
         {
-            throw new NotImplementedException();
+            await stream.WriteAsync(data,0,data.Count());
         }
 
         public CommunicationState State

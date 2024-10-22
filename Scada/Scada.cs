@@ -17,9 +17,15 @@ namespace Master
 
         public void Start() {
 
-            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE, 15);
+            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE, 15,8000, 8192);
 
             CommunicationHandler communicationHandler=new CommunicationHandler(options);
+
+            Console.WriteLine("Waiting for something");
+            while (true)
+            {
+
+            }
         }
 
     }

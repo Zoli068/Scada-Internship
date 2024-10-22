@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication.TCPCommunication
 {
-    public class TCPCommunicationOptions : ITcpCommunicationOptions
+    public class TcpCommunicationOptions : ITcpCommunicationOptions
     {
         #region Attributes
 
@@ -16,17 +16,19 @@ namespace Slave.Communication.TCPCommunication
         private CommunicationType communicationType;
         private SecurityMode securityMode;
         private int portNumber;
+        private int bufferSize;
 
         #endregion
 
         #region Constructor
 
-        public TCPCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode)
+        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode,int bufferSize)
         {
             this.address = address;
             this.portNumber = portNumber;
             this.communicationType = communicationType;
             this.securityMode = securityMode;
+            this.bufferSize= bufferSize;
         }
 
         #endregion
@@ -63,6 +65,14 @@ namespace Slave.Communication.TCPCommunication
             get
             {
                 return portNumber;
+            }
+        }
+
+        public int BufferSize
+        {
+            get
+            {
+                return bufferSize;
             }
         }
 

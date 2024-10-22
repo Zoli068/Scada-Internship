@@ -16,5 +16,9 @@ namespace Master.TcpCommunication
         int PortNumber { get; }
 
         int ReconnectInterval { get; }
+
+        int TimeOut { get; }
+
+        int BufferSize { get; }
     }
 }

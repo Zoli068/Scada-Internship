@@ -14,8 +14,8 @@ namespace Slave.Communication
 
         void Disconnect();
 
-        void Send(byte[] data);
+        Task Send(byte[] data);
 
-        void Receive(byte[] data);
+        Task<byte[]> Receive();
     }
 }

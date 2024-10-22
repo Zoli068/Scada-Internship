@@ -13,10 +13,9 @@ namespace Master.Communication
         void Connect();
 
         void Disconnect();
-    
-        void Send(byte[] data);
 
-        void Receive(byte[] data);
+        Task Send(byte[] data);
 
+        Task<byte[]> Receive();
     }
 }

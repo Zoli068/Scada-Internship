@@ -17,18 +17,23 @@ namespace Master.TcpCommunication
         private SecurityMode securityMode;
         private int portNumber;
         private int reconnectInterval;
+        private int timeOut;
+        private int bufferSize;
 
         #endregion
 
         #region Constructor
 
-        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode, int reconnectInterval)
+        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, SecurityMode securityMode, int reconnectInterval, int timeOut, int bufferSize)
         {
             this.address = address;
             this.portNumber = portNumber;
             this.communicationType = communicationType;
             this.securityMode = securityMode;
             this.reconnectInterval = reconnectInterval;
+            this.timeOut = timeOut;
+            this.bufferSize = bufferSize;
+            this.bufferSize = bufferSize;
         }
 
         #endregion
@@ -72,6 +77,22 @@ namespace Master.TcpCommunication
             get
             {
                 return reconnectInterval;
+            }
+        }
+
+        public int TimeOut
+        {
+            get
+            {
+                return timeOut;
+            }
+        }
+
+        public int BufferSize
+        {
+            get
+            {
+                return bufferSize;
             }
         }
 
