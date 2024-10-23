@@ -18,6 +18,7 @@ namespace Master
         {
             Scada scada = new Scada();
             scada.Start();
+            Console.ReadKey();
         }
     }
 }

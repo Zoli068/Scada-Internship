@@ -10,6 +10,7 @@ using Common;
 using Common.ICommunication;
 using Master.Communication;
 using System.Net.Security;
+using System.Threading;
 
 namespace Master.TcpCommunication
 {
@@ -39,13 +40,24 @@ namespace Master.TcpCommunication
         /// <returns>Task object, which is representing the async Connect</returns>
         public async Task Connect()
         {
-            await client.ConnectAsync(options.Address, options.PortNumber);
+            CancellationTokenSource cts = new CancellationTokenSource();
 
-            if (client.Connected)
+            Task connectAsyncTask= client.ConnectAsync(options.Address, options.PortNumber); 
+            cts.CancelAfter(options.TimeOut);
+            Task completedTask = await Task.WhenAny(connectAsyncTask, Task.Delay(Timeout.Infinite, cts.Token));
+
+            if (completedTask == connectAsyncTask)
             {
-                stream = client.GetStream();
-                MakeSecure();
-                ChangeState(CommunicationState.CONNECTED);
+                if (client.Connected)
+                {
+                    stream = client.GetStream();
+                    MakeSecure();
+                    ChangeState(CommunicationState.CONNECTED);
+                }
+                else
+                {
+                    ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+                }
             }
             else
             {
@@ -119,6 +131,7 @@ namespace Master.TcpCommunication
                 await stream.WriteAsync(data, 0, data.Count());
             }
         }
+        
 
         #region Dispose
         private bool disposedValue;
