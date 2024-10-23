@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
+    /// <summary>
+    /// The <see cref="CommunicationHandler"/> class handling the communication (<see cref="ICommunicationStream"/>), creates the specified object from 
+    /// the recived bytes, also converting our specified object to a byte array to be able to send it
+    /// </summary>
     public class CommunicationHandler
     {
         public TcpCommunicationStream communicationStream;

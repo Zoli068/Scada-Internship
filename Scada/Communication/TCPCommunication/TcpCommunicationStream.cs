@@ -9,9 +9,13 @@ using System.Threading.Tasks;
 using Common;
 using Common.ICommunication;
 using Master.Communication;
+using System.Net.Security;
 
 namespace Master.TcpCommunication
 {
+    /// <summary>
+    /// The <see cref="TcpCommunicationStream"/> responsible for the TCP Communication
+    /// </summary>
     public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream, IReconnectStream, ISecureCommunication
     {
         private Stream stream;
@@ -19,16 +23,22 @@ namespace Master.TcpCommunication
         private ITcpCommunicationOptions options;
         private SecureCommunication secureCommunication=null;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TcpCommunicationStream"/> class
+        /// </summary>
+        /// <param name="options"><see cref="TcpCommunicationOptions"/> which holds all the option values</param>
         public TcpCommunicationStream(ICommunicationOptions options)
         { 
             this.options=options as ITcpCommunicationOptions;
-            state = CommunicationState.CLOSED;
+            client = new TcpClient();
         }
 
+        /// <summary>
+        /// Async Connect to the server
+        /// </summary>
+        /// <returns>Task object, which is representing the async Connect</returns>
         public async Task Connect()
         {
-            client = new TcpClient();
-
             await client.ConnectAsync(options.Address, options.PortNumber);
 
             if (client.Connected)
@@ -43,9 +53,12 @@ namespace Master.TcpCommunication
             }
         }
 
+        /// <summary>
+        /// Check the security level of the communication and, if needed, make it secure
+        /// </summary>
         public void MakeSecure()
         {
-            if (options.SecurityMode == SecurityMode.SECURE)
+            if (options.SecurityMode == SecurityMode.SECURE && !(stream is SslStream))
             {
                 if(secureCommunication == null)
                 {
@@ -56,6 +69,9 @@ namespace Master.TcpCommunication
             }
         }
 
+        /// <summary>
+        /// Disconnecting from the server, and closing the stream
+        /// </summary>
         public void Disconnect()
         {
             stream.Close();
@@ -63,6 +79,10 @@ namespace Master.TcpCommunication
             ChangeState(CommunicationState.DISCONNECTED);
         }
 
+        /// <summary>
+        /// Async reciving the bytes from the server
+        /// </summary>
+        /// <returns>Task object, which is representing the async byte reciving</returns>
         public async Task<byte[]> Receive()
         {
             byte[] recvData = new byte[options.BufferSize];
@@ -77,7 +97,6 @@ namespace Master.TcpCommunication
             
             if(readedBytes > 0)
             {
-                //like that we will send the bytes + the info of num of recv bytes.
                 Array.Copy(recvData,data,readedBytes);
             }
 
@@ -89,6 +108,10 @@ namespace Master.TcpCommunication
             //TODO
         }
 
+        /// <summary>
+        /// Async sending the bytes to the server
+        /// </summary>
+        /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
             if (stream != null && state == CommunicationState.CONNECTED)
@@ -100,6 +123,7 @@ namespace Master.TcpCommunication
         #region Dispose
         private bool disposedValue;
 
+        /// <inheritdoc/>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -115,15 +139,13 @@ namespace Master.TcpCommunication
             }
         }
 
+        /// <inheritdoc/>
         public void Dispose()
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
-
-
         #endregion
-
     }
 }

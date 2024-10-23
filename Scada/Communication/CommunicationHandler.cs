@@ -14,6 +14,10 @@ using System.Threading.Tasks;
 
 namespace Master
 {
+    /// <summary>
+    /// The <see cref="CommunicationHandler"/> class handling the communication (<see cref="ICommunicationStream"/>), creates the specified object from 
+    /// the recived bytes, also converting our specified object to a byte array to be able to send it
+    /// </summary>
     public class CommunicationHandler
     {
         public ICommunicationStream communicationStream;
@@ -24,13 +28,11 @@ namespace Master
             {
                 communicationStream = new TcpCommunicationStream(options as ITcpCommunicationOptions);
 
-                //Dev purpose, but later with that event we can stop proccess ...      
                 communicationStream.StateChanged += stateGotChangedSoDoSomething;
                 communicationStream.Connect();
             }
         }
 
-        //like this we can stop a thread from trying sending out messages...
         private void stateGotChangedSoDoSomething()
         {
             Console.WriteLine("Changed state to " + communicationStream.State);

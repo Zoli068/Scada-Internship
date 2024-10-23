@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Common.ICommunication
 {
-    public interface IStateUpdater<T>
+    /// <summary>
+    /// Contains a method that allows us to subscribe to an <see cref="IStateHandler{T}.StateChanged"/> event
+    /// </summary>
+    public interface IStateChangedHandler
     {
-        //"delegate" for the function
-        void UpdateState(T state);
+        /// <summary>
+        /// The method that we need to subscribe to an <see cref="IStateHandler{T}.StateChanged"/> event
+        /// </summary>
+        void StateChangedHandler();
     }
 }

@@ -11,8 +11,15 @@ using System.Threading.Tasks;
 
 namespace Master
 {
+
+    /// <summary>
+    /// SecureCommunication provides possibility to secure a <see cref="Stream"/> with TLS1.2 with x509 authentication
+    /// </summary>
     public class SecureCommunication
     {
+        /// <summary>
+        /// Client Certificate
+        /// </summary>
         private X509Certificate2 certificate=null;
 
         public SecureCommunication() 
@@ -20,6 +27,11 @@ namespace Master
             certificate = LoadCertificate();
         }
 
+        /// <summary>
+        /// This method from a <paramref name="stream"/> object creats a <see cref="SslStream"/> object
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns><see cref="SslStream"/> stream</returns>
         public Stream SecureStream(Stream stream) 
         {
             SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
@@ -34,6 +46,11 @@ namespace Master
             return sslStream;
         }
 
+
+        /// <summary>
+        /// Loads our certificate from the <see cref="X509Store"/> by the certificate thumbprint which is placed inside the app configuration
+        /// </summary>
+        /// <returns>Certificate which will be used for authentication</returns>
         private X509Certificate2 LoadCertificate()
         {
             string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrint"];
@@ -41,17 +58,18 @@ namespace Master
             using (var store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
             {
                 store.Open(OpenFlags.ReadOnly);
-
                 var certs = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
 
                 return certs[0];
             }
         }
 
-
+        /// <summary>
+        ///  Method will determine the certificate validation, used inside the <see cref="SslStream.AuthenticateAsClient()"/> method
+        /// </summary>
+        /// <returns>The status of certificate</returns>
         public bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
-            //if no error then can be trusted
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
                 return true; 
@@ -59,13 +77,10 @@ namespace Master
 
             X509Certificate2 cert = certificate as X509Certificate2;
 
-            //self signed certificate
             if (cert != null && cert.Issuer == cert.Subject)
             {
                 X509Store trustedRoot = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-
                 trustedRoot.Open(OpenFlags.ReadOnly);
-
                 X509Certificate2Collection trustedCertificates = trustedRoot.Certificates;
 
                 foreach (X509Certificate2 trustedCert in trustedCertificates)
@@ -82,7 +97,6 @@ namespace Master
                 return false;
             }
 
-            //checking for CA inside a chain
             if (chain != null && chain.ChainStatus.Length > 0)
             {
                 foreach (var status in chain.ChainStatus)
