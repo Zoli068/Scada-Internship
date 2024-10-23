@@ -20,6 +20,8 @@ namespace Slave
             TcpCommunicationStream stream = new TcpCommunicationStream(options);
 
             stream.Listening();
+
+
             bool endSignal = false;
 
             Task reciveTestTask = new Task(

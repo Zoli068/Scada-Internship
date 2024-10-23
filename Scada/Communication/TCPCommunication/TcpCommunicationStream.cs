@@ -17,6 +17,7 @@ namespace Master.TcpCommunication
         private Stream stream;
         private TcpClient client;
         private ITcpCommunicationOptions options;
+        private SecureCommunication secureCommunication=null;
 
         public TcpCommunicationStream(ICommunicationOptions options)
         { 
@@ -32,12 +33,26 @@ namespace Master.TcpCommunication
 
             if (client.Connected)
             {
-                ChangeState(CommunicationState.CONNECTED);
                 stream = client.GetStream();
+                MakeSecure();
+                ChangeState(CommunicationState.CONNECTED);
             }
             else
             {
                 ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+            }
+        }
+
+        public void MakeSecure()
+        {
+            if (options.SecurityMode == SecurityMode.SECURE)
+            {
+                if(secureCommunication == null)
+                {
+                    secureCommunication=new SecureCommunication();
+                }
+
+                stream=secureCommunication.SecureStream(stream);
             }
         }
 
@@ -46,12 +61,6 @@ namespace Master.TcpCommunication
             stream.Close();
             client.Close();
             ChangeState(CommunicationState.DISCONNECTED);
-        }
-
-        public void MakeSecure()
-        {
-           //maybe to put inside an abstract class,which one does have a constructor param
-           //param:stream obj.
         }
 
         public async Task<byte[]> Receive()
@@ -111,6 +120,8 @@ namespace Master.TcpCommunication
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+
 
         #endregion
 

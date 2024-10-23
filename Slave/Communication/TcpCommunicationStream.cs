@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.ICommunication;
 using Slave.Communication.TCPCommunication;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
-    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream
+    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream,ISecureCommunication
     {
         #region Atributes
 
@@ -19,12 +20,13 @@ namespace Slave.Communication
         private TcpClient tcpClient;
         private TcpListener tcpListener;
         private ITcpCommunicationOptions options;
+        private SecureCommunication secureCommunication=null;
 
         #endregion
 
         #region Constructors
 
-        public TcpCommunicationStream(ITcpCommunicationOptions options)
+        public TcpCommunicationStream(ITcpCommunicationOptions options):base()
         {
             this.options= options;
             IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
@@ -42,7 +44,23 @@ namespace Slave.Communication
             tcpClient = await tcpListener.AcceptTcpClientAsync();
 
             stream = tcpClient.GetStream();
+
+            MakeSecure();
+
             ChangeState(CommunicationState.CONNECTED);
+        }
+
+        public void MakeSecure()
+        {
+            if (options.SecurityMode == SecurityMode.SECURE)
+            {
+                if (secureCommunication == null)
+                {
+                    secureCommunication = new SecureCommunication();
+                }
+
+                stream=secureCommunication.SecureStream(stream);
+            }
         }
 
         public void Disconnect()
