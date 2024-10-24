@@ -98,7 +98,7 @@ namespace Slave.Communication
 
             set
             {
-                stream= value;
+                stream=value;
             }
         }
 

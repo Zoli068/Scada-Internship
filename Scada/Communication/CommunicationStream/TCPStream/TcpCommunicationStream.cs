@@ -10,6 +10,7 @@ using Common;
 using Common.ICommunication;
 using System.Net.Security;
 using System.Threading;
+using Common.CommunicationExceptions;
 
 namespace Master.Communication
 {
@@ -46,7 +47,7 @@ namespace Master.Communication
             {
                 if(client.Connected)
                 {
-                    return;//or throw our custom exception
+                    throw new ConnectionAlreadyExisting();
                 }
             }
 
@@ -57,7 +58,7 @@ namespace Master.Communication
 
             if (completedTask != connectAsyncTask)
             {
-                //throwing an exception for not able to connect
+                throw new UnsuccessfullConnectionException();
             }
             else
             {
@@ -70,9 +71,16 @@ namespace Master.Communication
         /// </summary>
         public void Disconnect()
         {
-            if (client.Connected) { 
+            if (stream != null)
+            {
                 stream.Close();
+                stream = null;
+            }
+
+            if(client.Connected)
+            {
                 client.Close();
+                client = null;
             }
         }
 
@@ -85,9 +93,13 @@ namespace Master.Communication
             byte[] recvData = new byte[options.BufferSize];
             int readedBytes = 0;
 
-            if (stream != null && client.Connected)
+            if (client.Connected && stream != null)
             {
                 readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
+            }
+            else
+            {
+                throw new ConnectionNotExisting();
             }
 
             byte[] data= new byte[readedBytes];
@@ -106,9 +118,13 @@ namespace Master.Communication
         /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
-            if (stream != null && client.Connected)
+            if (client.Connected && stream != null)
             {
                 await stream.WriteAsync(data, 0, data.Count());
+            }
+            else
+            {
+                throw new ConnectionNotExisting();
             }
         }    
 
@@ -122,6 +138,7 @@ namespace Master.Communication
             set
             {
                 stream = value;
+                
             }
         }
 
@@ -135,8 +152,15 @@ namespace Master.Communication
             {
                 if (disposing)
                 {
-                    stream.Close();
-                    client.Close();
+                    if(stream!= null)
+                    {
+                        stream.Close();
+                    }
+                    
+                    if(client!=null)
+                    {
+                        client.Close();
+                    }
                 }
 
                 disposedValue = true;

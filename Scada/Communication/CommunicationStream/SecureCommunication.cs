@@ -1,4 +1,5 @@
-﻿using Common.ICommunication;
+﻿using Common.Exceptioons.SecureExceptions;
+using Common.ICommunication;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -23,11 +24,6 @@ namespace Master.Communication
         /// </summary>
         private X509Certificate2 certificate=null;
 
-        public SecureCommunication() 
-        {
-            certificate = LoadCertificate();
-        }
-
         /// <summary>
         /// This method from a <paramref name="stream"/> object creats a <see cref="SslStream"/> object
         /// </summary>
@@ -42,7 +38,14 @@ namespace Master.Communication
                 certificate=LoadCertificate();
             }
 
-            sslStream.AuthenticateAsClient("localhost", new X509CertificateCollection {certificate}, SslProtocols.Tls12, false);
+            try
+            {
+                sslStream.AuthenticateAsClient("localhost", new X509CertificateCollection {certificate}, SslProtocols.Tls12, false);
+            }
+            catch (Exception)
+            {
+                throw new AuthenticationException("Authentication can't be done, check out the certificate");
+            }
 
             return sslStream;
         }
@@ -56,12 +59,19 @@ namespace Master.Communication
         {
             string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrint"];
 
-            using (var store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
+            try
             {
-                store.Open(OpenFlags.ReadOnly);
-                var certs = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
+                using (var store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
+                {
+                    store.Open(OpenFlags.ReadOnly);
+                    var certs = store.Certificates.Find(X509FindType.FindByThumbprint, thumbprint, false);
 
-                return certs[0];
+                    return certs[0];
+                }
+            }
+            catch (Exception)
+            {
+                throw new CertificateNotFound();
             }
         }
 

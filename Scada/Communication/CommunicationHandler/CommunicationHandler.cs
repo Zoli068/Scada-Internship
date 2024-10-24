@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.CommunicationExceptions;
 using Common.ICommunication;
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,10 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Master.Communication
@@ -29,7 +32,13 @@ namespace Master.Communication
             this.options = communicationHandlerOptions;
 
             stateHandler = new StateHandler<CommunicationState>();
-            timedExecutionHandler = new TimedExecutionHandler(options.ReconnectInterval);
+            stateHandler.StateChanged += connectionStateChanged;
+
+            if (options.ReconnectInterval > 0)
+            {
+                timedExecutionHandler = new TimedExecutionHandler(options.ReconnectInterval); //when we parsing the options have to be carefull about timeout<interval only if the interval is not 0
+                timedExecutionHandler.timer.Elapsed += (sender, e) => connectTheStream();
+            }
 
             if (options.SecurityMode == SecurityMode.SECURE)
             {
@@ -39,28 +48,34 @@ namespace Master.Communication
             if (communicationOptions.CommunicationType == CommunicationType.TCP)
             {
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
-                stateHandler.StateChanged += stateGotChangedSoDoSomething;
             }
-
-            //Autorecconect or not
-            if (true)
-            {
-                connectTheStream();
-                //timedExecutionHandler.timer.Elapsed += (sender, e) => connectTheStream();
-                //timedExecutionHandler.StartTimer();
-            }
-        
         }
 
-        private async void connectTheStream()
+        public async void connectTheStream()
         {
-            await communicationStream.Connect();
+            try
+            {
+                await communicationStream.Connect();
+            }catch (UnsuccessfullConnectionException uns_ex)
+            {
+                Console.WriteLine(uns_ex.Message);
+            }catch ( ConnectionAlreadyExisting cae_ex )
+            {
+                Console.WriteLine(cae_ex.Message);
+                //stopping the reconnection bcs we does have a connection
+                timedExecutionHandler.StopTimer();
+            }
 
             if (communicationStream.Stream != null)
             {
                 if (options.SecurityMode == SecurityMode.SECURE)
                 {
-                    communicationStream.Stream=secureCommunication.SecureStream(communicationStream.Stream);
+                    communicationStream.Stream = secureCommunication.SecureStream(communicationStream.Stream);
+                    if (communicationStream.Stream == null)
+                    {
+                        //No Secure connection for u
+                        communicationStream.Disconnect();
+                    }
                 }
 
                 stateHandler.ChangeState(CommunicationState.CONNECTED);
@@ -73,13 +88,16 @@ namespace Master.Communication
 
         //Thread.Sleep(Timeout.Infinite) to put to sleep the task
         //when we lose the connection..
-        private void stateGotChangedSoDoSomething()
+        private void connectionStateChanged()
         {
             Console.WriteLine("Changed state to " + stateHandler.State);
             if (stateHandler.State == CommunicationState.CONNECTED)
             {
-                timedExecutionHandler.StopTimer();
-                //this signal need inside the communicationHandler because we want a way to close the task.
+                if (timedExecutionHandler!=null)
+                {
+                    timedExecutionHandler.StopTimer();
+                }
+
                 bool endSignal = false;
 
                 try
@@ -106,18 +124,12 @@ namespace Master.Communication
                 reciveTestTask.Start();
                 string input;
 
-                //for not having bugs right now, we have to wait little bit between sending the message (Maybe not sure but i think its a possibility),
-                //not accidentally accesss the write stream
                 //from 2 async method, but in the final version in the  communicationHandler, the writingTask, will try to dequeue a message from our Queue
                 //and like that we won't have problem with that.
 
-
                 //that also should be a thread in the communicationHandler, or an eventHandler
                 //and we wouldn't use here direct input but the Queueu values from the communicationHandler.
-                //if we doing with thread then checking for state, if not then inside an event handler we sending the messages
-                //maybe both of them, like with eventhandler we wake up the thread for sending bytes
 
-                //and like here we can reuse the IAbbstractStateHandler, because that class just offering us that stuff.
                 while (!endSignal)
                 {
                     Console.WriteLine("Enter a string for sending");
@@ -130,6 +142,8 @@ namespace Master.Communication
                     }
 
                     communicationStream.Send(UnicodeEncoding.UTF8.GetBytes(input)).ContinueWith(t => {
+
+
                         Console.WriteLine("Message sent:" + input);
                     });
                 };
@@ -141,15 +155,14 @@ namespace Master.Communication
                 {
                     Console.WriteLine(ex.ToString());
                 }
-
             }
             else
             {
-
-                timedExecutionHandler.StopTimer();
-                timedExecutionHandler.StartTimer();
+                if (timedExecutionHandler!=null)
+                {
+                    timedExecutionHandler.StartTimer();
+                }
             }
-            //else stopping those task
         }
     }
 }

@@ -87,7 +87,7 @@ namespace Slave.Communication
                     break;
                 }
 
-                communicationStream.Send(UnicodeEncoding.UTF8.GetBytes(input)).ContinueWith(t => {
+                 communicationStream.Send(UnicodeEncoding.UTF8.GetBytes(input)).ContinueWith(t => {
                     Console.WriteLine("Message sent:" + input);
                 });
             };

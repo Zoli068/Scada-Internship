@@ -42,6 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Exceptioons\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
+    <Compile Include="Exceptioons\CommunicationExceptions\ConnectionNotExisting.cs" />
+    <Compile Include="Exceptioons\CommunicationExceptions\UnsuccessfullConnectionException.cs" />
+    <Compile Include="Exceptioons\SecureExceptions\CertificateNotFound.cs" />
     <Compile Include="StateHandler\StateHandler.cs" />
     <Compile Include="ICommunication\ICommunicationOptions.cs" />
     <Compile Include="Enums.cs" />
