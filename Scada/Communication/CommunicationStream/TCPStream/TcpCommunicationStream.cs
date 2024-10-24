@@ -8,21 +8,19 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Common.ICommunication;
-using Master.Communication;
 using System.Net.Security;
 using System.Threading;
 
-namespace Master.TcpCommunication
+namespace Master.Communication
 {
     /// <summary>
     /// The <see cref="TcpCommunicationStream"/> responsible for the TCP Communication
     /// </summary>
-    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream, IReconnectStream, ISecureCommunication
+    public class TcpCommunicationStream : ICommunicationStream 
     {
         private Stream stream;
         private TcpClient client;
         private ITcpCommunicationOptions options;
-        private SecureCommunication secureCommunication=null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TcpCommunicationStream"/> class
@@ -40,44 +38,30 @@ namespace Master.TcpCommunication
         /// <returns>Task object, which is representing the async Connect</returns>
         public async Task Connect()
         {
-            CancellationTokenSource cts = new CancellationTokenSource();
+            if (client == null)
+            {
+                client=new TcpClient();
+            }
+            else
+            {
+                if(client.Connected)
+                {
+                    return;//or throw our custom exception
+                }
+            }
 
+            CancellationTokenSource cts = new CancellationTokenSource();
             Task connectAsyncTask= client.ConnectAsync(options.Address, options.PortNumber); 
             cts.CancelAfter(options.TimeOut);
             Task completedTask = await Task.WhenAny(connectAsyncTask, Task.Delay(Timeout.Infinite, cts.Token));
 
-            if (completedTask == connectAsyncTask)
+            if (completedTask != connectAsyncTask)
             {
-                if (client.Connected)
-                {
-                    stream = client.GetStream();
-                    MakeSecure();
-                    ChangeState(CommunicationState.CONNECTED);
-                }
-                else
-                {
-                    ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
-                }
+                //throwing an exception for not able to connect
             }
             else
             {
-                ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
-            }
-        }
-
-        /// <summary>
-        /// Check the security level of the communication and, if needed, make it secure
-        /// </summary>
-        public void MakeSecure()
-        {
-            if (options.SecurityMode == SecurityMode.SECURE && !(stream is SslStream))
-            {
-                if(secureCommunication == null)
-                {
-                    secureCommunication=new SecureCommunication();
-                }
-
-                stream=secureCommunication.SecureStream(stream);
+                stream = client.GetStream();
             }
         }
 
@@ -86,9 +70,10 @@ namespace Master.TcpCommunication
         /// </summary>
         public void Disconnect()
         {
-            stream.Close();
-            client.Close();
-            ChangeState(CommunicationState.DISCONNECTED);
+            if (client.Connected) { 
+                stream.Close();
+                client.Close();
+            }
         }
 
         /// <summary>
@@ -100,9 +85,9 @@ namespace Master.TcpCommunication
             byte[] recvData = new byte[options.BufferSize];
             int readedBytes = 0;
 
-            if (stream != null && state == CommunicationState.CONNECTED)
+            if (stream != null && client.Connected)
             {
-                readedBytes=await stream.ReadAsync(recvData, 0, options.BufferSize);
+                readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
             }
 
             byte[] data= new byte[readedBytes];
@@ -115,23 +100,30 @@ namespace Master.TcpCommunication
             return data;
         }
 
-        public void Reconnect()
-        {
-            //TODO
-        }
-
         /// <summary>
         /// Async sending the bytes to the server
         /// </summary>
         /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
-            if (stream != null && state == CommunicationState.CONNECTED)
+            if (stream != null && client.Connected)
             {
                 await stream.WriteAsync(data, 0, data.Count());
             }
+        }    
+
+        public Stream Stream
+        {
+            get 
+            { 
+                return stream; 
+            }
+
+            set
+            {
+                stream = value;
+            }
         }
-        
 
         #region Dispose
         private bool disposedValue;
@@ -145,7 +137,6 @@ namespace Master.TcpCommunication
                 {
                     stream.Close();
                     client.Close();
-                    ChangeState(CommunicationState.CLOSED);
                 }
 
                 disposedValue = true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.ICommunication;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -9,20 +10,19 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master
+namespace Slave.Communication
 {
-
     /// <summary>
     /// SecureCommunication provides possibility to secure a <see cref="Stream"/> with TLS1.2 with x509 authentication
     /// </summary>
-    public class SecureCommunication
+    public class SecureCommunication:ISecureCommunication
     {
         /// <summary>
-        /// Client Certificate
+        /// Server Certificate
         /// </summary>
-        private X509Certificate2 certificate=null;
+        private X509Certificate2 certificate = null;
 
-        public SecureCommunication() 
+        public SecureCommunication()
         {
             certificate = LoadCertificate();
         }
@@ -32,20 +32,19 @@ namespace Master
         /// </summary>
         /// <param name="stream"></param>
         /// <returns><see cref="SslStream"/> stream</returns>
-        public Stream SecureStream(Stream stream) 
+        public Stream SecureStream(Stream stream)
         {
-            SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
+            SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateClientCertificate), null);
 
-            if (certificate == null)
+            if(certificate == null)
             {
-                certificate=LoadCertificate();
+                certificate = LoadCertificate();
             }
 
-            sslStream.AuthenticateAsClient("localhost", new X509CertificateCollection {certificate}, SslProtocols.Tls12, false);
+            sslStream.AuthenticateAsServer(certificate, true,SslProtocols.Tls12, false);
 
             return sslStream;
         }
-
 
         /// <summary>
         /// Loads our certificate from the <see cref="X509Store"/> by the certificate thumbprint which is placed inside the app configuration
@@ -65,14 +64,14 @@ namespace Master
         }
 
         /// <summary>
-        ///  Method will determine the certificate validation, used inside the <see cref="SslStream.AuthenticateAsClient()"/> method
+        ///  Method will determine the certificate validation, used inside the <see cref="SslStream.AuthenticateAsServer()"/> method
         /// </summary>
         /// <returns>The status of certificate</returns>
-        public bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        public bool ValidateClientCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None)
             {
-                return true; 
+                return true;
             }
 
             X509Certificate2 cert = certificate as X509Certificate2;
@@ -109,7 +108,7 @@ namespace Master
                 return true;
             }
 
-            return false;  
+            return false;
         }
     }
 }

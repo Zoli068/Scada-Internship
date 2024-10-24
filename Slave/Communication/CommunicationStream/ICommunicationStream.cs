@@ -6,21 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master.Communication
+namespace Slave.Communication
 {
     /// <summary>
     /// Describes all the required methods for a communication stream, also implements the <see cref="IStateHandler{T}"/>
     /// </summary>
-    public interface ICommunicationStream:IDisposable,IStateHandler<CommunicationState>
-    {
+    public interface ICommunicationStream : IDisposable { 
         /// <summary>
-        /// Async Connect to the server
+        /// Async Listening for connection
         /// </summary>
-        /// <returns>Task object, which is representing the async Connect</returns>
-        Task Connect();
+        /// <returns>Task object, which is representing the async listening</returns>
+        Task Accept();
 
         /// <summary>
-        /// Disconnecting from the server, and closing the stream
+        /// Disconnects the accepted client
         /// </summary>
         void Disconnect();
 
@@ -35,5 +34,10 @@ namespace Master.Communication
         /// </summary>
         /// <returns>Task object, which is representing the async byte reciving</returns>
         Task<byte[]> Receive();
+
+        /// <summary>
+        /// For accessing the <see cref="Stream"/> object
+        /// </summary>
+        Stream Stream { get; set; }
     }
 }

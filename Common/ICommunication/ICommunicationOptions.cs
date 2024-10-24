@@ -15,10 +15,5 @@ namespace Common.ICommunication
         /// Indicates the communication type which will be used.
         /// </summary>
         CommunicationType CommunicationType { get; }
-
-        /// <summary>
-        /// Indicates the security of the communication
-        /// </summary>
-        SecurityMode SecurityMode { get; }
     }
 }

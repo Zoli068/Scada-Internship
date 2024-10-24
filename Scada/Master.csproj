@@ -45,13 +45,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TimedExecutionHandler.cs" />
-    <Compile Include="Communication\SecureCommunication.cs" />
-    <Compile Include="Communication\CommunicationHandler.cs" />
-    <Compile Include="Communication\ICommunicationStream.cs" />
-    <Compile Include="Communication\TCPCommunication\Options\ITcpCommunicationOptions.cs" />
-    <Compile Include="Communication\TCPCommunication\TcpCommunicationStream.cs" />
-    <Compile Include="Communication\TCPCommunication\Options\TcpCommunicationOptions.cs" />
+    <Compile Include="Communication\CommunicationHandler\Options\CommunicationHandlerOptions.cs" />
+    <Compile Include="Communication\CommunicationHandler\Options\ICommunicationHandlerOptions.cs" />
+    <Compile Include="Utilities\TimedExecutionHandler.cs" />
+    <Compile Include="Communication\CommunicationStream\SecureCommunication.cs" />
+    <Compile Include="Communication\CommunicationHandler\CommunicationHandler.cs" />
+    <Compile Include="Communication\CommunicationStream\ICommunicationStream.cs" />
+    <Compile Include="Communication\CommunicationStream\TCPStream\Options\ITcpCommunicationOptions.cs" />
+    <Compile Include="Communication\CommunicationStream\TCPStream\TcpCommunicationStream.cs" />
+    <Compile Include="Communication\CommunicationStream\TCPStream\Options\TcpCommunicationOptions.cs" />
     <Compile Include="Configuration\ConfigurationReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

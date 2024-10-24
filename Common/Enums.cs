@@ -34,4 +34,13 @@ namespace Common
         CONNECTED,
         DISCONNECTED
     }
+
+    /// <summary>
+    /// Enumeration of the possible auto reconnect modes
+    /// </summary>
+    public enum AutoReconnect : short
+    {
+        ON,
+        OFF
+    }
 }

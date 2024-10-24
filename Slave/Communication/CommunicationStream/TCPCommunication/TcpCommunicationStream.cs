@@ -1,6 +1,5 @@
 ﻿using Common;
 using Common.ICommunication;
-using Slave.Communication.TCPCommunication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
-    public class TcpCommunicationStream :AbstractCommunicationStateHandler, ICommunicationStream,ISecureCommunication
+    public class TcpCommunicationStream :ICommunicationStream
     {
         private Stream stream;
         private TcpClient tcpClient;
         private TcpListener tcpListener;
         private ITcpCommunicationOptions options;
-        private SecureCommunication secureCommunication=null;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TcpCommunicationStream"/> class
@@ -29,35 +27,21 @@ namespace Slave.Communication
             this.options= options;
             IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
             tcpListener = new TcpListener(endPoint);
-            tcpListener.Start(1);
         }
 
         /// <summary>
         /// Async Listening for connection
         /// </summary>
         /// <returns>Task object, which is representing the async listening</returns>
-        public async Task Listening()
+        public async Task Accept()
         {
-            tcpClient = await tcpListener.AcceptTcpClientAsync();
-            stream = tcpClient.GetStream();
-            MakeSecure();
-            ChangeState(CommunicationState.CONNECTED);
-        }
-
-        /// <summary>
-        /// Check the security level of the communication and, if needed, make it secure
-        /// </summary>
-        public void MakeSecure()
-        {
-            if (options.SecurityMode == SecurityMode.SECURE)
+            tcpListener.Start(2);
+            if(tcpClient==null || tcpClient.Connected)
             {
-                if (secureCommunication == null)
-                {
-                    secureCommunication = new SecureCommunication();
-                }
-
-                stream=secureCommunication.SecureStream(stream);
+                tcpClient = await tcpListener.AcceptTcpClientAsync();
+                stream = tcpClient.GetStream();
             }
+
         }
 
         /// <summary>
@@ -67,12 +51,6 @@ namespace Slave.Communication
         {
             stream.Close();
             tcpClient.Close();
-            ChangeState(CommunicationState.DISCONNECTED);
-        }
-
-        public void ConnectionRestart()
-        {
-            //TODO
         }
 
         /// <summary>
@@ -81,7 +59,7 @@ namespace Slave.Communication
         /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
-            if (stream != null && state == CommunicationState.CONNECTED)
+            if (stream != null && tcpClient.Connected)
             {
                 await stream.WriteAsync(data, 0, data.Count());
             }
@@ -96,7 +74,7 @@ namespace Slave.Communication
             byte[] recvData = new byte[options.BufferSize];
             int readedBytes = 0;
 
-            if (stream != null && state == CommunicationState.CONNECTED)
+            if (stream != null && tcpClient.Connected)
             {
                 readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
             }
@@ -109,6 +87,19 @@ namespace Slave.Communication
             }
 
             return data;
+        }
+
+        public Stream Stream
+        {
+            get
+            {
+                return stream;
+            }
+
+            set
+            {
+                stream= value;
+            }
         }
 
         #region Dispose

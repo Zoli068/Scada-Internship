@@ -2,12 +2,13 @@
 using Common.ICommunication;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master.TcpCommunication
+namespace Master.Communication
 {
 
     /// <summary>
@@ -24,12 +25,6 @@ namespace Master.TcpCommunication
         /// Port number of the server
         /// </summary>
         int PortNumber { get; }
-
-
-        /// <summary>
-        /// Time period between two connection attempt
-        /// </summary>
-        int ReconnectInterval { get; }
 
         /// <summary>
         /// Time period after which the current command will be interrupted

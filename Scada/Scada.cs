@@ -1,5 +1,5 @@
 ﻿using Common;
-using Master.TcpCommunication;
+using Master.Communication;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,13 +18,9 @@ namespace Master
         public Scada() { }
 
         public void Start() {
-
-            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE,5000,8000, 8192);
-
-            CommunicationHandler communicationHandler=new CommunicationHandler(options);
-
-            
+            TcpCommunicationOptions tcpCommunicationOptions = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,5000,8192);
+            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(10000,SecurityMode.SECURE);
+            CommunicationHandler communicationHandler=new CommunicationHandler(communicationHandlerOptions,tcpCommunicationOptions);  
         }
-
     }
 }

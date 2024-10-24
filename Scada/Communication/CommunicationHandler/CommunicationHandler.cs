@@ -1,8 +1,5 @@
 ﻿using Common;
 using Common.ICommunication;
-using Master.Communication;
-using Master.TcpCommunication;
-using Scada;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -13,7 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master
+namespace Master.Communication
 {
     /// <summary>
     /// The <see cref="CommunicationHandler"/> class handling the communication (<see cref="ICommunicationStream"/>), creates the specified object from 
@@ -22,34 +19,64 @@ namespace Master
     public class CommunicationHandler
     {
         public ICommunicationStream communicationStream;
+        private ICommunicationHandlerOptions options;
+        private ISecureCommunication secureCommunication=null;
         private TimedExecutionHandler timedExecutionHandler;
+        private IStateHandler<CommunicationState> stateHandler;
 
-        public CommunicationHandler(ICommunicationOptions options)
+        public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions, ICommunicationOptions communicationOptions)
         {
-            timedExecutionHandler = new TimedExecutionHandler((options as ITcpCommunicationOptions).ReconnectInterval);
+            this.options = communicationHandlerOptions;
 
-            if (options.CommunicationType == CommunicationType.TCP)
+            stateHandler = new StateHandler<CommunicationState>();
+            timedExecutionHandler = new TimedExecutionHandler(options.ReconnectInterval);
+
+            if (options.SecurityMode == SecurityMode.SECURE)
             {
-                communicationStream = new TcpCommunicationStream(options as ITcpCommunicationOptions);
+                secureCommunication = new SecureCommunication();
+            }
 
-                communicationStream.StateChanged += stateGotChangedSoDoSomething;
+            if (communicationOptions.CommunicationType == CommunicationType.TCP)
+            {
+                communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
+                stateHandler.StateChanged += stateGotChangedSoDoSomething;
             }
 
             //Autorecconect or not
             if (true)
             {
-                timedExecutionHandler.timer.Elapsed += (sender, e) => communicationStream.Connect();
-                timedExecutionHandler.StartTimer();
+                connectTheStream();
+                //timedExecutionHandler.timer.Elapsed += (sender, e) => connectTheStream();
+                //timedExecutionHandler.StartTimer();
             }
         
+        }
+
+        private async void connectTheStream()
+        {
+            await communicationStream.Connect();
+
+            if (communicationStream.Stream != null)
+            {
+                if (options.SecurityMode == SecurityMode.SECURE)
+                {
+                    communicationStream.Stream=secureCommunication.SecureStream(communicationStream.Stream);
+                }
+
+                stateHandler.ChangeState(CommunicationState.CONNECTED);
+            }
+            else
+            {
+                stateHandler.ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+            }
         }
 
         //Thread.Sleep(Timeout.Infinite) to put to sleep the task
         //when we lose the connection..
         private void stateGotChangedSoDoSomething()
         {
-            Console.WriteLine("Changed state to " + communicationStream.State);
-            if (communicationStream.State == CommunicationState.CONNECTED)
+            Console.WriteLine("Changed state to " + stateHandler.State);
+            if (stateHandler.State == CommunicationState.CONNECTED)
             {
                 timedExecutionHandler.StopTimer();
                 //this signal need inside the communicationHandler because we want a way to close the task.

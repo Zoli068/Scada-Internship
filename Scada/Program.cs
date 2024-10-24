@@ -8,7 +8,6 @@ using Common;
 using System.Net;
 using System.IO.Ports;
 using System.Net.Security;
-using Master.TcpCommunication;
 
 namespace Master
 {

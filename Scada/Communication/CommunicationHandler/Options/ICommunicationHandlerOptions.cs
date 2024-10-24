@@ -1,0 +1,25 @@
+﻿using Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Master.Communication
+{
+    /// <summary>
+    /// Describes all the must have values for the <see cref="Master.CommunicationHandler"/> class
+    /// </summary>
+    public interface ICommunicationHandlerOptions
+    {
+        /// <summary>
+        /// The interval between two connection attempts. If the value is set to 0, no reconnect attempt will be made after a failed connection.
+        /// </summary>
+        int ReconnectInterval { get; }
+
+        /// <summary>
+        /// Indicates the security of the communication
+        /// </summary>
+        SecurityMode SecurityMode { get; }
+    }
+}

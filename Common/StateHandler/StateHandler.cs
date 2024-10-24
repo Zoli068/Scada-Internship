@@ -7,20 +7,20 @@ using System.Threading.Tasks;
 namespace Common
 {
     /// <summary>
-    /// Abstract class with implemented <see cref="IStateHandler{T}"/>, need to be inherited if a class want to use the <see cref="IStateHandler{T}"/>
+    /// Class with implemented <see cref="IStateHandler{T}"/>, used for managing a state typeof:<see cref="T"/>, and also provides event if the state changed
     /// </summary>
-    public abstract class AbstractCommunicationStateHandler : IStateHandler<CommunicationState>
+    public class StateHandler<T> : IStateHandler<T>
     {
-        public CommunicationState state=CommunicationState.CLOSED;
+        public T state;
         public event Action StateChanged;
 
         /// <summary>
         /// Method to change the managed state
         /// </summary>
         /// <param name="newState">The new value for the state</param>
-        public void ChangeState(CommunicationState newState)
+        public void ChangeState(T newState)
         {
-            if (state != newState)
+            if (!EqualityComparer<T>.Default.Equals(state,newState))
             {
                 state = newState;
 
@@ -31,7 +31,7 @@ namespace Common
             }
         }
 
-        public CommunicationState State
+        public T State
         {
             get
             {

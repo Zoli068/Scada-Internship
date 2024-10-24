@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using Slave.Communication;
-using Slave.Communication.TCPCommunication;
 
 namespace Slave
 {
@@ -16,52 +15,14 @@ namespace Slave
         static void Main(string[] args)
         {
 
-            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, SecurityMode.SECURE, 8192);
-            TcpCommunicationStream stream = new TcpCommunicationStream(options);
+            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
+            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE);
+            CommunicationHandler communicationHandler=new CommunicationHandler(communicationHandlerOptions,options);
 
-            stream.Listening();
+            Task testTask = new Task(() => communicationHandler.TestingMethod());
 
-
-            bool endSignal = false;
-
-            Task reciveTestTask = new Task(
-                async () =>
-                {
-                    while (!endSignal)
-                    {
-                        await stream.Receive().ContinueWith(t =>
-                        {
-                            if (t.Result.Length > 0)
-                            {
-                                Console.Write("Got a message:");
-                                Console.WriteLine(UnicodeEncoding.UTF8.GetString(t.Result));
-                            }
-                        });
-                    }
-                });
-
-            reciveTestTask.Start();
-            string input;
-
-            while (!endSignal)
-            {
-                Console.WriteLine("Enter a string for sending");
-                input = Console.ReadLine();
-
-                if (input.Equals("exit"))
-                {
-                    endSignal = true;
-                    break;
-                }
-
-                stream.Send(UnicodeEncoding.UTF8.GetBytes(input)).ContinueWith(t => {
-                    Console.WriteLine("Message sent:" + input);
-                });
-            };
-
-            Console.WriteLine("Exit the app");
+            testTask.Start();
             Console.ReadKey();
-            stream.Disconnect();
         }
     }
 }
