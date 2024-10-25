@@ -44,7 +44,7 @@ namespace Master.Communication
             }
             catch (Exception)
             {
-                throw new AuthenticationException("Authentication can't be done, check out the certificate");
+                throw new AuthenticationFailedException("Authentication can't be done, check out the certificate");
             }
 
             return sslStream;
@@ -71,7 +71,7 @@ namespace Master.Communication
             }
             catch (Exception)
             {
-                throw new CertificateNotFound();
+                throw new AuthenticationFailedException();
             }
         }
 

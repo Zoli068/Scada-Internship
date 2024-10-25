@@ -12,7 +12,7 @@ namespace Master.Communication
 {
 
     /// <summary>
-    /// Interface which contains the important values for TCP communication
+    /// Interface which describes the important values for TCP communication
     /// </summary>
     public interface ITcpCommunicationOptions: ICommunicationOptions
     {

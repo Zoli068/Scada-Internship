@@ -19,7 +19,7 @@ namespace Master
 
         public void Start() {
             TcpCommunicationOptions tcpCommunicationOptions = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,2000,8192);
-            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(5000,SecurityMode.SECURE);
+            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(20000,SecurityMode.SECURE);
             CommunicationHandler communicationHandler=new CommunicationHandler(communicationHandlerOptions,tcpCommunicationOptions);  
 
             communicationHandler.connectTheStream();

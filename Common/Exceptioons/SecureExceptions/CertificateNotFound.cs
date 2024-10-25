@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 
 namespace Common.Exceptioons.SecureExceptions
 {
-    public class CertificateNotFound:Exception
+    /// <summary>
+    /// The exception that is thrown when can't find the specified certificate 
+    /// </summary>
+    public class AuthenticationFailedException:Exception
     {
-        public CertificateNotFound():base("Cant' find the certificate with the definied thumbprint. Please check the thumbprint, and check if the certificate is installed") { }
-   
-        public CertificateNotFound(string message) : base(message) { }
+        /// <summary>
+        /// The exception that is thrown when can't find the specified certificate 
+        /// </summary>
+        public AuthenticationFailedException():base("Authentication failed while creating a secure stream") { }
+
+        /// <summary>
+        /// The exception that is thrown when can't find the specified certificate 
+        /// </summary>
+        public AuthenticationFailedException(string message) : base(message) { }
     }
 }

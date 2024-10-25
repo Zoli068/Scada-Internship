@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptioons\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
+    <Compile Include="Exceptioons\CommunicationExceptions\ConnectionErrorException.cs" />
     <Compile Include="Exceptioons\CommunicationExceptions\ConnectionNotExisting.cs" />
     <Compile Include="Exceptioons\CommunicationExceptions\UnsuccessfullConnectionException.cs" />
     <Compile Include="Exceptioons\SecureExceptions\CertificateNotFound.cs" />

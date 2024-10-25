@@ -11,6 +11,7 @@ using Common.ICommunication;
 using System.Net.Security;
 using System.Threading;
 using Common.CommunicationExceptions;
+using Common.Exceptioons.CommunicationExceptions;
 
 namespace Master.Communication
 {
@@ -39,6 +40,9 @@ namespace Master.Communication
         /// <returns>Task object, which is representing the async Connect</returns>
         public async Task Connect()
         {
+            Task connectAsyncTask=null;
+            Task completedTask=null;
+
             if (client == null)
             {
                 client=new TcpClient();
@@ -51,12 +55,19 @@ namespace Master.Communication
                 }
             }
 
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Task connectAsyncTask= client.ConnectAsync(options.Address, options.PortNumber); 
-            cts.CancelAfter(options.TimeOut);
-            Task completedTask = await Task.WhenAny(connectAsyncTask, Task.Delay(Timeout.Infinite, cts.Token));
+            try
+            {
+                CancellationTokenSource cts = new CancellationTokenSource();
+                connectAsyncTask= client.ConnectAsync(options.Address, options.PortNumber); 
+                cts.CancelAfter(options.TimeOut);
+                completedTask = await Task.WhenAny(connectAsyncTask, Task.Delay(Timeout.Infinite, cts.Token));
+            }
+            catch (Exception)
+            {
+                throw new UnsuccessfullConnectionException();
+            }
 
-            if (completedTask != connectAsyncTask)
+            if (completedTask==null || connectAsyncTask==null || completedTask != connectAsyncTask)
             {
                 throw new UnsuccessfullConnectionException();
             }
@@ -95,7 +106,14 @@ namespace Master.Communication
 
             if (client.Connected && stream != null)
             {
-                readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
+                try
+                {
+                    readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
+                }
+                catch (Exception)
+                {
+                    throw new ConnectionErrorException();
+                }
             }
             else
             {
@@ -120,7 +138,14 @@ namespace Master.Communication
         {
             if (client.Connected && stream != null)
             {
-                await stream.WriteAsync(data, 0, data.Count());
+                try 
+                { 
+                    await stream.WriteAsync(data, 0, data.Count());
+                }
+                catch (Exception)
+                {
+                    throw new ConnectionErrorException();
+                }
             }
             else
             {

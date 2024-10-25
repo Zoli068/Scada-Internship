@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Master.Communication
 {
     /// <summary>
-    /// Describes all the required methods for a communication stream, also implements the <see cref="IStateHandler{T}"/>
+    /// Describes all the required methods and attributes for a communication stream, also implements the <see cref="IStateHandler{T}"/>
     /// </summary>
     public interface ICommunicationStream:IDisposable
     {
