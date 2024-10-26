@@ -17,7 +17,13 @@ namespace Master
         {
             Scada scada = new Scada();
             scada.Start();
-            Console.ReadKey();
+
+            while (true)
+            {
+                //it's looks bad but now we using console.Read inside a thread and if i stop
+                //the app with console.readline then that will be triggered and not the one inside 
+                //the task
+            }
         }
     }
 }

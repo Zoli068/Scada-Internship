@@ -6,6 +6,8 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Common.Exceptioons.CommunicationExceptions;
+using Common.Exceptioons.SecureExceptions;
 using Slave.Communication;
 
 namespace Slave
@@ -16,13 +18,32 @@ namespace Slave
         {
 
             TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
-            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE);
-            CommunicationHandler communicationHandler=new CommunicationHandler(communicationHandlerOptions,options);
+            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.INSECURE);
 
-            Task testTask = new Task(() => communicationHandler.TestingMethod());
+            CommunicationHandler communicationHandler;
+            try
+            {
+                 communicationHandler=new CommunicationHandler(communicationHandlerOptions,options);
+            }
+            catch (Exception ex) when (ex is  ListeningNotSuccessedException)
+            {
+                Console.WriteLine("The server was not able to start");
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                return;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An unknown error happened");
+                Console.WriteLine(ex.Message);
+                Console.ReadKey();
+                return;
+            }
 
-            testTask.Start();
-            Console.ReadKey();
+            while (true)
+            {
+
+            }
         }
     }
 }

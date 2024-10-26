@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Master.Communication
 {
     /// <summary>
-    /// Describes all the required methods and attributes for a communication stream, also implements the <see cref="IStateHandler{T}"/>
+    /// Describes all the required methods and attributes for a communication stream
     /// </summary>
     public interface ICommunicationStream:IDisposable
     {
@@ -20,9 +20,9 @@ namespace Master.Communication
         Task Connect();
 
         /// <summary>
-        /// Disconnecting from the server, and closing the stream
+        /// Closing the connection
         /// </summary>
-        void Disconnect();
+        void Close();
 
         /// <summary>
         /// Async sending the bytes to the server

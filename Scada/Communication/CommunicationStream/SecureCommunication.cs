@@ -57,10 +57,10 @@ namespace Master.Communication
         /// <returns>Certificate which will be used for authentication</returns>
         private X509Certificate2 LoadCertificate()
         {
-            string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrint"];
-
             try
             {
+                string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrint"];
+                
                 using (var store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
                 {
                     store.Open(OpenFlags.ReadOnly);
@@ -79,7 +79,7 @@ namespace Master.Communication
         ///  Method will determine the certificate validation, used inside the <see cref="SslStream.AuthenticateAsClient()"/> method
         /// </summary>
         /// <returns>The status of certificate</returns>
-        public bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        private bool ValidateServerCertificate(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
         {
             if (sslPolicyErrors == SslPolicyErrors.None)
             {

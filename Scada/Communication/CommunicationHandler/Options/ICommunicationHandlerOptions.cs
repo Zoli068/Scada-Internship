@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Master.Communication
 {
     /// <summary>
-    /// Describes all the must have values for the <see cref="Master.CommunicationHandler"/> class
+    /// Describes all the must have values for the <see cref="CommunicationHandler"/> class
     /// </summary>
     public interface ICommunicationHandlerOptions
     {

@@ -45,8 +45,10 @@
     <Compile Include="Exceptioons\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
     <Compile Include="Exceptioons\CommunicationExceptions\ConnectionErrorException.cs" />
     <Compile Include="Exceptioons\CommunicationExceptions\ConnectionNotExisting.cs" />
+    <Compile Include="Exceptioons\CommunicationExceptions\ListeningNotSuccessedException.cs" />
     <Compile Include="Exceptioons\CommunicationExceptions\UnsuccessfullConnectionException.cs" />
-    <Compile Include="Exceptioons\SecureExceptions\CertificateNotFound.cs" />
+    <Compile Include="Exceptioons\SecureExceptions\AuthenticationFailedException.cs" />
+    <Compile Include="ICommunication\IAsyncSecureCommunication.cs" />
     <Compile Include="StateHandler\StateHandler.cs" />
     <Compile Include="ICommunication\ICommunicationOptions.cs" />
     <Compile Include="Enums.cs" />

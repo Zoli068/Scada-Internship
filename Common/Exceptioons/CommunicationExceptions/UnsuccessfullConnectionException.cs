@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace Common.CommunicationExceptions
 {
     /// <summary>
     /// The exception that is thrown when trying to establish a connection, but it was unsuccessfull

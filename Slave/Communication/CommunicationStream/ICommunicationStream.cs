@@ -9,19 +9,20 @@ using System.Threading.Tasks;
 namespace Slave.Communication
 {
     /// <summary>
-    /// Describes all the required methods for a communication stream, also implements the <see cref="IStateHandler{T}"/>
+    /// Describes all the required methods for a communication stream
     /// </summary>
-    public interface ICommunicationStream : IDisposable { 
+    public interface ICommunicationStream : IDisposable 
+    { 
         /// <summary>
-        /// Async Listening for connection
+        /// Async accepting an incoming connection
         /// </summary>
-        /// <returns>Task object, which is representing the async listening</returns>
+        /// <returns>Task object, which is representing the waiting task for an incoming connection</returns>
         Task Accept();
 
         /// <summary>
-        /// Disconnects the accepted client
+        /// Close the connection with the accepted client
         /// </summary>
-        void Disconnect();
+        void Close();
 
         /// <summary>
         /// Async sending the bytes to the server

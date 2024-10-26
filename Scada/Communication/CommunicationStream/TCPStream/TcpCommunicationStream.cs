@@ -11,7 +11,6 @@ using Common.ICommunication;
 using System.Net.Security;
 using System.Threading;
 using Common.CommunicationExceptions;
-using Common.Exceptioons.CommunicationExceptions;
 
 namespace Master.Communication
 {
@@ -22,7 +21,7 @@ namespace Master.Communication
     {
         private Stream stream;
         private TcpClient client;
-        private ITcpCommunicationOptions options;
+        private readonly ITcpCommunicationOptions options;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TcpCommunicationStream"/> class
@@ -64,11 +63,13 @@ namespace Master.Communication
             }
             catch (Exception)
             {
+                Close();
                 throw new UnsuccessfullConnectionException();
             }
 
-            if (completedTask==null || connectAsyncTask==null || completedTask != connectAsyncTask)
+            if (completedTask==null || connectAsyncTask==null || completedTask != connectAsyncTask ||client == null || !client.Connected)
             {
+                Close();
                 throw new UnsuccessfullConnectionException();
             }
             else
@@ -78,9 +79,9 @@ namespace Master.Communication
         }
 
         /// <summary>
-        /// Disconnecting from the server, and closing the stream
+        /// Closing the communication stream
         /// </summary>
-        public void Disconnect()
+        public void Close()
         {
             if (stream != null)
             {
@@ -88,7 +89,7 @@ namespace Master.Communication
                 stream = null;
             }
 
-            if(client.Connected)
+            if(client!=null)
             {
                 client.Close();
                 client = null;
@@ -104,7 +105,7 @@ namespace Master.Communication
             byte[] recvData = new byte[options.BufferSize];
             int readedBytes = 0;
 
-            if (client.Connected && stream != null)
+            if (stream != null && client!=null && client.Connected)
             {
                 try
                 {
@@ -126,6 +127,10 @@ namespace Master.Communication
             {
                 Array.Copy(recvData,data,readedBytes);
             }
+            else
+            {
+                throw new ConnectionNotExisting();
+            }
 
             return data;
         }
@@ -136,7 +141,7 @@ namespace Master.Communication
         /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
-            if (client.Connected && stream != null)
+            if (stream != null && client != null && client.Connected)
             {
                 try 
                 { 
@@ -163,7 +168,6 @@ namespace Master.Communication
             set
             {
                 stream = value;
-                
             }
         }
 

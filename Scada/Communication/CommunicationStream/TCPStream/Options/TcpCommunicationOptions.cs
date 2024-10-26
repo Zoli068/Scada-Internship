@@ -34,7 +34,6 @@ namespace Master.Communication
             this.communicationType = communicationType;
             this.timeOut = timeOut;
             this.bufferSize = bufferSize;
-            this.bufferSize = bufferSize;
         }
 
         public IPAddress Address

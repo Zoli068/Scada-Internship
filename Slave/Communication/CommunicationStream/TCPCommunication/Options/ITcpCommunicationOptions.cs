@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Slave.Communication
 {
     /// <summary>
-    /// Interface which contains the important values for TCP communication
+    /// Interface which describes the important values for TCP communication
     /// </summary>
     public interface ITcpCommunicationOptions : ICommunicationOptions
     {
@@ -28,5 +28,6 @@ namespace Slave.Communication
         /// Size of the connection buffer in bytes
         /// </summary>
         int BufferSize { get; }
+
     }
 }

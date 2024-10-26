@@ -1,6 +1,5 @@
 ﻿using Common;
 using Common.CommunicationExceptions;
-using Common.Exceptioons.CommunicationExceptions;
 using Common.Exceptioons.SecureExceptions;
 using Common.ICommunication;
 using System;
@@ -24,10 +23,11 @@ namespace Master.Communication
     /// </summary>
     public class CommunicationHandler
     {
+        private Task reconnectTask;
+        private AutoResetEvent signaliseReconnect= new AutoResetEvent(false);
         public ICommunicationStream communicationStream;
         private ICommunicationHandlerOptions options;
-        private ISecureCommunication secureCommunication=null;
-        private TimedExecutionHandler timedExecutionHandler=null;
+        private ISecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler;
 
         public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions, ICommunicationOptions communicationOptions)
@@ -36,12 +36,6 @@ namespace Master.Communication
 
             stateHandler = new StateHandler<CommunicationState>();
             stateHandler.StateChanged += connectionStateChanged;
-
-            if (options.ReconnectInterval > 0)
-            {
-                timedExecutionHandler = new TimedExecutionHandler(options.ReconnectInterval); //when we parsing the options have to be carefull about timeout<interval only if the interval is not 0
-                timedExecutionHandler.timer.Elapsed += (sender, e) => connectTheStream();
-            }
 
             if (options.SecurityMode == SecurityMode.SECURE)
             {
@@ -53,70 +47,37 @@ namespace Master.Communication
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
             }
 
-
-            //TODO delete it that call
-            testEnvironmentSetUp();
+            taskInit();
         }
-
-        public async void connectTheStream()
+        private void taskInit()
         {
-            try
-            {
-                await communicationStream.Connect();
-
-                if (options.SecurityMode == SecurityMode.SECURE)
+            reciveTestTask = new Task(
+                async () =>
                 {
-                    communicationStream.Stream = secureCommunication.SecureStream(communicationStream.Stream);
-                }
+                    byte[] recivedData;
 
-                stateHandler.ChangeState(CommunicationState.CONNECTED);
-            }
-            catch(Exception ex) when(ex is UnsuccessfullConnectionException || ex is ConnectionAlreadyExisting || ex is AuthenticationFailedException)
-            {
-                Console.WriteLine(ex.Message);    //exceptions we expecting to happen sometimes in the communication
-                stateHandler.ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
-            }
-
-        }
-
-        //this part for testing out the methods we got
-        //just temporarily
-        private bool endSignal = false;
-        private Task reciveTestTask;
-        private Task sendingTestTask;
-        private readonly SemaphoreSlim _SemaphoreStopTheReciveTask = new SemaphoreSlim(0,1);
-        private readonly SemaphoreSlim _SemaphoreStopTheSendingTask = new SemaphoreSlim(0,1);
-
-        private void testEnvironmentSetUp()
-        {
-            reciveTestTask= new Task(
-                    async () =>
+                    while (!endSignal)
                     {
-                        byte[] recivedData;
-
-                        while (!endSignal)
+                        if (stateHandler.State != CommunicationState.CONNECTED)
                         {
-                            if (stateHandler.State != CommunicationState.CONNECTED)
-                            {
-                                await _SemaphoreStopTheReciveTask.WaitAsync();
-                            }
-
-                            try
-                            {
-
-                                recivedData = await communicationStream.Receive();
-
-                                Console.Write("Got a message:");
-                                Console.WriteLine(UnicodeEncoding.UTF8.GetString(recivedData));
-
-                            }
-                            catch (Exception ex) when(ex is ConnectionErrorException || ex is ConnectionNotExisting)
-                            {
-                                Console.WriteLine(ex.Message);
-                                stateHandler.ChangeState(CommunicationState.DISCONNECTED);
-                            }
+                            signaliseReciveTask.WaitOne();
                         }
-                    });
+
+                        try
+                        {
+                            recivedData = await communicationStream.Receive();
+
+                            Console.Write("Slave sent a message:");
+                            Console.WriteLine(UnicodeEncoding.UTF8.GetString(recivedData));
+
+                        }
+                        catch (Exception ex) when (ex is ConnectionErrorException || ex is ConnectionNotExisting)
+                        {
+                            Console.WriteLine(ex.Message);
+                            stateHandler.ChangeState(CommunicationState.DISCONNECTED);
+                        }
+                    }
+                });
 
             sendingTestTask = new Task(
                 async () =>
@@ -126,7 +87,7 @@ namespace Master.Communication
                     {
                         if (stateHandler.State != CommunicationState.CONNECTED)
                         {
-                            await _SemaphoreStopTheSendingTask.WaitAsync();
+                            signaliseSendingTask.WaitOne();
                         }
 
                         Console.WriteLine("Enter a string for sending");
@@ -138,45 +99,91 @@ namespace Master.Communication
                             break;
                         }
 
-                        try 
+                        try
                         {
-                            communicationStream.Send(UnicodeEncoding.UTF8.GetBytes(input));
+                            await communicationStream.Send(UnicodeEncoding.UTF8.GetBytes(input));
 
                             Console.WriteLine("Message sent:" + input);
                         }
-                        catch(Exception ex) when(ex is ConnectionErrorException || ex is ConnectionNotExisting)
+                        catch (Exception ex) when (ex is ConnectionErrorException || ex is ConnectionNotExisting)
                         {
                             Console.WriteLine(ex.Message);
                             stateHandler.ChangeState(CommunicationState.DISCONNECTED);
                         }
                     };
                 });
+            reconnectTask = new Task(connectTheStream);
+
+            reconnectTask.Start();
+            reciveTestTask.Start();
+            sendingTestTask.Start();
         }
 
-        //Thread.Sleep(Timeout.Infinite) to put to sleep the task
-        //when we lose the connection..
+        //maybe creating an own class?
+        public async void connectTheStream()
+        {
+            while (endSignal == false) //maybe no need for that, we can maybe just abort the task, and no need here for that
+            { 
+                try
+                {
+                    await communicationStream.Connect();
+
+                    if (options.SecurityMode == SecurityMode.SECURE)
+                    {
+                        communicationStream.Stream = secureCommunication.SecureStream(communicationStream.Stream);
+                    }
+
+                    stateHandler.ChangeState(CommunicationState.CONNECTED);
+                    signaliseReconnect.WaitOne();
+                }
+                catch (Exception ex) when (ex is UnsuccessfullConnectionException || ex is ConnectionAlreadyExisting || ex is AuthenticationFailedException)
+                {
+                    Console.WriteLine(ex.Message);    //exceptions we expecting to happen sometimes in the communication
+                    stateHandler.ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+
+                    if (options.ReconnectInterval > 0)
+                    {
+                        Thread.Sleep(options.ReconnectInterval);
+                    }
+                    else
+                    {
+                        break; 
+                    }
+                }
+
+            } 
+        }
+
+        //when implementing the communicationHandler in fully it will be changed
+        private bool endSignal = false;
+        private Task reciveTestTask;
+        private Task sendingTestTask;
+        private AutoResetEvent signaliseReciveTask=new AutoResetEvent(false);
+        private AutoResetEvent signaliseSendingTask=new AutoResetEvent(false);
+
         private void connectionStateChanged()
         {
             Console.WriteLine("Changed state to " + stateHandler.State);
             if (stateHandler.State == CommunicationState.CONNECTED)
             {
-                if (timedExecutionHandler!=null)
-                {
-                    timedExecutionHandler.StopTimer();
+                signaliseReciveTask.Set();
+                signaliseSendingTask.Set();
+            }
+            else if (stateHandler.State == CommunicationState.DISCONNECTED)
+            {
+                signaliseReciveTask.Reset();
+                signaliseSendingTask.Reset();
+
+                if (options.ReconnectInterval > 0) //if we got disconnected -> error while using the connection
+                {                                  //or we manually disconnected then we want to reconnect
+                    signaliseReconnect.Set();
                 }
-
-                reciveTestTask.Start();
-                sendingTestTask.Start();
-
-                _SemaphoreStopTheReciveTask.Release();
-                _SemaphoreStopTheSendingTask.Release();
+                communicationStream.Close(); //to be sure we closed everything properly
             }
             else
             {
-                if (timedExecutionHandler!=null)
-                {
-                    timedExecutionHandler.StartTimer();
-                }
+                signaliseReciveTask.Reset();
+                signaliseSendingTask.Reset();
             }
         }
     }
