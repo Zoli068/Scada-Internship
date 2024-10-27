@@ -2,6 +2,7 @@
 using Common.CommunicationExceptions;
 using Common.Exceptioons.SecureExceptions;
 using Common.ICommunication;
+using Common.TaskHandler;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,11 +24,10 @@ namespace Master.Communication
     /// </summary>
     public class CommunicationHandler
     {
-        private Task reconnectTask;
-        private AutoResetEvent signaliseReconnect= new AutoResetEvent(false);
+        private TaskHandler connectionTask; 
         public ICommunicationStream communicationStream;
         private ICommunicationHandlerOptions options;
-        private ISecureCommunication secureCommunication;
+        private IAsyncSecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler;
 
         public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions, ICommunicationOptions communicationOptions)
@@ -47,8 +47,20 @@ namespace Master.Communication
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
             }
 
+            if (options.ReconnectInterval > 0)
+            {
+                connectionTask = new TaskHandler(connectTheStream, false,options.ReconnectInterval);
+            }
+            else
+            {
+                connectionTask = new TaskHandler(connectTheStream, true, options.ReconnectInterval);
+            }
+
             taskInit();
+
+            connectionTask.TaskShouldContinue();
         }
+
         private void taskInit()
         {
             reciveTestTask = new Task(
@@ -112,49 +124,32 @@ namespace Master.Communication
                         }
                     };
                 });
-            reconnectTask = new Task(connectTheStream);
-
-            reconnectTask.Start();
             reciveTestTask.Start();
             sendingTestTask.Start();
         }
 
-        //maybe creating an own class?
-        public async void connectTheStream()
+        public async Task connectTheStream()
         {
-            while (endSignal == false) //maybe no need for that, we can maybe just abort the task, and no need here for that
-            { 
-                try
+            try
+            {
+                await communicationStream.Connect();
+
+                if (options.SecurityMode == SecurityMode.SECURE)
                 {
-                    await communicationStream.Connect();
-
-                    if (options.SecurityMode == SecurityMode.SECURE)
-                    {
-                        communicationStream.Stream = secureCommunication.SecureStream(communicationStream.Stream);
-                    }
-
-                    stateHandler.ChangeState(CommunicationState.CONNECTED);
-                    signaliseReconnect.WaitOne();
-                }
-                catch (Exception ex) when (ex is UnsuccessfullConnectionException || ex is ConnectionAlreadyExisting || ex is AuthenticationFailedException)
-                {
-                    Console.WriteLine(ex.Message);    //exceptions we expecting to happen sometimes in the communication
-                    stateHandler.ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
-
-                    if (options.ReconnectInterval > 0)
-                    {
-                        Thread.Sleep(options.ReconnectInterval);
-                    }
-                    else
-                    {
-                        break; 
-                    }
+                    communicationStream.Stream = await secureCommunication.SecureStream(communicationStream.Stream);
                 }
 
-            } 
+                stateHandler.ChangeState(CommunicationState.CONNECTED);
+            }
+            catch (Exception ex) when (ex is UnsuccessfullConnectionException || ex is ConnectionAlreadyExisting || ex is AuthenticationFailedException)
+            {
+                Console.WriteLine(ex.Message);  
+                stateHandler.ChangeState(CommunicationState.UNSUCCESSFULL_CONNECTION);
+            }
         }
 
         //when implementing the communicationHandler in fully it will be changed
+        //also will be implemented with a TaskHandler.
         private bool endSignal = false;
         private Task reciveTestTask;
         private Task sendingTestTask;
@@ -166,6 +161,7 @@ namespace Master.Communication
             Console.WriteLine("Changed state to " + stateHandler.State);
             if (stateHandler.State == CommunicationState.CONNECTED)
             {
+                connectionTask.TaskShouldWait();
                 signaliseReciveTask.Set();
                 signaliseSendingTask.Set();
             }
@@ -176,12 +172,14 @@ namespace Master.Communication
 
                 if (options.ReconnectInterval > 0) //if we got disconnected -> error while using the connection
                 {                                  //or we manually disconnected then we want to reconnect
-                    signaliseReconnect.Set();
+                    connectionTask.TaskShouldContinue();
                 }
                 communicationStream.Close(); //to be sure we closed everything properly
             }
             else
             {
+                communicationStream.Close(); //to be sure we closed everything 
+                connectionTask.TaskShouldWait();
                 signaliseReciveTask.Reset();
                 signaliseSendingTask.Reset();
             }

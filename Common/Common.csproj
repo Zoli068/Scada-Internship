@@ -54,8 +54,8 @@
     <Compile Include="Enums.cs" />
     <Compile Include="StateHandler\IStateHandler.cs" />
     <Compile Include="StateHandler\IStateUpdater.cs" />
-    <Compile Include="ICommunication\ISecureCommunication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TaskHandler\TaskHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

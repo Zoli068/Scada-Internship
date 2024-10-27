@@ -47,7 +47,6 @@
   <ItemGroup>
     <Compile Include="Communication\CommunicationHandler\Options\CommunicationHandlerOptions.cs" />
     <Compile Include="Communication\CommunicationHandler\Options\ICommunicationHandlerOptions.cs" />
-    <Compile Include="Utilities\TimedExecutionHandler.cs" />
     <Compile Include="Communication\CommunicationStream\SecureCommunication.cs" />
     <Compile Include="Communication\CommunicationHandler\CommunicationHandler.cs" />
     <Compile Include="Communication\CommunicationStream\ICommunicationStream.cs" />
@@ -67,6 +66,9 @@
       <Project>{903C8049-239F-429B-8F2F-F1CD6D41F45D}</Project>
       <Name>Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utilities\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

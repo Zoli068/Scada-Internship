@@ -137,6 +137,10 @@ namespace Slave.Communication
             {
                 Array.Copy(recvData, data, readedBytes);
             }
+            else
+            {
+                throw new ConnectionNotExisting();
+            }
 
             return data;
         }

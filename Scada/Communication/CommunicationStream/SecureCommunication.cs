@@ -9,6 +9,7 @@ using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Master.Communication
@@ -17,7 +18,7 @@ namespace Master.Communication
     /// <summary>
     /// SecureCommunication provides possibility to secure a <see cref="Stream"/> with TLS1.2 with x509 authentication
     /// </summary>
-    public class SecureCommunication:ISecureCommunication
+    public class SecureCommunication:IAsyncSecureCommunication
     {
         /// <summary>
         /// Client Certificate
@@ -29,7 +30,7 @@ namespace Master.Communication
         /// </summary>
         /// <param name="stream"></param>
         /// <returns><see cref="SslStream"/> stream</returns>
-        public Stream SecureStream(Stream stream) 
+        public async Task<Stream> SecureStream(Stream stream) 
         {
             SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
 
@@ -40,7 +41,19 @@ namespace Master.Communication
 
             try
             {
-                sslStream.AuthenticateAsClient("localhost", new X509CertificateCollection {certificate}, SslProtocols.Tls12, false);
+                Task authTask = sslStream.AuthenticateAsClientAsync("localhost", new X509CertificateCollection { certificate }, SslProtocols.Tls12, false);
+
+                using(CancellationTokenSource cts=new CancellationTokenSource(TimeSpan.FromSeconds(3)))
+                {
+                    if(await Task.WhenAny(authTask,Task.Delay(Timeout.Infinite,cts.Token))==authTask) 
+                    {
+                        await authTask;
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
             }
             catch (Exception)
             {

@@ -2,6 +2,7 @@
 using Common.CommunicationExceptions;
 using Common.Exceptioons.SecureExceptions;
 using Common.ICommunication;
+using Common.TaskHandler;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,13 +20,11 @@ namespace Slave.Communication
     public class CommunicationHandler
     {
         public ICommunicationStream communicationStream;
-        private IStateHandler<CommunicationState> stateHandler;
         private ICommunicationHandlerOptions options;
         private IAsyncSecureCommunication secureCommunication;
-
-        private Task connectionAcceptingTask;
-        private AutoResetEvent signaliseAccepting = new AutoResetEvent(false);
-
+        private IStateHandler<CommunicationState> stateHandler;
+        private TaskHandler acceptingConnectionTask;
+        
         public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions,ICommunicationOptions communicationOptions)
         {
             options= communicationHandlerOptions;
@@ -45,15 +44,15 @@ namespace Slave.Communication
 
             taskInit();
 
-            connectionAcceptingTask.Start();
+            acceptingConnectionTask = new TaskHandler(startAcceptingConnections, false, 0);
+            acceptingConnectionTask.TaskShouldContinue();
+
             reciveTask.Start();
             sendingTask.Start();
         }
         
         public void taskInit()
-        {
-            connectionAcceptingTask = new Task(startAcceptingConnections);
-        
+        {        
             reciveTask= new Task(
                 async () =>
                 {
@@ -123,34 +122,25 @@ namespace Slave.Communication
         private AutoResetEvent signaliseReciving = new AutoResetEvent(false);
         private AutoResetEvent signaliseSending = new AutoResetEvent(false);
 
-        private async void startAcceptingConnections()
+        private async Task startAcceptingConnections()
         {
-            while (endSignal == false)
+            try
             {
-                if (stateHandler.State == CommunicationState.CONNECTED)
+                await communicationStream.Accept();
+
+                if (options.SecurityMode == SecurityMode.SECURE)
                 {
-                    signaliseAccepting.WaitOne();
+                    communicationStream.Stream = await secureCommunication.SecureStream(communicationStream.Stream);
                 }
-
-                try
-                {
-                    await communicationStream.Accept();
-
-                    if (options.SecurityMode == SecurityMode.SECURE)
-                    {
-                        communicationStream.Stream = await secureCommunication.SecureStream(communicationStream.Stream);
-                    }
                 
-                    stateHandler.ChangeState(CommunicationState.CONNECTED);
-                }
-                catch(Exception ex) when (ex is UnsuccessfullConnectionException || ex is AuthenticationFailedException)
-                {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine("waiting for a connection");
-                    communicationStream.Close();
-                }
-
+                stateHandler.ChangeState(CommunicationState.CONNECTED);
             }
+            catch(Exception ex) when (ex is UnsuccessfullConnectionException || ex is AuthenticationFailedException)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("waiting for a connection");
+                communicationStream.Close();
+            }    
         }
 
         public void connectionStateChanged() {
@@ -159,18 +149,25 @@ namespace Slave.Communication
             
             if(stateHandler.State== CommunicationState.CONNECTED)
             {
+                acceptingConnectionTask.TaskShouldWait();
                 signaliseSending.Set();
                 signaliseReciving.Set();
             }
             else if(stateHandler.State==CommunicationState.DISCONNECTED)
             {
+                acceptingConnectionTask.TaskShouldContinue();
+
                 signaliseReciving.Reset(); //this most important when we sending something bcs, we waiting for an input
                 signaliseSending.Reset();//then we connected already for another client but already disconnected,
                                          //then a not used signal will be on the signaliseReciving,and have to be reseted.
 
                 communicationStream.Close(); // if we want to drop the old connection when new
                                              // one come in that little modification have to do it
-                signaliseAccepting.Set();
+                
+            }
+            else
+            {
+                acceptingConnectionTask.TaskShouldContinue();
             }
         }
     }
