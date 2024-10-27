@@ -51,7 +51,7 @@ namespace Slave.Communication
         {
             //TODO in the future, if we wan't to drop the old communication when we got a new one, the we have to change
             //the definitions 
-            if(tcpClient==null || tcpClient.Connected)
+            if(tcpClient==null || !tcpClient.Connected)
             {
                 try
                 {

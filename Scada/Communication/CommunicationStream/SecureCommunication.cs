@@ -72,7 +72,7 @@ namespace Master.Communication
         {
             try
             {
-                string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrint"];
+                string thumbprint = ConfigurationManager.AppSettings["CA_ThumbPrintMaster"];
                 
                 using (var store = new X509Store(StoreName.CertificateAuthority, StoreLocation.LocalMachine))
                 {

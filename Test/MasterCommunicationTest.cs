@@ -23,22 +23,23 @@ namespace Test
         private Master.Communication.TcpCommunicationOptions options;
         private Master.Communication.TcpCommunicationStream tcpCommunicationStream;
         private Slave.Communication.TcpCommunicationStream tcpServerCommunicationStream;
-
+        private CancellationTokenSource cancellationTokenSource;
+        
         [SetUp]
         public async void Setup()
         {
-            //Setting up our server
+            cancellationTokenSource = new CancellationTokenSource();
 
-            tcpServerCommunicationStream = new Slave.Communication.TcpCommunicationStream(new Slave.Communication.TcpCommunicationOptions(IPAddress.Loopback,8000,CommunicationType.TCP, 8192));
-            Task serverTask = Task.Run(async () => { 
-                while (true) 
+            tcpServerCommunicationStream = new Slave.Communication.TcpCommunicationStream(new Slave.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 8192));
+            Task serverTask = Task.Run(async () => {
+                while (true)
                 {
                     await tcpServerCommunicationStream.Accept();
-                } 
+                }
             });
         }
 
-        [Test]
+        [Test, Timeout(10000)]
         public async Task Connect_ValidParam_SuccessfullConnection()
         {
             //Arrange
@@ -53,7 +54,7 @@ namespace Test
             ClassicAssert.IsTrue(tcpCommunicationStream.Stream.CanRead);
         }
 
-        [Test]
+        [Test, Timeout(10000)]
         public void Connect_BadParam_ThrowsUnsuccessfullConnectionException()
         {
             //Arrange
@@ -65,7 +66,7 @@ namespace Test
             Assert.ThrowsAsync<UnsuccessfullConnectionException>(async () => await tcpCommunicationStream.Connect());
         }
 
-        [Test]
+        [Test, Timeout(10000)]
         public async Task Connect_AlreadyConnected_ThrowsConnectionAlreadyExisting()
         {
             // Arrange
@@ -77,32 +78,37 @@ namespace Test
             Assert.ThrowsAsync<ConnectionAlreadyExisting>(async () => await tcpCommunicationStream.Connect());
         }
 
-        [Test]
-        public  void Receive_WithoutConnection_ThrowsConnectionNotExisting()
-        {
-            //Arrange
-            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
-            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
-           
-            //Act
-            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
-        }
-
-
-        [Test]
-        public async void Receive_WithConnection_ReciveData()
+        [Test, Timeout(10000)]
+        public async void Receive_WithoutConnection_ThrowsConnectionNotExisting()
         {
             //Arrange
             options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
             tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
 
             //Act
-            await tcpServerCommunicationStream.Send(new byte[] {1,2,3});
+            await tcpServerCommunicationStream.Send(new byte[] { 1, 2, 3 });
             Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
         }
 
-        [Test]
-        public  void Send_WithoutConnection_ThrowsConnectionNotExisting()
+
+        [Test, Timeout(10000)]
+        public async void Receive_WithConnection_RecivesData()
+        {
+            //Arrange
+            byte[] sendingdata = new byte[] { 1, 2, 3 };
+            byte[] receiveingdata = null;
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+            await tcpCommunicationStream.Connect();
+            //Act
+
+            await tcpServerCommunicationStream.Send(sendingdata);
+            Assert.DoesNotThrow(async () => receiveingdata= await tcpCommunicationStream.Receive());
+            CollectionAssert.AreEqual(sendingdata, receiveingdata);
+        }
+
+        [Test, Timeout(10000)]
+        public void Send_WithoutConnection_ThrowsConnectionNotExisting()
         {
             //Arrange
             options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
@@ -112,7 +118,7 @@ namespace Test
             Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Send(new byte[10]));
         }
 
-        [Test]
+        [Test, Timeout(10000)]
         public async Task Close_ClosesClientAndStream()
         {
             //Arrange
@@ -125,11 +131,11 @@ namespace Test
 
             // Assert
             ClassicAssert.IsNull(tcpCommunicationStream.Stream);
-            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Send(new byte[] {1,2,3}));
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Send(new byte[] { 1, 2, 3 }));
             Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
         }
 
-        [Test]
+        [Test, Timeout(10000)]
         public async Task Send_WithConnectedClient_SendsData()
         {
             // Arrange
@@ -147,8 +153,11 @@ namespace Test
         {
             tcpCommunicationStream.Close();
             tcpCommunicationStream = null;
-            options = null;  
+            options = null;
+            cancellationTokenSource.Cancel();
+            tcpServerCommunicationStream.Close();
         }
+
     }
 }
 

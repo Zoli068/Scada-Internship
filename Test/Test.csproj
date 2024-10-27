@@ -79,7 +79,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MasterCommunicationTest.cs" />
+    <Compile Include="SecureCommunicationTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlaveCommunicationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
