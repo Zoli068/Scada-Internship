@@ -1,0 +1,154 @@
+﻿using Master.Communication;
+using Slave;
+using Common;
+using Moq;
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using NUnit.Framework.Legacy;
+using Common.CommunicationExceptions;
+using Slave.Communication;
+using System.Net;
+using System.Threading;
+using System.Net.Sockets;
+
+namespace Test
+{
+    [TestFixture]
+    public class MasterCommunicationTest
+    {
+        private Master.Communication.TcpCommunicationOptions options;
+        private Master.Communication.TcpCommunicationStream tcpCommunicationStream;
+        private Slave.Communication.TcpCommunicationStream tcpServerCommunicationStream;
+
+        [SetUp]
+        public async void Setup()
+        {
+            //Setting up our server
+
+            tcpServerCommunicationStream = new Slave.Communication.TcpCommunicationStream(new Slave.Communication.TcpCommunicationOptions(IPAddress.Loopback,8000,CommunicationType.TCP, 8192));
+            Task serverTask = Task.Run(async () => { 
+                while (true) 
+                {
+                    await tcpServerCommunicationStream.Accept();
+                } 
+            });
+        }
+
+        [Test]
+        public async Task Connect_ValidParam_SuccessfullConnection()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 5000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+
+            // Act
+            await tcpCommunicationStream.Connect();
+
+            // Assert
+            ClassicAssert.IsNotNull(tcpCommunicationStream.Stream);
+            ClassicAssert.IsTrue(tcpCommunicationStream.Stream.CanRead);
+        }
+
+        [Test]
+        public void Connect_BadParam_ThrowsUnsuccessfullConnectionException()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8001, CommunicationType.TCP, 5000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+
+            // Act & Assert
+
+            Assert.ThrowsAsync<UnsuccessfullConnectionException>(async () => await tcpCommunicationStream.Connect());
+        }
+
+        [Test]
+        public async Task Connect_AlreadyConnected_ThrowsConnectionAlreadyExisting()
+        {
+            // Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 5000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+            await tcpCommunicationStream.Connect();
+
+            // Act & Assert
+            Assert.ThrowsAsync<ConnectionAlreadyExisting>(async () => await tcpCommunicationStream.Connect());
+        }
+
+        [Test]
+        public  void Receive_WithoutConnection_ThrowsConnectionNotExisting()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+           
+            //Act
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
+        }
+
+
+        [Test]
+        public async void Receive_WithConnection_ReciveData()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+
+            //Act
+            await tcpServerCommunicationStream.Send(new byte[] {1,2,3});
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
+        }
+
+        [Test]
+        public  void Send_WithoutConnection_ThrowsConnectionNotExisting()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 2000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+
+            //Act
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Send(new byte[10]));
+        }
+
+        [Test]
+        public async Task Close_ClosesClientAndStream()
+        {
+            //Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 5000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+
+            // Act
+            await tcpCommunicationStream.Connect();
+            tcpCommunicationStream.Close();
+
+            // Assert
+            ClassicAssert.IsNull(tcpCommunicationStream.Stream);
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Send(new byte[] {1,2,3}));
+            Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpCommunicationStream.Receive());
+        }
+
+        [Test]
+        public async Task Send_WithConnectedClient_SendsData()
+        {
+            // Arrange
+            options = new Master.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 5000, 8192);
+            tcpCommunicationStream = new Master.Communication.TcpCommunicationStream(options);
+            await tcpCommunicationStream.Connect();
+            var testData = new byte[] { 1, 2, 3, 4 };
+
+            // Act & Assert (Ensures no exception is thrown)
+            Assert.DoesNotThrowAsync(async () => await tcpCommunicationStream.Send(testData));
+        }
+
+        [TearDown]
+        public void Cleanup()
+        {
+            tcpCommunicationStream.Close();
+            tcpCommunicationStream = null;
+            options = null;  
+        }
+    }
+}
+
