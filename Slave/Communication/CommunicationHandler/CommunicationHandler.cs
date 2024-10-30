@@ -70,6 +70,7 @@ namespace Slave.Communication
                             recivedData= await communicationStream.Receive();
                             Console.WriteLine("Master sent:");
                             Console.WriteLine(UnicodeEncoding.UTF8.GetString(recivedData));
+
                         }
                         catch(Exception ex) when (ex is ConnectionErrorException || ex is ConnectionNotExisting)
                         {

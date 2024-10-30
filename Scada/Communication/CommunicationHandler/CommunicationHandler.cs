@@ -24,8 +24,8 @@ namespace Master.Communication
     /// </summary>
     public class CommunicationHandler
     {
-        private TaskHandler connectionTask; 
-        public ICommunicationStream communicationStream;
+        private TaskHandler connectionTask;
+        private ICommunicationStream communicationStream;
         private ICommunicationHandlerOptions options;
         private IAsyncSecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler;
@@ -56,12 +56,12 @@ namespace Master.Communication
                 connectionTask = new TaskHandler(connectTheStream, true, options.ReconnectInterval);
             }
 
-            taskInit();
+            TaskInit();
 
             connectionTask.TaskShouldContinue();
         }
 
-        private void taskInit()
+        private void TaskInit()
         {
             reciveTestTask = new Task(
                 async () =>
@@ -179,7 +179,7 @@ namespace Master.Communication
             else
             {
                 communicationStream.Close(); //to be sure we closed everything 
-                connectionTask.TaskShouldWait();
+                connectionTask.TaskShouldContinue();
                 signaliseReciveTask.Reset();
                 signaliseSendingTask.Reset();
             }

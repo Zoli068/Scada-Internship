@@ -33,7 +33,6 @@ namespace Slave.Communication
         public async Task<Stream> SecureStream(Stream stream)
         {
             SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateClientCertificate), null);
-            Task completedTask;
 
             if(certificate == null)
             {
@@ -57,6 +56,11 @@ namespace Slave.Communication
                 }
             }
             catch (Exception)
+            {
+                throw new AuthenticationFailedException("Authentication can't be done, check out the certificate");
+            }
+
+            if(!sslStream.IsMutuallyAuthenticated)
             {
                 throw new AuthenticationFailedException("Authentication can't be done, check out the certificate");
             }
