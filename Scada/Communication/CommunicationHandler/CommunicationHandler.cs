@@ -2,6 +2,7 @@
 using Common.CommunicationExceptions;
 using Common.Exceptioons.SecureExceptions;
 using Common.ICommunication;
+using Common.Message;
 using Common.TaskHandler;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace Master.Communication
         private ICommunicationHandlerOptions options;
         private IAsyncSecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler;
+        private IMessageHandler messageHandler;
 
         public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions, ICommunicationOptions communicationOptions)
         {
@@ -45,6 +47,11 @@ namespace Master.Communication
             if (communicationOptions.CommunicationType == CommunicationType.TCP)
             {
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
+            }
+
+            if (options.MessageType == MessageType.TCPModbus)
+            {
+                messageHandler = new TCPModbusMessageHandler();
             }
 
             if (options.ReconnectInterval > 0)

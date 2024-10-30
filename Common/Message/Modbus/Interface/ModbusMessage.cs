@@ -20,7 +20,6 @@ namespace Common.Message.Modbus
             this.messageHeader = messageHeader;
         }
 
-        [Order(1)]
         public IMessageData MessageData
         {
             get
@@ -33,7 +32,6 @@ namespace Common.Message.Modbus
             }
         }
 
-        [Order(2)]
         public IMessageHeader MessageHeader
         {
             get

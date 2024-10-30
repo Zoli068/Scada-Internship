@@ -1,5 +1,4 @@
-﻿using Common.Message.Modbus.Request;
-using Common.Utilities;
+﻿using Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

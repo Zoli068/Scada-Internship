@@ -1,6 +1,7 @@
 ﻿using Common.Message;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -13,8 +14,7 @@ namespace Common.Utilities
 {
     public class SerializationHandler
     {
-        public SerializationHandler() {
-        }
+        public SerializationHandler() {}
 
         public byte[] SerializeToBytes(object objToSerialize)
         {
@@ -23,23 +23,37 @@ namespace Common.Utilities
 
             foreach ((Type type,object obj) in attributeValueList)
             {
-                if (type == typeof(string))
+                if (!type.IsArray)
                 {
-                    foreach(Char c in ((string)obj).ToCharArray())
+                    if (type == typeof(string))
                     {
-                        byteList.Add(Convert.ToByte(c));  
+                        foreach(Char c in ((string)obj).ToCharArray())
+                        {
+                            byteList.Add(Convert.ToByte(c));  
+                        }
+                    }
+
+                    byteList.AddRange(ConvertByteOrder(type, GetBytesWithUnboxing(obj)));
+                }
+                else
+                {
+                    Array array = (Array)obj;
+
+                    for(int i=0;i<array.Length; i++)
+                    {
+                        byteList.AddRange(ConvertByteOrder(type.GetElementType(), GetBytesWithUnboxing(array.GetValue(i))));
                     }
                 }
-                byteList.AddRange(ConvertByteOrder(type, GetBytesWithUnboxing(obj)));
             }
 
             return byteList.ToArray();
         }
 
-        public object DeserializeToBytes(byte[] data,Type type) 
+        public (object,int) DeserializeFromBytes(byte[] data,int offsetParam,Type type) 
         { 
             object obj = Activator.CreateInstance(type);
-            int offset = 0;
+            int offset = offsetParam;
+            long lastValue = 0;
 
             foreach( PropertyInfo propertyInfo in GetAttributes(type))
             {
@@ -50,17 +64,67 @@ namespace Common.Utilities
                     propType = Enum.GetUnderlyingType(propertyInfo.PropertyType);
                 }
 
-                (object value, int size) = ConvertBytesToType(data,offset, propType);
+                if (propType.IsArray)
+                {
+                    propType = propertyInfo.PropertyType.GetElementType();
 
-                propertyInfo.SetValue(obj, value);
+                    Array array = Array.CreateInstance(propType, lastValue);
+                    
+                    for(int i=0;i<array.Length; i++)
+                    {
+                        (object value,int size)=ConvertBytesToType(data, offset, propType);
+                        offset += size;
+                        array.SetValue(value, i);   
+                    }
 
-                offset += size;
+                    propertyInfo.SetValue(obj, array);
+                }
+                else
+                {
+                    (object value, int size) = ConvertBytesToType(data,offset, propType);
+
+                    propertyInfo.SetValue(obj, value);
+
+                    lastValue = Convert.ToInt64(value);
+
+                    offset += size;
+                }
             }
 
-            return obj;
+            return (obj,offset);
         }
 
-        private List<(Type,object)> GetAttributes(object obj)
+        public T[] ExtractArray<T>(byte[] data) //check out for buggs
+        {
+            Type type = typeof(T);
+            List<T> arrayList = new List<T>();
+
+            for(int i = 0; i < data.Length;)
+            {
+                (object obj, int size) = ConvertBytesToType(data, i, type);
+                arrayList.Add((T)obj);
+                i += size;
+            }
+
+            return arrayList.ToArray();
+        } 
+
+        public byte[] ExtractBytes<T>(T[] array)
+        {
+            byte[] byteArray = new byte[0];
+            byte[] extractedBytes = null;
+
+            for(int i=0;i < array.Length; i++)
+            {
+                extractedBytes=GetBytesWithUnboxing(array[i]);
+                extractedBytes=ConvertByteOrder(typeof(T), extractedBytes);
+                byteArray=byteArray.Concat(extractedBytes).ToArray();
+            }
+
+            return byteArray;
+        }
+
+        public List<(Type,object)> GetAttributes(object obj)
         {
             List<(Type, object)> typeValueList = new List<(Type, object)>();
 
@@ -69,7 +133,7 @@ namespace Common.Utilities
             foreach (PropertyInfo property in type.GetProperties().OrderBy(p => p.GetCustomAttribute<OrderAttribute>()?.Order ?? int.MaxValue).ToList())
             {
                 Type propertyType = property.PropertyType;
-                var value = property.GetValue(obj,null);
+                var value = property.GetValue(obj);
 
                 if (propertyType.IsEnum)
                 {
@@ -79,7 +143,10 @@ namespace Common.Utilities
 
                 if (!propertyType.IsValueType)
                 {
-                    continue;
+                    if (!propertyType.IsArray)
+                    {
+                        continue;
+                    }
                 }
 
                 typeValueList.Add((propertyType, value));
@@ -88,7 +155,7 @@ namespace Common.Utilities
             return typeValueList;
         }
 
-        private List<PropertyInfo> GetAttributes(Type type)
+        public List<PropertyInfo> GetAttributes(Type type)
         {
             List<PropertyInfo> typeValueList = new List<PropertyInfo>();
 
@@ -98,7 +165,10 @@ namespace Common.Utilities
 
                 if (!property.PropertyType.IsValueType)
                 {
-                    continue;
+                    if (!propertyType.IsArray)
+                    {
+                        continue;
+                    }
                 }
 
                 typeValueList.Add(property);
@@ -107,7 +177,7 @@ namespace Common.Utilities
             return typeValueList;
         }
 
-        private byte[] ConvertByteOrder(Type type, byte[] data)
+        public byte[] ConvertByteOrder(Type type, byte[] data)
         {
             if (BitConverter.IsLittleEndian)
             {
@@ -176,7 +246,7 @@ namespace Common.Utilities
             }
         }
 
-        private byte[] GetBytesWithUnboxing(dynamic value)
+        public byte[] GetBytesWithUnboxing(dynamic value)
         {
             if (value is int) return BitConverter.GetBytes((int)value);
             if (value is short) return BitConverter.GetBytes((short)value);
@@ -193,7 +263,7 @@ namespace Common.Utilities
             return null; //exception
         }
 
-        private (object value,int size) ConvertBytesToType(byte[] data, int offset, Type type)
+        public (object value,int size) ConvertBytesToType(byte[] data, int offset, Type type)
         {
             if (type == typeof(int))
             {

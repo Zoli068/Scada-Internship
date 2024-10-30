@@ -21,5 +21,7 @@ namespace Master.Communication
         /// Indicates the security of the communication
         /// </summary>
         SecurityMode SecurityMode { get; }
+
+        MessageType MessageType { get; }
     }
 }

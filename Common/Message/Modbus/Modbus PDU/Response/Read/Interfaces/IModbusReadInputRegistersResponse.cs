@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Message.Modbus.Request
+namespace Common.Message
 {
-    public interface IModbusResponseData:IModbusData
+    public interface IModbusReadInputRegistersResponse : IModbusData
     {
         byte Count { get; set; }
 
-        byte [] RegisterValues { get; set; }
+        short[] InputRegisters { get; set; }
     }
 }

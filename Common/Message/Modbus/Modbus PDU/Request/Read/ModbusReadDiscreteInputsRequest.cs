@@ -1,23 +1,24 @@
 ﻿using Common.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.PerformanceData;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class ModbusRequestData : IModbusRequestData
+    public class ModbusReadDiscreteInputsRequest : IModbusReadDiscreteInputsRequest
     {
         private short startingAddress;
-        private short quantity;
+        private short quantityOfInputs;
 
-        public ModbusRequestData() { }
+        public ModbusReadDiscreteInputsRequest() { }
 
-        public ModbusRequestData(short startingAddress, short quantity)
+        public ModbusReadDiscreteInputsRequest(short startingAddress, short quantityOfInputs)
         {
-            this.startingAddress= startingAddress;
-            this.quantity= quantity;
+            this.startingAddress = startingAddress;
+            this.quantityOfInputs = quantityOfInputs;
         }
 
         [Order(1)]
@@ -34,15 +35,15 @@ namespace Common.Message
         }
 
         [Order(2)]
-        public short Quantity
+        public short QuantityOfInputs
         {
             get
             {
-                return quantity;
+                return quantityOfInputs;
             }
             set
             {
-                quantity = value;
+                quantityOfInputs = value;
             }
         }
     }

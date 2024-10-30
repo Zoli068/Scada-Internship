@@ -1,5 +1,4 @@
-﻿using Common.Message.Modbus.Request;
-using Common.Utilities;
+﻿using Common.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class ModbusResponseData : IModbusResponseData
+    public class ModbusReadInputRegistersResponse : IModbusReadInputRegistersResponse
     {
         private byte count;
-        private byte[] registerValues;
+        private short[] inputRegisers;
 
-        public ModbusResponseData() { }
+        public ModbusReadInputRegistersResponse() { }
 
-        public ModbusResponseData(byte count, byte[] registerValues)
+        public ModbusReadInputRegistersResponse(byte count, short[] inputRegisers)
         {
             this.count = count;
-            this.registerValues = registerValues;
+            this.inputRegisers = inputRegisers;
         }
 
         [Order(1)]
@@ -35,15 +34,15 @@ namespace Common.Message
         }
 
         [Order(2)]
-        public byte[] RegisterValues
+        public short[] InputRegisters
         {
             get
             {
-                return registerValues;
+                return inputRegisers;
             }
             set
             {
-                registerValues = value;
+                inputRegisers = value;
             }
         }
     }

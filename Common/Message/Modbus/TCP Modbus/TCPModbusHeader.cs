@@ -11,7 +11,7 @@ namespace Common.Message
     public class TCPModbusHeader : ITCPModbusHeader 
     {
         private short transactionID;
-        private short protocolID;
+        private short protocolID=0x0000;
         private short length;
         private byte unitID;
 
