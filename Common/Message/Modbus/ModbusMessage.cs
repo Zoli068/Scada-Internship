@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Common.Message.Modbus
 {
+    /// <summary>
+    /// The implementation of a Modbus Message
+    /// </summary>
     public class ModbusMessage : IMessage
     {
         private IMessageData messageData;

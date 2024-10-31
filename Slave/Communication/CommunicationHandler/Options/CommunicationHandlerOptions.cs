@@ -13,10 +13,12 @@ namespace Slave.Communication
     public class CommunicationHandlerOptions : ICommunicationHandlerOptions
     {
         private readonly SecurityMode securityMode;
+        private readonly MessageType messageType;
 
-        public CommunicationHandlerOptions(SecurityMode securityMode)
+        public CommunicationHandlerOptions(SecurityMode securityMode, MessageType messageType)
         {
             this.securityMode = securityMode;
+            this.messageType = messageType;
         }
 
         public SecurityMode SecurityMode
@@ -24,6 +26,14 @@ namespace Slave.Communication
             get
             {
                 return securityMode;
+            }
+        }
+
+        public MessageType MessageType
+        {
+            get
+            {
+                return messageType;
             }
         }
     }

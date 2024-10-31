@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public interface IModbusReadInputRegistersRequest
+    public interface IModbusReadInputRegistersRequest : IModbusData
     {
         short StartingAddress { get; set; }
         short QuantityOfInputRegisters { get; set; }

@@ -43,25 +43,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\ICommand.cs" />
-    <Compile Include="Communication\Exceptioons\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
-    <Compile Include="Communication\Exceptioons\CommunicationExceptions\ConnectionErrorException.cs" />
-    <Compile Include="Communication\Exceptioons\CommunicationExceptions\ConnectionNotExisting.cs" />
-    <Compile Include="Communication\Exceptioons\CommunicationExceptions\ListeningNotSuccessedException.cs" />
-    <Compile Include="Communication\Exceptioons\CommunicationExceptions\UnsuccessfullConnectionException.cs" />
-    <Compile Include="Communication\Exceptioons\SecureExceptions\AuthenticationFailedException.cs" />
+    <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
+    <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionErrorException.cs" />
+    <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionNotExisting.cs" />
+    <Compile Include="Communication\Exceptions\CommunicationExceptions\ListeningNotSuccessedException.cs" />
+    <Compile Include="Communication\Exceptions\CommunicationExceptions\UnsuccessfullConnectionException.cs" />
+    <Compile Include="Communication\Exceptions\SecureExceptions\AuthenticationFailedException.cs" />
     <Compile Include="Communication\IAsyncSecureCommunication.cs" />
+    <Compile Include="Message\Exceptions\ByteSizeDoesntMatchTheLengthException.cs" />
+    <Compile Include="Message\Exceptions\MissingBytesFromMessageException.cs" />
+    <Compile Include="Message\Exceptions\NotSupportedMessageException.cs" />
     <Compile Include="Message\Interface\IMessage.cs" />
     <Compile Include="Message\Interface\IMessageData.cs" />
     <Compile Include="Message\MessageHandler\IMessageHandler.cs" />
     <Compile Include="Message\Interface\IMessageHeader.cs" />
-    <Compile Include="Message\Modbus\Interface\IModbusMessage.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Error\IModbusError.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Error\ModbusError.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\IModbusData.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\IModbusPDU.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\ModbusPDU.cs" />
     <Compile Include="Message\Modbus\ModbusEnums.cs" />
-    <Compile Include="Message\Modbus\Interface\ModbusMessage.cs" />
+    <Compile Include="Message\Modbus\ModbusMessage.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Request\Read\Interfaces\IModbusReadCoilsRequest.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Request\Read\Interfaces\IModbusReadDiscreteInputsRequest.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Request\Read\Interfaces\IModbusReadHoldingRegistersRequest.cs" />
@@ -104,9 +106,14 @@
     <Compile Include="StateHandler\IStateUpdater.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskHandler\TaskHandler.cs" />
+    <Compile Include="Utilities\Exceptions\NotEnoughBytesException.cs" />
+    <Compile Include="Utilities\Exceptions\SerializationException.cs" />
+    <Compile Include="Utilities\Exceptions\UnsupportedTypeException.cs" />
     <Compile Include="Utilities\OrderAttribute.cs" />
     <Compile Include="Utilities\SerializationHandler.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Message\Modbus\Interface\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

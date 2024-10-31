@@ -7,14 +7,20 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Describes the methods of a MessageHandler
+    /// </summary>
     public interface IMessageHandler
     {
-        Queue<byte[]> ByteMessagesQueue { get;}
-
-        AutoResetEvent MessageAvailableForSend { get; }
-
+        /// <summary>
+        /// Creates an instance of the message object from byte[]
+        /// </summary>
         void CreateMessageObject(byte[] data);
 
+
+        /// <summary>
+        /// Converts the IMessage object to a byte[]
+        /// </summary>
         void CreateByteArrayFromMessage(IMessage message);
     }
 }

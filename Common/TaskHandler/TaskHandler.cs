@@ -25,7 +25,7 @@ namespace Common.TaskHandler
         private AutoResetEvent stopEvent;
         private readonly Func<Task> taskFunction;
 
-        public TaskHandler(Func<Task> taskFunctionParam,bool executeOnceParam,int intervalParam)
+        public TaskHandler(Func<Task> taskFunctionParam,bool executeOnceParam,int intervalParam, CancellationTokenSource cancellationTokenSource)
         {
             taskShouldWait = true;
             executeOnce = executeOnceParam;
@@ -57,7 +57,7 @@ namespace Common.TaskHandler
 
                     Thread.Sleep(interval);
                 }
-                while (true && !executeOnce);
+                while (true && !executeOnce && !cancellationTokenSource.IsCancellationRequested);
 
                 task = null;
             });

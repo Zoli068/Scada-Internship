@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public interface IModbusWriteSingleRegisterRequest
+    public interface IModbusWriteSingleRegisterRequest : IModbusData
     {
         short RegisterAddress { get; set; }
         short RegisterValue { get; set; }

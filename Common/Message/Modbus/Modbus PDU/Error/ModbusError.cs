@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Contains all the attributes for a ModbusError
+    /// </summary>
     public class ModbusError : IModbusError
     {
         private byte errorCode;

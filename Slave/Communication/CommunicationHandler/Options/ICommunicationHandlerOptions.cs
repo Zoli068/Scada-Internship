@@ -16,5 +16,10 @@ namespace Slave.Communication
         /// Indicates the security of the communication
         /// </summary>
         SecurityMode SecurityMode { get; }
+
+        /// <summary>
+        /// Indicates the type of the message
+        /// </summary>
+        MessageType MessageType { get; }
     }
 }

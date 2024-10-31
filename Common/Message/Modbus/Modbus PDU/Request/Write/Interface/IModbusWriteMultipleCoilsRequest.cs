@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public interface IModbusWriteMultipleCoilsRequest
+    public interface IModbusWriteMultipleCoilsRequest : IModbusData
     {
         short StartingAddress { get; set; }
         short QuantityOfOutputs { get; set; }

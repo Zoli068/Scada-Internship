@@ -1,8 +1,11 @@
 ﻿using Common;
 using Common.Message;
+using Common.Message.Exceptions;
+using Common.Message.Modbus;
 using Common.Utilities;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,20 +16,18 @@ namespace Master.Communication
 {
     public class TCPModbusMessageHandler : IMessageHandler
     {
-        private Queue<byte[]> byteMessageQueue;
-        private AutoResetEvent messageAvailableForSend;
+        private BlockingCollection<byte[]> dataToSend;
         private SerializationHandler serializationHandler;
         private ModbusFunctionDictionary modbusFunctionDictionary;
 
         private int currentTransactionID=1;
         private int unitIdentifier = 2;
 
-        public TCPModbusMessageHandler()
+        public TCPModbusMessageHandler(bool requestHandler, BlockingCollection<byte[]> byteMessageQueue)
         {
-            byteMessageQueue= new Queue<byte[]>();
-            messageAvailableForSend=new AutoResetEvent(false);
-            serializationHandler= new SerializationHandler();
-            modbusFunctionDictionary=new ModbusFunctionDictionary();
+            this.dataToSend = byteMessageQueue;
+            serializationHandler = new SerializationHandler();
+            modbusFunctionDictionary=new ModbusFunctionDictionary(requestHandler);
         }
 
         public void CreateMessageObject(byte[] data)
@@ -34,66 +35,76 @@ namespace Master.Communication
             Type type = null;
             object temp = null;
             int readedBytes = 0;
+            ModbusMessage modbusMessage = new ModbusMessage();
 
-            (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(TCPModbusHeader));
-            TCPModbusHeader header = (TCPModbusHeader)temp;
-
-            if((data.Length - header.Length) < 0)
+            try
             {
-                //exception,we lost some bytes
-            }
+                (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(TCPModbusHeader));
+                modbusMessage.MessageHeader = (TCPModbusHeader)temp;
 
-            (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(ModbusPDU));
-            ModbusPDU modbusPDU = (ModbusPDU)temp;
-
-            //Error!
-            if (((byte)modbusPDU.FunctionCode & 0x80)!=0)
-            {
-                (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(ModbusError));
-                modbusPDU.Data = temp as IModbusData;
-            }
-            else
-            {       
-                //ErrorCheck inside the functionCode
-                if (modbusFunctionDictionary.ResponseTypeMap.TryGetValue(modbusPDU.FunctionCode, out type))
+                if ((data.Length - ((TCPModbusHeader)modbusMessage.MessageHeader).Length) < 7)
                 {
-                    (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, type);
-                    modbusPDU.Data= temp as IModbusData;
+                    throw new MissingBytesFromMessageException();
+                }
+                else if((data.Length - ((TCPModbusHeader)modbusMessage.MessageHeader).Length) > 7)
+                {
+                    throw new ByteSizeDoesntMatchTheLengthException();
+                }
+
+                (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(ModbusPDU));
+                modbusMessage.MessageData = (ModbusPDU)temp;
+
+                if (((byte)(modbusMessage.MessageData as ModbusPDU).FunctionCode & 0x80)!=0)
+                {
+                    (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, typeof(ModbusError));
+                    (modbusMessage.MessageData as ModbusPDU).Data = temp as IModbusData;
                 }
                 else
-                {
-                    //exception non supported functionCode
+                {       
+                    if (modbusFunctionDictionary.TypeMap.TryGetValue((modbusMessage.MessageData as ModbusPDU).FunctionCode, out type))
+                    {
+                        (temp, readedBytes) = serializationHandler.DeserializeFromBytes(data, readedBytes, type);
+                        (modbusMessage.MessageData as ModbusPDU).Data = temp as IModbusData;
+                    }
+                    else
+                    {
+                        throw new NotSupportedMessageException();
+                    }
                 }
-                
             }
-
-            //TO CONTINUE
-
-
-            //commandHandler call
-
-             modbusPDU.Data = temp as IModbusData;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                //commandHandler errorhandling
+            }
         }
 
         public void CreateByteArrayFromMessage(IMessage message)
         {
-            throw new NotImplementedException();
-        }
+            byte[] dataPart;
+            Type type= message.GetType();
+            List<byte> data = new List<byte>(260);
 
-        public Queue<byte[]> ByteMessagesQueue
-        {
-            get
+            try
             {
-                return byteMessageQueue;
-            }    
-        }
+                //TcpModbusHeader
+                dataPart = serializationHandler.SerializeToBytes(message.MessageHeader);
+                data.AddRange(dataPart);
 
-        public AutoResetEvent MessageAvailableForSend
-        {
-            get
-            {
-                return messageAvailableForSend;
+                //ModbusPDU,functioncode will be parsed here bcs modbusData will be not parsed here
+                dataPart=serializationHandler.SerializeToBytes(message.MessageData);
+                data.AddRange(dataPart);
+
+                //ModbusData
+                dataPart = serializationHandler.SerializeToBytes((message.MessageData as IModbusPDU).Data);
+                data.AddRange(dataPart);
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            dataToSend.Add(data.ToArray());   
         }
     }
 }

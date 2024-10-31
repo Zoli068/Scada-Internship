@@ -16,7 +16,7 @@ namespace Common.Message
 
         public ModbusWriteMultipleRegistersRequest() { }
 
-        public ModbusWriteMultipleRegistersRequest(short startingAddress, short quantityOfRegisters, short byteCount, short[] registerValue, short startingAddres)
+        public ModbusWriteMultipleRegistersRequest(short startingAddress, short quantityOfRegisters, short byteCount, short[] registerValue)
         {
             this.startingAddress = startingAddress;
             this.quantityOfRegisters = quantityOfRegisters;
