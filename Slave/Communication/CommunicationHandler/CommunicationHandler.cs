@@ -25,18 +25,19 @@ namespace Slave.Communication
         private TaskHandler sendingTask;
         private TaskHandler acceptingConnectionTask;
 
+        private Action<byte[]> raiseRecivedBytes;
         private byte[] currentlySendingBytes;
         private CancellationTokenSource cts = new CancellationTokenSource();
         public BlockingCollection<byte[]> dataToSend = new BlockingCollection<byte[]>();
 
-        private IMessageHandler messageHandler;
         private ICommunicationHandlerOptions options;
         private ICommunicationStream communicationStream;
         private IAsyncSecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler = new StateHandler<CommunicationState>();
         
-        public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions,ICommunicationOptions communicationOptions)
+        public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions,ICommunicationOptions communicationOptions, Action<byte[]> RaiseRecivedBytes)
         {
+            this.raiseRecivedBytes = RaiseRecivedBytes;
             options= communicationHandlerOptions;
 
             stateHandler.StateChanged += connectionStateChanged;
@@ -46,9 +47,6 @@ namespace Slave.Communication
             if (communicationOptions.CommunicationType == CommunicationType.TCP)
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
             
-            if(options.MessageType == MessageType.TCPModbus) 
-                messageHandler = new TCPModbusMessageHandler(true, dataToSend);
-
             acceptingConnectionTask = new TaskHandler(startAcceptingConnections, false, 0,cts);
             reciverTask = new TaskHandler(recivingData, false, 0, cts);
             sendingTask = new TaskHandler(sendingData, false, 0, cts);
@@ -103,8 +101,7 @@ namespace Slave.Communication
             try
             {
                 recivedData = await communicationStream.Receive();
-
-                messageHandler.CreateMessageObject(recivedData);
+                raiseRecivedBytes(recivedData);
             }
             catch (Exception ex) when (ex is ConnectionErrorException || ex is ConnectionNotExisting)
             {

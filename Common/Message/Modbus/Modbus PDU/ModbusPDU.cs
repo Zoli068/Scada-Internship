@@ -20,7 +20,27 @@ namespace Common.Message
             this.data = data;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            functionCode = (FunctionCode)data[startIndex++];
+            Type type=null;
+    
+            if(ModbusFunctionDictionary.TypeMap.TryGetValue(functionCode, out type))
+            {
+                this.data = Activator.CreateInstance(type) as IModbusData;
+                this.data.Deserialize(data, ref startIndex);
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public FunctionCode FunctionCode
         {
             get
@@ -33,7 +53,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public IModbusData Data{
             get
             {

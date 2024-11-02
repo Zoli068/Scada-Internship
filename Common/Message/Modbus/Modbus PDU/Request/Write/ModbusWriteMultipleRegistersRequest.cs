@@ -25,7 +25,25 @@ namespace Common.Message
 
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out startingAddress, data, ref startIndex);
+            ByteValueConverter.GetValue(out quantityOfRegisters, data, ref startIndex);
+            ByteValueConverter.GetValue(out byteCount, data, ref startIndex);
+
+            registerValue = new short[byteCount];
+
+            for (int i = 0; i < byteCount; i++)
+            {
+                ByteValueConverter.GetValue(out registerValue[i], data, ref startIndex);
+            }
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public short StartingAddress
         {
             get
@@ -38,7 +56,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short QuantityOfRegisters
         {
             get
@@ -51,7 +68,6 @@ namespace Common.Message
             }
         }
 
-        [Order(3)]
         public short ByteCount
         {
             get
@@ -64,7 +80,6 @@ namespace Common.Message
             }
         }
 
-        [Order(4)]
         public short[] RegisterValue
         {
             get

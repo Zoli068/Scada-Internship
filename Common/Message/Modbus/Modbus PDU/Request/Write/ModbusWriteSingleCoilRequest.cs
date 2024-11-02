@@ -20,7 +20,17 @@ namespace Common.Message
             this.outputValue = outputValue;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out outputAddress, data, ref startIndex);
+            ByteValueConverter.GetValue(out outputValue, data, ref startIndex);
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public short OutputAddress
         {
             get
@@ -33,7 +43,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short OutputValue
         {
             get
@@ -45,5 +54,6 @@ namespace Common.Message
                 outputValue = value;
             }
         }
+
     }
 }

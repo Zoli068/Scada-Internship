@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\Communication.cs" />
     <Compile Include="Communication\CommunicationHandler\Options\CommunicationHandlerOptions.cs" />
     <Compile Include="Communication\CommunicationHandler\Options\ICommunicationHandlerOptions.cs" />
     <Compile Include="Communication\CommunicationStream\SecureCommunication.cs" />

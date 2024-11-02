@@ -10,17 +10,33 @@ namespace Common.Message
     public class ModbusReadInputRegistersResponse : IModbusReadInputRegistersResponse
     {
         private byte count;
-        private short[] inputRegisers;
+        private short[] inputRegisters;
 
         public ModbusReadInputRegistersResponse() { }
 
         public ModbusReadInputRegistersResponse(byte count, short[] inputRegisers)
         {
             this.count = count;
-            this.inputRegisers = inputRegisers;
+            this.inputRegisters = inputRegisers;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out count, data, ref startIndex);
+
+            inputRegisters = new short[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                ByteValueConverter.GetValue(out inputRegisters[i], data, ref startIndex);
+            }
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public byte Count
         {
             get
@@ -33,16 +49,15 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short[] InputRegisters
         {
             get
             {
-                return inputRegisers;
+                return inputRegisters;
             }
             set
             {
-                inputRegisers = value;
+                inputRegisters = value;
             }
         }
     }

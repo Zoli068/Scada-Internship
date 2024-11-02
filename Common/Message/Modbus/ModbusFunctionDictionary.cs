@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class ModbusFunctionDictionary
+    public static class ModbusFunctionDictionary
     {
-        private Dictionary<FunctionCode, Type> typeMap;
+        public static Dictionary<FunctionCode, Type> TypeMap;
 
-        public ModbusFunctionDictionary(bool request)
+        static ModbusFunctionDictionary()
         {
-            if(request)
+            string mode = ConfigurationManager.AppSettings["ModbusMode"];
+
+            if(mode == "Slave")
             {
-                typeMap= new Dictionary<FunctionCode, Type>()
+                TypeMap = new Dictionary<FunctionCode, Type>()
                 {
                     { FunctionCode.ReadCoils, typeof(ModbusReadCoilsRequest) },
                     { FunctionCode.ReadDiscreteInputs, typeof(ModbusReadDiscreteInputsRequest) },
@@ -28,7 +31,7 @@ namespace Common.Message
             }
             else
             {
-                typeMap=new Dictionary<FunctionCode, Type>()
+                TypeMap = new Dictionary<FunctionCode, Type>()
                 {
                     { FunctionCode.ReadCoils, typeof(ModbusReadCoilsResponse) },
                     { FunctionCode.ReadDiscreteInputs, typeof(ModbusReadDiscreteInputsResponse) },
@@ -39,14 +42,6 @@ namespace Common.Message
                     { FunctionCode.WriteMultipleCoils, typeof(ModbusWriteMultipleCoilsResponse) },
                     { FunctionCode.WriteMultipleRegisters, typeof(ModbusWriteMultipleRegistersResponse) }
                 };
-            }
-        }
-
-        public Dictionary<FunctionCode, Type> TypeMap
-        {
-            get 
-            { 
-                return typeMap; 
             }
         }
     }

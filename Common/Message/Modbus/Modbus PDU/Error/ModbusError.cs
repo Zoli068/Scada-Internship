@@ -22,7 +22,17 @@ namespace Common.Message
             this.exceptionCode = exceptionCode;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out errorCode,data,ref startIndex);
+            exceptionCode =(ExceptionCode)data[startIndex++];
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public byte ErrorCode
         {
             get
@@ -35,7 +45,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public ExceptionCode ExceptionCode
         {
             get

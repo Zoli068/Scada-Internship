@@ -25,7 +25,26 @@ namespace Common.Message
             this.unitID = unitID;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data,ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out transactionID, data,ref startIndex);
+            ByteValueConverter.GetValue(out protocolID, data,ref startIndex);
+            ByteValueConverter.GetValue(out length, data,ref startIndex);
+            ByteValueConverter.GetValue(out unitID, data,ref startIndex);
+        }
+
+        public byte[] Serialize()
+        {
+            List<byte> bytes = new List<byte>(7);
+
+            bytes.AddRange(ByteValueConverter.ExtractBytes(transactionID));
+            bytes.AddRange(ByteValueConverter.ExtractBytes(protocolID));
+            bytes.AddRange(ByteValueConverter.ExtractBytes(length));
+            bytes.AddRange(ByteValueConverter.ExtractBytes(unitID));
+
+            return bytes.ToArray();
+        }
+
         public short TransactionID
         {
             get
@@ -38,7 +57,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short ProtocolID
         {
             get
@@ -51,7 +69,6 @@ namespace Common.Message
             }
         }
 
-        [Order(3)]
         public short Length
         {
             get
@@ -64,7 +81,6 @@ namespace Common.Message
             }
         }
 
-        [Order(4)]
         public byte UnitID
         {
             get

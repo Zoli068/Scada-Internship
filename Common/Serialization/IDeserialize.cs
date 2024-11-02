@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Master.Configuration
+namespace Common.Serialization
 {
-    public class ConfigurationReader
+    public interface IDeserialize
     {
+        void Deserialize(byte[] data, ref int startIndex);
     }
 }

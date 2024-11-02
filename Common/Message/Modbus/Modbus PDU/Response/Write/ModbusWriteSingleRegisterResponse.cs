@@ -20,7 +20,17 @@ namespace Common.Message
             this.registerValue = registerValue;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out registerAddress, data, ref startIndex);
+            ByteValueConverter.GetValue(out registerValue, data, ref startIndex);
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public short RegisterAddress
         {
             get
@@ -33,7 +43,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short RegisterValue
         {
             get

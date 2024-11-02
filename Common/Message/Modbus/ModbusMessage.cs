@@ -10,17 +10,37 @@ namespace Common.Message.Modbus
     /// <summary>
     /// The implementation of a Modbus Message
     /// </summary>
-    public class ModbusMessage : IMessage
+    public class TCPModbusMessage : IMessage
     {
         private IMessageData messageData;
         private IMessageHeader messageHeader;
 
-        public ModbusMessage() { }
+        public TCPModbusMessage() 
+        {
+            messageHeader = new TCPModbusHeader();
+            messageData = new ModbusPDU();
+        }
 
-        public ModbusMessage(IMessageData messageData, IMessageHeader messageHeader)
+        public TCPModbusMessage(IMessageData messageData, IMessageHeader messageHeader)
         {
             this.messageData = messageData;
             this.messageHeader = messageHeader;
+        }
+
+        public void Deserialize(byte[] data,ref int startIndex)
+        {
+               messageHeader.Deserialize(data,ref startIndex);
+               messageData.Deserialize(data,ref startIndex);
+        }
+
+        public byte[] Serialize()
+        {
+            List<byte> bytes = new List<byte>();
+
+            bytes.AddRange(messageHeader.Serialize());
+            bytes.AddRange(messageData.Serialize());
+
+            return bytes.ToArray();
         }
 
         public IMessageData MessageData
@@ -46,5 +66,7 @@ namespace Common.Message.Modbus
                 messageHeader = value;
             }
         }
+
+
     }
 }

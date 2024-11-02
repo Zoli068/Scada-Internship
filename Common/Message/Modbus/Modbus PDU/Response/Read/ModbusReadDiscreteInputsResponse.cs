@@ -20,7 +20,23 @@ namespace Common.Message
             this.inputStatus= inputStatus;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out byteCount, data, ref startIndex);
+
+            inputStatus = new byte[byteCount];
+
+            for (int i = 0; i < byteCount; i++)
+            {
+                ByteValueConverter.GetValue(out inputStatus[i], data, ref startIndex);
+            }
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public byte ByteCount
         {
             get
@@ -33,7 +49,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public byte[] InputStatus
         {
             get

@@ -13,7 +13,7 @@ namespace Common.Utilities {
         /// <summary>
         /// The exception that is thrown when trying to use a connection, but that connection doesn't exists
         /// </summary>
-        public SerializationException() : base("There is no existing connection") { }
+        public SerializationException() : base("Something went wrong in the serialization process") { }
 
         /// <summary>
         /// The exception that is thrown when trying to use a connection, but that connection doesn't exists

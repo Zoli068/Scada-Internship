@@ -21,7 +21,17 @@ namespace Common.Message
             this.quantityOfInputs = quantityOfInputs;
         }
 
-        [Order(1)]
+        public void Deserialize(byte[] data, ref int startIndex)
+        {
+            ByteValueConverter.GetValue(out startingAddress, data, ref startIndex);
+            ByteValueConverter.GetValue(out quantityOfInputs, data, ref startIndex);
+        }
+
+        public byte[] Serialize()
+        {
+            throw new NotImplementedException();
+        }
+
         public short StartingAddress
         {
             get
@@ -34,7 +44,6 @@ namespace Common.Message
             }
         }
 
-        [Order(2)]
         public short QuantityOfInputs
         {
             get
