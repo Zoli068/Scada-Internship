@@ -9,24 +9,24 @@ namespace Common.Message
 {
     public class ModbusReadInputRegistersResponse : IModbusReadInputRegistersResponse
     {
-        private byte count;
+        private byte byteCount;
         private short[] inputRegisters;
 
         public ModbusReadInputRegistersResponse() { }
 
-        public ModbusReadInputRegistersResponse(byte count, short[] inputRegisers)
+        public ModbusReadInputRegistersResponse(byte byteCount, short[] inputRegisers)
         {
-            this.count = count;
+            this.byteCount = byteCount;
             this.inputRegisters = inputRegisers;
         }
 
         public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out count, data, ref startIndex);
+            ByteValueConverter.GetValue(out byteCount, data, ref startIndex);
 
-            inputRegisters = new short[count];
+            inputRegisters = new short[byteCount];
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < byteCount / 2; i++)
             {
                 ByteValueConverter.GetValue(out inputRegisters[i], data, ref startIndex);
             }
@@ -34,18 +34,26 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.Add(byteCount);
+
+            for (int i = 0; i < byteCount / 2; i++)
+            {
+                data.AddRange(ByteValueConverter.ExtractBytes(InputRegisters[i]));
+            }
+
+            return data.ToArray();
         }
 
         public byte Count
         {
             get
             {
-                return count;
+                return byteCount;
             }
             set
             {
-                count = value;
+                byteCount = value;
             }
         }
 

@@ -11,12 +11,12 @@ namespace Common.Message
     {
         private short startingAddress;
         private short quantityOfOutputs;
-        private short byteCount;
-        private short[] outputsValue;
+        private byte byteCount;
+        private byte[] outputsValue;
 
         public ModbusWriteMultipleCoilsRequest() { }
 
-        public ModbusWriteMultipleCoilsRequest(short startingAddress, short quantityOfOutputs, short byteCount, short[] outputsValue)
+        public ModbusWriteMultipleCoilsRequest(short startingAddress, short quantityOfOutputs, byte byteCount, byte[] outputsValue)
         {
             this.startingAddress = startingAddress;
             this.quantityOfOutputs = quantityOfOutputs;
@@ -30,7 +30,7 @@ namespace Common.Message
             ByteValueConverter.GetValue(out quantityOfOutputs, data, ref startIndex);
             ByteValueConverter.GetValue(out byteCount, data, ref startIndex);
 
-            outputsValue = new short[byteCount];
+            outputsValue = new byte[byteCount];
 
             for(int i=0;i<byteCount;i++)
             {
@@ -40,7 +40,17 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.AddRange(ByteValueConverter.ExtractBytes(startingAddress));
+            data.AddRange(ByteValueConverter.ExtractBytes(quantityOfOutputs));
+            data.AddRange(ByteValueConverter.ExtractBytes(byteCount));
+
+            for(int i=0;i< byteCount; i++)
+            {
+                data.AddRange(ByteValueConverter.ExtractBytes(outputsValue[i]));
+            }
+
+            return data.ToArray();
         }
 
         public short StartingAddress
@@ -67,7 +77,7 @@ namespace Common.Message
             }
         }
 
-        public short ByteCount
+        public byte ByteCount
         {
             get
             {
@@ -79,7 +89,7 @@ namespace Common.Message
             }
         }
 
-        public short[] OutputsValue
+        public byte[] OutputsValue
         {
             get
             {

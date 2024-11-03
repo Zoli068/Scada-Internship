@@ -22,7 +22,7 @@ namespace Common.Serialization
 
         public static byte[] ExtractMessageBytes<T>(T message) where T: ISerialize, new()
         {
-            return message.Serialize();
+             return message.Serialize();
         }
 
     }

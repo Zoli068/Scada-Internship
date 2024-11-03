@@ -26,7 +26,7 @@ namespace Common.Message
 
             registerValue = new short[byteCount];
 
-            for (int i = 0; i < byteCount; i++)
+            for (int i = 0; i < byteCount/2; i++)
             {
                 ByteValueConverter.GetValue(out registerValue[i], data, ref startIndex);
             }
@@ -34,7 +34,15 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.Add(byteCount);
+
+            for (int i = 0; i < byteCount/2; i++)
+            {
+                data.AddRange(ByteValueConverter.ExtractBytes(registerValue[i]));
+            }
+
+            return data.ToArray();
         }
 
         public byte ByteCount

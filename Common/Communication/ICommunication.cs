@@ -12,6 +12,6 @@ namespace Common.Communication
 
          void SendBytes(byte[] bytes);
 
-            void Dispose();
+         void Dispose();
     }
 }

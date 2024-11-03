@@ -2,6 +2,7 @@
 using Common.Message;
 using Common.Message.Exceptions;
 using Common.Message.Modbus;
+using Common.Serialization;
 using Common.Utilities;
 using System;
 using System.Collections;
@@ -16,16 +17,39 @@ namespace Slave.Communication
 {
     public class TCPModbusMessageHandler : IMessageHandler
     {
-        private BlockingCollection<byte[]> dataToProcess;
+        private Action<byte[]> sendBytes;
 
-        public void CreateByteArrayFromMessage(IMessage message)
+        public TCPModbusMessageHandler(Action<byte[]> sendBytes)
         {
-            throw new NotImplementedException();
+            this.sendBytes = sendBytes;
         }
 
-        public void CreateMessageObject(byte[] data)
+        public void ProcessBytes(byte[] data)
         {
-            throw new NotImplementedException();
+            ModbusMessage modbusMessage = null;
+
+            try
+            {
+                modbusMessage = Serialization.CreateMessageObject<ModbusMessage>(data);
+
+                if (data.Length - 7 == (modbusMessage.MessageHeader as TCPModbusHeader).Length)
+                {
+                    //commandhandler.handle(messagPDU);
+                }
+                else
+                {
+                    //commandHandle.handle(ErrorInTheMessage)
+                }
+            }
+            catch (Exception ex)
+            {
+                //errorhandling //NotSupportedException ex||
+            }
+        }
+
+        public void SendMessage(IMessage message)
+        {
+            sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
         }
     }
 }

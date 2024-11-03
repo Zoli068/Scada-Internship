@@ -15,7 +15,7 @@ namespace Slave.Communication
 
         public Communication(ICommunicationOptions options, ICommunicationHandlerOptions handlerOptions)
         {
-            communicationHandler = new CommunicationHandler(handlerOptions, options, BytesRecived);
+            communicationHandler = new CommunicationHandler(handlerOptions, options, RaiseBytesRecvied);
         }
 
         private void RaiseBytesRecvied(byte[] bytes)

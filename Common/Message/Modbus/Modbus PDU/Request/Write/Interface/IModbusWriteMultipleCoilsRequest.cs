@@ -10,7 +10,7 @@ namespace Common.Message
     {
         short StartingAddress { get; set; }
         short QuantityOfOutputs { get; set; }
-        short ByteCount { get; set; }
-        short[] OutputsValue { get; set; }
+        byte ByteCount { get; set; }
+        byte[] OutputsValue { get; set; }
     }
 }

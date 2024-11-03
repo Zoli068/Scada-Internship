@@ -9,8 +9,8 @@ namespace Common.Message
     public interface IModbusWriteMultipleRegistersRequest : IModbusData
     {
         short StartingAddress { get; set; }
-        short QuantityOfRegisters {  get; set; }    
-        short ByteCount {  get; set; }
+        short QuantityOfRegisters {  get; set; }
+        byte ByteCount {  get; set; }
         short[] RegisterValue { get; set; }
     }
 }

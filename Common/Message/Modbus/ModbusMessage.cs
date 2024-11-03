@@ -10,18 +10,18 @@ namespace Common.Message.Modbus
     /// <summary>
     /// The implementation of a Modbus Message
     /// </summary>
-    public class TCPModbusMessage : IMessage
+    public class  ModbusMessage : IMessage
     {
         private IMessageData messageData;
         private IMessageHeader messageHeader;
 
-        public TCPModbusMessage() 
+        public ModbusMessage() 
         {
             messageHeader = new TCPModbusHeader();
             messageData = new ModbusPDU();
         }
 
-        public TCPModbusMessage(IMessageData messageData, IMessageHeader messageHeader)
+        public ModbusMessage(IMessageData messageData, IMessageHeader messageHeader)
         {
             this.messageData = messageData;
             this.messageHeader = messageHeader;

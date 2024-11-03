@@ -28,7 +28,11 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.AddRange(ByteValueConverter.ExtractBytes(outputAddress));
+            data.AddRange(ByteValueConverter.ExtractBytes(outputValue));
+
+            return data.ToArray();
         }
 
         public short OutputAddress

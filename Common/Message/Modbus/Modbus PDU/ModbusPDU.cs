@@ -23,14 +23,13 @@ namespace Common.Message
         public void Deserialize(byte[] data, ref int startIndex)
         {
             functionCode = (FunctionCode)data[startIndex++];
-            Type type=null;
-    
-            if(ModbusFunctionDictionary.TypeMap.TryGetValue(functionCode, out type))
+
+            try
             {
-                this.data = Activator.CreateInstance(type) as IModbusData;
+                this.data = ModbusFunctionFactory.TypeMap[functionCode]();
                 this.data.Deserialize(data, ref startIndex);
             }
-            else
+            catch (Exception)
             {
                 throw new NotSupportedException();
             }
@@ -38,7 +37,10 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> bytes = new List<byte>() { (byte)functionCode };
+            bytes.AddRange(data.Serialize());
+
+            return bytes.ToArray();
         }
 
         public FunctionCode FunctionCode

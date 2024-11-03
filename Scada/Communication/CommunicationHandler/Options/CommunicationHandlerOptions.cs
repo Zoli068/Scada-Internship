@@ -14,13 +14,11 @@ namespace Master.Communication
     {
         private readonly int reconnectInterval;
         private readonly SecurityMode securityMode;
-        private readonly MessageType messageType;
 
-        public CommunicationHandlerOptions(int reconnectInterval,SecurityMode securityMode, MessageType messageType)
+        public CommunicationHandlerOptions(int reconnectInterval,SecurityMode securityMode)
         {
             this.reconnectInterval = reconnectInterval;
             this.securityMode = securityMode;
-            this.messageType = messageType;
         }
 
         public int ReconnectInterval{
@@ -35,14 +33,6 @@ namespace Master.Communication
             get
             {
                 return securityMode;
-            }
-        }
-
-        public MessageType MessageType
-        {
-            get
-            {
-                return messageType;
             }
         }
     }

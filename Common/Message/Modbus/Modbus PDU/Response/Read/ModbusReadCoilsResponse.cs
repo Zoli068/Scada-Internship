@@ -34,7 +34,15 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.Add(byteCount);
+            
+            for(int i = 0; i < byteCount; i++)
+            {
+                data.Add(coilStatus[byteCount]);
+            }
+
+            return data.ToArray();
         }
 
         public byte ByteCount

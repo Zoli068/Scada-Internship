@@ -11,12 +11,12 @@ namespace Common.Message
     {
         private short startingAddress;
         private short quantityOfRegisters;
-        private short byteCount;
+        private byte byteCount;
         private short[] registerValue;
 
         public ModbusWriteMultipleRegistersRequest() { }
 
-        public ModbusWriteMultipleRegistersRequest(short startingAddress, short quantityOfRegisters, short byteCount, short[] registerValue)
+        public ModbusWriteMultipleRegistersRequest(short startingAddress, short quantityOfRegisters, byte byteCount, short[] registerValue)
         {
             this.startingAddress = startingAddress;
             this.quantityOfRegisters = quantityOfRegisters;
@@ -33,7 +33,7 @@ namespace Common.Message
 
             registerValue = new short[byteCount];
 
-            for (int i = 0; i < byteCount; i++)
+            for (int i = 0; i < byteCount/2; i++)
             {
                 ByteValueConverter.GetValue(out registerValue[i], data, ref startIndex);
             }
@@ -41,7 +41,17 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            List<byte> data = new List<byte>();
+            data.AddRange(ByteValueConverter.ExtractBytes(startingAddress));
+            data.AddRange(ByteValueConverter.ExtractBytes(quantityOfRegisters));
+            data.AddRange(ByteValueConverter.ExtractBytes(byteCount));
+
+            for (int i = 0; i < byteCount/2; i++)
+            {
+                data.AddRange(ByteValueConverter.ExtractBytes(registerValue[i]));
+            }
+
+            return data.ToArray();
         }
 
         public short StartingAddress
@@ -68,7 +78,7 @@ namespace Common.Message
             }
         }
 
-        public short ByteCount
+        public byte ByteCount
         {
             get
             {

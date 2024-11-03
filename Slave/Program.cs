@@ -13,6 +13,8 @@ using Common.Message.Modbus;
 using Common.Message;
 using Slave.Communication;
 using Common.Utilities;
+using Common.Communication;
+using Common.ICommunication;
 
 namespace Slave
 {
@@ -21,13 +23,16 @@ namespace Slave
         static void Main(string[] args)
         {
 
-            TcpCommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
-            CommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE,MessageType.TCPModbus);
+            ICommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
+            ICommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE,MessageType.TCPModbus);
+            ICommunication communication;
+            IMessageHandler messageHandler;
 
-            Communication.Communication communication;
             try
             {
                 communication = new Communication.Communication(options, communicationHandlerOptions);
+                messageHandler = new TCPModbusMessageHandler(communication.SendBytes);
+                communication.BytesRecived += messageHandler.ProcessBytes;
             }
             catch (Exception ex) when (ex is  ListeningNotSuccessedException)
             {
@@ -43,6 +48,7 @@ namespace Slave
                 Console.ReadKey();
                 return;
             }
+
             while (true)
             {
             }

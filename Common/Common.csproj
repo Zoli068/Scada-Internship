@@ -95,7 +95,7 @@
     <Compile Include="Message\Modbus\Modbus PDU\Response\Write\ModbusWriteMultipleRegistersResponse.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Response\Write\ModbusWriteSingleCoilResponse.cs" />
     <Compile Include="Message\Modbus\Modbus PDU\Response\Write\ModbusWriteSingleRegisterResponse.cs" />
-    <Compile Include="Message\Modbus\ModbusFunctionDictionary.cs" />
+    <Compile Include="Message\Modbus\ModbusFunctionFactory.cs" />
     <Compile Include="Message\Modbus\TCP Modbus\ITCPModbusHeader.cs" />
     <Compile Include="Message\Modbus\TCP Modbus\TCPModbusHeader.cs" />
     <Compile Include="Serialization\IDeserialize.cs" />

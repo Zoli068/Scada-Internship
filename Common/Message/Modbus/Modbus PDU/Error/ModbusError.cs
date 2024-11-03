@@ -30,7 +30,7 @@ namespace Common.Message
 
         public byte[] Serialize()
         {
-            throw new NotImplementedException();
+            return new byte[2] {errorCode, (byte)exceptionCode};
         }
 
         public byte ErrorCode
