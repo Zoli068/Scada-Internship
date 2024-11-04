@@ -10,12 +10,12 @@ namespace Common.Message
 {
     public class ModbusReadDiscreteInputsRequest : IModbusReadDiscreteInputsRequest
     {
-        private short startingAddress;
-        private short quantityOfInputs;
+        private ushort startingAddress;
+        private ushort quantityOfInputs;
 
         public ModbusReadDiscreteInputsRequest() { }
 
-        public ModbusReadDiscreteInputsRequest(short startingAddress, short quantityOfInputs)
+        public ModbusReadDiscreteInputsRequest(ushort startingAddress, ushort quantityOfInputs)
         {
             this.startingAddress = startingAddress;
             this.quantityOfInputs = quantityOfInputs;
@@ -36,7 +36,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short StartingAddress
+        public ushort StartingAddress
         {
             get
             {
@@ -48,7 +48,7 @@ namespace Common.Message
             }
         }
 
-        public short QuantityOfInputs
+        public ushort QuantityOfInputs
         {
             get
             {

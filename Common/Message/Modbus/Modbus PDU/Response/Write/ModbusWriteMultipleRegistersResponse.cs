@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusWriteMultipleRegistersResponse : IModbusWriteMultipleRegistersResponse
     {
-        private short startingAddress;
-        private short quantityOfRegisters;
+        private ushort startingAddress;
+        private ushort quantityOfRegisters;
 
         public ModbusWriteMultipleRegistersResponse() { }
 
-        public ModbusWriteMultipleRegistersResponse(short startingAddress, short quantityOfRegisters)
+        public ModbusWriteMultipleRegistersResponse(ushort startingAddress, ushort quantityOfRegisters)
         {
             this.startingAddress = startingAddress;
             this.quantityOfRegisters = quantityOfRegisters;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short StartingAddress
+        public ushort StartingAddress
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Common.Message
             }
         }
 
-        public short QuantityOfRegisters
+        public ushort QuantityOfRegisters
         {
             get
             {

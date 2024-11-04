@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusReadInputRegistersRequest:IModbusReadInputRegistersRequest
     {
-        private short startingAddress;
-        private short quantityOfInputRegisters;
+        private ushort startingAddress;
+        private ushort quantityOfInputRegisters;
 
         public ModbusReadInputRegistersRequest() { }
 
-        public ModbusReadInputRegistersRequest(short startingAddress, short quantityOfInputRegisters)
+        public ModbusReadInputRegistersRequest(ushort startingAddress, ushort quantityOfInputRegisters)
         {
             this.startingAddress=startingAddress;
             this.quantityOfInputRegisters=quantityOfInputRegisters;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short StartingAddress
+        public ushort StartingAddress
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Common.Message
             }
         }
 
-        public short QuantityOfInputRegisters
+        public ushort QuantityOfInputRegisters
         {
             get
             {

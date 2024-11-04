@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Common.Command
 {
-    public interface IMessageDataCommand<T>
+    public interface IMessageDataHandler
     {
-        T Execute(T data);
+        IMessageData ProcessMessageData(IMessageData data);
     }
 }

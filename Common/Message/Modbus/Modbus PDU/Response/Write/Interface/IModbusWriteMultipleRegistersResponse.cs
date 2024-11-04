@@ -8,7 +8,7 @@ namespace Common.Message
 { 
     public interface IModbusWriteMultipleRegistersResponse : IModbusData
     {
-        short StartingAddress { get; set; }
-        short QuantityOfRegisters {  get; set; }
+        ushort StartingAddress { get; set; }
+        ushort QuantityOfRegisters {  get; set; }
     }
 }

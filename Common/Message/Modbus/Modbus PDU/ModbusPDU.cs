@@ -31,7 +31,7 @@ namespace Common.Message
             }
             catch (Exception)
             {
-                throw new NotSupportedException();
+                this.data = null;
             }
         }
 

@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusReadCoilsRequest : IModbusReadCoilsRequest
     {
-        private short startingAddress;
-        private short quantityOfCoils;
+        private ushort startingAddress;
+        private ushort quantityOfCoils;
 
         public ModbusReadCoilsRequest() { }
 
-        public ModbusReadCoilsRequest(short startingAddress, short quantityOfCoils)
+        public ModbusReadCoilsRequest(ushort startingAddress, ushort quantityOfCoils)
         {
             this.startingAddress = startingAddress;
             this.quantityOfCoils = quantityOfCoils;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short StartingAddress
+        public ushort StartingAddress
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Common.Message
             }
         }
 
-        public short QuantityOfCoils
+        public ushort QuantityOfCoils
         {
             get
             {

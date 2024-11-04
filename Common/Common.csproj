@@ -42,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Exception\ValueOutOfIntervalException.cs" />
     <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\ICommandHandler.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionErrorException.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionNotExisting.cs" />
@@ -51,6 +53,12 @@
     <Compile Include="Communication\Exceptions\SecureExceptions\AuthenticationFailedException.cs" />
     <Compile Include="Communication\IAsyncSecureCommunication.cs" />
     <Compile Include="Communication\ICommunication.cs" />
+    <Compile Include="PointsDataBase\Exceptions\CantWriteInputException.cs" />
+    <Compile Include="PointsDataBase\Exceptions\InvalidAddressException.cs" />
+    <Compile Include="PointsDataBase\Exceptions\PointTypeDifferenceException.cs" />
+    <Compile Include="PointsDataBase\IPointsDataBase.cs" />
+    <Compile Include="PointsDataBase\PointsDataBase.cs" />
+    <Compile Include="PointsDataBase\PointsType.cs" />
     <Compile Include="Message\Exceptions\NotSupportedMessageException.cs" />
     <Compile Include="Message\Interface\IMessage.cs" />
     <Compile Include="Message\Interface\IMessageData.cs" />

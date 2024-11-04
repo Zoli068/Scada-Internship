@@ -41,17 +41,19 @@ namespace Master.Communication
                     //commandHandle.handle(ErrorInTheMessage)
                 }
             }
-            catch (Exception ex) 
+            catch (Exception) 
             {
                 //errorhandling //NotSupportedException ex||
             }
         }
 
-        public void SendMessage(IMessage message)
+        private void SendMessage(IMessageData messageData)
         {
             try
             {
-                sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
+                //creating header
+                //adding the messageData
+              //  sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
             }
             catch
             {

@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusWriteSingleRegisterResponse : IModbusWriteSingleRegisterResponse
     {
-        private short registerAddress;
+        private ushort registerAddress;
         private short registerValue;
 
         public ModbusWriteSingleRegisterResponse() { }
 
-        public ModbusWriteSingleRegisterResponse(short registerAddress, short registerValue)
+        public ModbusWriteSingleRegisterResponse(ushort registerAddress, short registerValue)
         {
             this.registerAddress = registerAddress;
             this.registerValue = registerValue;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short RegisterAddress
+        public ushort RegisterAddress
         {
             get
             {

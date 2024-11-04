@@ -8,7 +8,7 @@ namespace Common.Message
 {
     public interface IModbusReadDiscreteInputsRequest:IModbusData
     {
-        short StartingAddress { get; set; }
-        short QuantityOfInputs { get; set; }
+        ushort StartingAddress { get; set; }
+        ushort QuantityOfInputs { get; set; }
     }
 }

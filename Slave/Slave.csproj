@@ -44,6 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandler\Commands\ReadCoilsCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadDiscreteInputsCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadHoldingRegistersCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadInputRegistersCommand.cs" />
+    <Compile Include="CommandHandler\Commands\WriteMultipleCoilsCommand.cs" />
+    <Compile Include="CommandHandler\ModbusMessageDataHandler.cs" />
     <Compile Include="Communication\Communication.cs" />
     <Compile Include="Communication\CommunicationHandler\Options\CommunicationHandlerOptions.cs" />
     <Compile Include="Communication\CommunicationHandler\Options\ICommunicationHandlerOptions.cs" />

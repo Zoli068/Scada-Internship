@@ -1,4 +1,5 @@
 ﻿using Common;
+using Common.Command;
 using Common.Message;
 using Common.Message.Exceptions;
 using Common.Message.Modbus;
@@ -18,38 +19,41 @@ namespace Slave.Communication
     public class TCPModbusMessageHandler : IMessageHandler
     {
         private Action<byte[]> sendBytes;
+        private IMessageDataHandler messageDataHandler;
+        private ModbusMessage modbusMessage;
 
-        public TCPModbusMessageHandler(Action<byte[]> sendBytes)
+        public TCPModbusMessageHandler(Action<byte[]> sendBytes, IMessageDataHandler messageDataHandler)
         {
             this.sendBytes = sendBytes;
+            this.messageDataHandler = messageDataHandler;
         }
 
         public void ProcessBytes(byte[] data)
         {
-            ModbusMessage modbusMessage = null;
-
             try
             {
                 modbusMessage = Serialization.CreateMessageObject<ModbusMessage>(data);
 
                 if (data.Length - 7 == (modbusMessage.MessageHeader as TCPModbusHeader).Length)
                 {
-                    //commandhandler.handle(messagPDU);
+                    SendMessage(messageDataHandler.ProcessMessageData(modbusMessage.MessageData));
                 }
                 else
                 {
-                    //commandHandle.handle(ErrorInTheMessage)
+                    //comandHandler create Error MEssage! or no response, have to check the modbus spec
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //errorhandling //NotSupportedException ex||
             }
         }
 
-        public void SendMessage(IMessage message)
+        private void SendMessage(IMessageData messageData)
         {
-            sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
+            //creating header
+            //adding the messageData
+            //sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
         }
     }
 }

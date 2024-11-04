@@ -8,8 +8,8 @@ namespace Common.Message
 {
     public interface IModbusReadCoilsRequest:IModbusData
     {
-        short StartingAddress {get;set;}
+        ushort StartingAddress {get;set;}
 
-        short QuantityOfCoils { get;set;}
+        ushort QuantityOfCoils { get;set;}
     }
 }

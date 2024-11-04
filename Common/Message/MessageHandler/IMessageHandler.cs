@@ -21,6 +21,6 @@ namespace Common.Message
         /// <summary>
         /// Converts the IMessage object to a byte[]
         /// </summary>
-        void SendMessage(IMessage message);
+        //void SendMessage(IMessageData messageData);
     }
 }

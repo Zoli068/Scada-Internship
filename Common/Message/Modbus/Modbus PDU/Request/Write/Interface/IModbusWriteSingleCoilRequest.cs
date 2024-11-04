@@ -8,7 +8,7 @@ namespace Common.Message
 {
     public interface IModbusWriteSingleCoilRequest : IModbusData
     {
-        short OutputAddress { get; set; }
+        ushort OutputAddress { get; set; }
         short OutputValue { get; set; } 
     }
 }

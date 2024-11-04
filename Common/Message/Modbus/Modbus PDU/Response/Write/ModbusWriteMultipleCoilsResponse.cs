@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusWriteMultipleCoilsResponse : IModbusWriteMultipleCoilsResponse
     {
-        private short startingAddress;
-        private short quantityOfOutputs;
+        private ushort startingAddress;
+        private ushort quantityOfOutputs;
 
         public ModbusWriteMultipleCoilsResponse() { }
 
-        public ModbusWriteMultipleCoilsResponse(short startingAddress, short quantityOfOutputs)
+        public ModbusWriteMultipleCoilsResponse(ushort startingAddress, ushort quantityOfOutputs)
         {
             this.startingAddress = startingAddress;
             this.quantityOfOutputs = quantityOfOutputs;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short StartingAddress
+        public ushort StartingAddress
         {
             get
             {
@@ -47,7 +47,7 @@ namespace Common.Message
             }
         }
 
-        public short QuantityOfOutputs
+        public ushort QuantityOfOutputs
         {
             get
             {

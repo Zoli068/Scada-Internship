@@ -9,12 +9,12 @@ namespace Common.Message
 {
     public class ModbusWriteSingleCoilRequest : IModbusWriteSingleCoilRequest
     {
-        private short outputAddress;
+        private ushort outputAddress;
         private short outputValue;
 
         public ModbusWriteSingleCoilRequest() { }
 
-        public ModbusWriteSingleCoilRequest(short outputAddress, short outputValue)
+        public ModbusWriteSingleCoilRequest(ushort outputAddress, short outputValue)
         {
             this.outputAddress = outputAddress;
             this.outputValue = outputValue;
@@ -35,7 +35,7 @@ namespace Common.Message
             return data.ToArray();
         }
 
-        public short OutputAddress
+        public ushort OutputAddress
         {
             get
             {

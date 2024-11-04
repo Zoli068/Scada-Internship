@@ -8,7 +8,7 @@ namespace Common.Message
 {
     public interface IModbusWriteMultipleCoilsResponse : IModbusData
     {
-        short StartingAddress { get; set; }
-        short QuantityOfOutputs { get; set; }
+        ushort StartingAddress { get; set; }
+        ushort QuantityOfOutputs { get; set; }
     }
 }

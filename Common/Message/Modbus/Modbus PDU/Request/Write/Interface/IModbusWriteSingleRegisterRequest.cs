@@ -8,7 +8,7 @@ namespace Common.Message
 {
     public interface IModbusWriteSingleRegisterRequest : IModbusData
     {
-        short RegisterAddress { get; set; }
+        ushort RegisterAddress { get; set; }
         short RegisterValue { get; set; }
     }
 }
