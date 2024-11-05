@@ -10,11 +10,11 @@ namespace Common.Message
     public class ModbusWriteSingleCoilResponse : IModbusWriteSingleCoilResponse
     {
         private ushort outputAddress;
-        private short outputValue;
+        private ushort outputValue;
         
         public ModbusWriteSingleCoilResponse() { }
 
-        public ModbusWriteSingleCoilResponse(ushort outputAddress, short outputValue)
+        public ModbusWriteSingleCoilResponse(ushort outputAddress, ushort outputValue)
         {
             this.outputAddress = outputAddress;
             this.outputValue = outputValue;
@@ -47,7 +47,7 @@ namespace Common.Message
             }
         }
 
-        public short OutputValue
+        public ushort OutputValue
         {
             get
             {

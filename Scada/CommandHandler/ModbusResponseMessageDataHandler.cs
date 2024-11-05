@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Master.CommandHandler
 {
-    public class ModbusMessageDataHandler : IMessageDataHandler
+    public class ModbusResponseMessageDataHandler : IMessageDataHandler
     {
         private readonly Dictionary<FunctionCode, IMessageDataCommand<IModbusData>> commands;
 
-        public ModbusMessageDataHandler()
+        public ModbusResponseMessageDataHandler()
         {
             commands = new Dictionary<FunctionCode, IMessageDataCommand<IModbusData>>()
             {

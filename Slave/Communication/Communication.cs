@@ -16,14 +16,9 @@ namespace Slave.Communication
         public Communication(ICommunicationOptions options, ICommunicationHandlerOptions handlerOptions)
         {
             communicationHandler = new CommunicationHandler(handlerOptions, options, RaiseBytesRecvied);
-
         }
 
-        /// <summary>
-        /// TESTTS
-        /// </summary>
-        /// <param name="bytes"></param>
-        public void RaiseBytesRecvied(byte[] bytes)
+        private void RaiseBytesRecvied(byte[] bytes)
         {
             if (BytesRecived != null)
             {

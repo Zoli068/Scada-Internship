@@ -39,7 +39,7 @@ namespace Common.Message
 
             for (int i = 0; i < byteCount; i++)
             {
-                data.Add(inputStatus[byteCount]);
+                data.Add(inputStatus[i]);
             }
 
             return data.ToArray();

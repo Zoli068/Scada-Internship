@@ -1,6 +1,7 @@
 ﻿using Common.Command;
 using Common.IPointsDataBase;
 using Common.Message;
+using Common.PointsDataBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace Slave.CommandHandler.Commands
             if(request.QuantityOfRegisters<1 || request.QuantityOfRegisters > 125)
             {
                 throw new ValueOutOfIntervalException();
+            }
+
+            if (!(pointsDataBase.CheckAddress(request.StartingAddress) & pointsDataBase.CheckAddress((ushort)(request.StartingAddress + request.QuantityOfRegisters - 1))))
+            {
+                throw new InvalidAddressException();
             }
 
             byte byteCount =(byte)( 2 * request.QuantityOfRegisters);

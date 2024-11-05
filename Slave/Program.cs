@@ -26,10 +26,9 @@ namespace Slave
     {
         static void Main(string[] args)
         {
-
+            ICommunication communication;
             ICommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
             ICommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE,MessageType.TCPModbus);
-            ICommunication communication;
 
             IPointsDataBase pointsDataBase = new PointsDataBase();
 
@@ -61,9 +60,8 @@ namespace Slave
                 return;
             }
 
-
-            //testing the commandHandler
-            ((Communication.Communication)communication).RaiseBytesRecvied(new byte[] {0,1,0,0,0,5,5,2,39,17, 0,9});
+            //testing the commandHandler change back to public to be able to check!
+            //((Communication.Communication)communication).RaiseBytesRecvied(new byte[] {0,1,0,0,0,5,5,2,39,17, 0,9});
 
             while (true)
             {

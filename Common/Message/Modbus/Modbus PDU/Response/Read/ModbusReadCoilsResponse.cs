@@ -39,7 +39,7 @@ namespace Common.Message
             
             for(int i = 0; i < byteCount; i++)
             {
-                data.Add(coilStatus[byteCount]);
+                data.Add(coilStatus[i]);
             }
 
             return data.ToArray();

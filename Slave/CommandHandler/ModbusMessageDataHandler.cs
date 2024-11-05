@@ -16,19 +16,21 @@ namespace Slave.CommandHandler
 
     public class ModbusMessageDataHandler: IMessageDataHandler
     {
-        IPointsDataBase pointsDataBase;
         private readonly Dictionary<FunctionCode,IMessageDataCommand<IModbusData>> commands;
         
         public ModbusMessageDataHandler(IPointsDataBase pointsDataBase)
         {
-            this.pointsDataBase = pointsDataBase;
             commands = new Dictionary<FunctionCode, IMessageDataCommand<IModbusData>> ()
             {
                 {FunctionCode.ReadCoils , new ReadCoilsCommand(pointsDataBase)},
                 {FunctionCode.ReadDiscreteInputs, new ReadDiscreteInputsCommand(pointsDataBase)},
                 {FunctionCode.ReadHoldingRegisters,new ReadHoldingRegistersCommand(pointsDataBase)},
+                {FunctionCode.ReadInputRegisters, new ReadInputRegistersCommand(pointsDataBase)},
+                {FunctionCode.WriteMultipleCoils, new WriteMultipleCoilsCommand(pointsDataBase)},
+                {FunctionCode.WriteMultipleRegisters, new WriteMultipleRegistersCommand(pointsDataBase)},
+                {FunctionCode.WriteSingleCoil, new WriteSingleCoilCommand(pointsDataBase)},
+                {FunctionCode.WriteSingleRegister, new WriteSingleRegisterCommand(pointsDataBase)},
             };
-
         }
         
         public IMessageData ProcessMessageData(IMessageData data)
@@ -39,27 +41,45 @@ namespace Slave.CommandHandler
 
                 try
                 {
-                   return command.Execute(((IModbusPDU)data).Data) as IMessageData;
+                    return CreateMessageData(command.Execute(((IModbusPDU)data).Data), ((IModbusPDU)data).FunctionCode);
                 }
                 catch(ValueOutOfIntervalException)
                 {
-                    //creating response Error message with Exceptioncode2
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode,ExceptionCode.IllegalDataValue);
                 }
                 catch(InvalidAddressException)
                 {
-                    //check for address -> if not then Exception 02
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalDataAddress);
                 }
                 catch (PointTypeDifferenceException)
                 {
-                    //we tried to use 1 kind of pointType function on another type of pointType
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.SlaveDeviceFailure);
                 }
             }
             else
             {
-                ///not suported, creating the error Exception code 01
+                return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalFunction);
             }
+        }
 
-            return null;
+        private IMessageData CreateMessageData(IModbusData modbusData,FunctionCode functionCode)
+        {
+             ModbusPDU modbusPDU = new ModbusPDU();
+             modbusPDU.FunctionCode = functionCode;
+             modbusPDU.Data = modbusData;
+
+            return modbusPDU;
+        }
+
+        private IMessageData CreateErrorMessage(FunctionCode code,ExceptionCode exceptionCode)
+        {
+            byte errorFunctionCode = (byte)(((byte)code) & 0x80);
+            ModbusPDU modbusPDU = new ModbusPDU();
+
+            modbusPDU.FunctionCode = (FunctionCode)errorFunctionCode;
+            modbusPDU.Data= new ModbusError(errorFunctionCode, exceptionCode);
+
+            return modbusPDU;
         }
     }
 }

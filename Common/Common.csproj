@@ -43,8 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command\Exception\ValueOutOfIntervalException.cs" />
-    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\IMessageDataCommand.cs" />
     <Compile Include="Command\ICommandHandler.cs" />
+    <Compile Include="Command\IResponseMessageDataCommand.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionErrorException.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionNotExisting.cs" />

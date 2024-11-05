@@ -9,6 +9,6 @@ namespace Common.Message
     public interface IModbusWriteSingleCoilResponse : IModbusData
     {
         ushort OutputAddress { get; set; }
-        short OutputValue { get; set; }
+        ushort OutputValue { get; set; }
     }
 }

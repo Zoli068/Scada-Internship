@@ -30,30 +30,41 @@ namespace Slave.Communication
 
         public void ProcessBytes(byte[] data)
         {
+            IMessageData messageDataToSend;
+
             try
             {
                 modbusMessage = Serialization.CreateMessageObject<ModbusMessage>(data);
 
                 if (data.Length - 7 == (modbusMessage.MessageHeader as TCPModbusHeader).Length)
                 {
-                    SendMessage(messageDataHandler.ProcessMessageData(modbusMessage.MessageData));
-                }
-                else
-                {
-                    //comandHandler create Error MEssage! or no response, have to check the modbus spec
+                    messageDataToSend=messageDataHandler.ProcessMessageData(modbusMessage.MessageData);
+                    SendMessage(messageDataToSend);
+                    modbusMessage = null;
                 }
             }
             catch (Exception)
             {
-                //errorhandling //NotSupportedException ex||
+                return;    
             }
         }
 
         private void SendMessage(IMessageData messageData)
         {
-            //creating header
-            //adding the messageData
-            //sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
+            List<byte> dataToSend = new List<byte>();
+
+            byte[] messsageDataSerialized=messageData.Serialize();
+
+            TCPModbusHeader header = new TCPModbusHeader();
+            header.ProtocolID = 0;
+            header.TransactionID = (modbusMessage.MessageHeader as TCPModbusHeader).TransactionID;
+            header.UnitID = (modbusMessage.MessageHeader as TCPModbusHeader).UnitID;
+            header.Length = (byte)messsageDataSerialized.Length;
+
+            dataToSend.AddRange(header.Serialize());
+            dataToSend.AddRange(messsageDataSerialized);
+
+            sendBytes(dataToSend.ToArray());
         }
     }
 }

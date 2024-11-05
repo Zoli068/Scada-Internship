@@ -15,5 +15,7 @@ namespace Common.IPointsDataBase
         short ReadRegisterValue(ushort address, PointsType pointType);
         
         byte ReadDiscreteValue(ushort address, PointsType pointType);
+
+        bool CheckAddress(ushort address);
     }
 }

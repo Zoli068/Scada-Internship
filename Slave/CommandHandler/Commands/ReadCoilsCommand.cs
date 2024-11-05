@@ -28,6 +28,11 @@ namespace Slave.CommandHandler.Commands
                 throw new ValueOutOfIntervalException();
             }
 
+            if(!(pointsDataBase.CheckAddress(data.StartingAddress) & pointsDataBase.CheckAddress((ushort)(data.StartingAddress+data.QuantityOfCoils-1))))
+            {
+                throw new InvalidAddressException();
+            }
+
             byte byteCount = (byte)(data.QuantityOfCoils / 8);
 
             if (data.QuantityOfCoils % 8 != 0)

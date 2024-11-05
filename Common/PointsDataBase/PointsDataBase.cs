@@ -17,6 +17,18 @@ namespace Common.PointsDataBase
             InitializePoints();
         }
 
+        public bool CheckAddress(ushort address)
+        {
+            bool addressIsReal = false;
+
+            if (DiscreteDictionary.ContainsKey(address) || RegistersDictionary.ContainsKey(address))
+            {
+                addressIsReal = true;
+            }
+
+            return addressIsReal;
+        }
+
         public byte ReadDiscreteValue(ushort address, PointsType pointType)
         {
             (PointsType,byte) value;
