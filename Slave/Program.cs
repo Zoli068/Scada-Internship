@@ -27,7 +27,7 @@ namespace Slave
         static void Main(string[] args)
         {
             ICommunication communication;
-            ICommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP,8192);
+            ICommunicationOptions options = new TcpCommunicationOptions(IPAddress.Loopback, 502, CommunicationType.TCP,8192);
             ICommunicationHandlerOptions communicationHandlerOptions = new CommunicationHandlerOptions(SecurityMode.SECURE,MessageType.TCPModbus);
 
             IPointsDataBase pointsDataBase = new PointsDataBase();

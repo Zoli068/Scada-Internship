@@ -8,6 +8,6 @@ namespace Common.Command
 {
     public interface IResponseMessageDataCommand<T>
     {
-        void Execute(T data);
+        void Execute(T request,T response);
     }
 }

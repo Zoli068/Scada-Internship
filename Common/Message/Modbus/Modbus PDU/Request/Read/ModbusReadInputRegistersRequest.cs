@@ -22,7 +22,7 @@ namespace Common.Message
 
         public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out startIndex, data, ref startIndex);
+            ByteValueConverter.GetValue(out startingAddress, data, ref startIndex);
             ByteValueConverter.GetValue(out quantityOfInputRegisters, data, ref startIndex);
         }
 

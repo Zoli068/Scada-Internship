@@ -40,7 +40,7 @@ namespace Slave.CommandHandler.Commands
             for(int i=0;i< request.QuantityOfInputRegisters; i++)
             {
                 address=(ushort)(request.StartingAddress+i);
-                bytes[i]=pointsDataBase.ReadRegisterValue(address,PointsType.DISCRETE_INPUTS);
+                bytes[i]=pointsDataBase.ReadRegisterValue(address,PointsType.INPUT_REGISTERS);
             }
 
             return new ModbusReadInputRegistersResponse(byteCount, bytes);

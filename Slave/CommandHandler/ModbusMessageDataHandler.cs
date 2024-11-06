@@ -45,20 +45,20 @@ namespace Slave.CommandHandler
                 }
                 catch(ValueOutOfIntervalException)
                 {
-                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode,ExceptionCode.IllegalDataValue);
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode,ExceptionCode.IllegalDataValue,3);
                 }
                 catch(InvalidAddressException)
                 {
-                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalDataAddress);
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalDataAddress,2);
                 }
                 catch (PointTypeDifferenceException)
                 {
-                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.SlaveDeviceFailure);
+                    return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.SlaveDeviceFailure,4);
                 }
             }
             else
             {
-                return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalFunction);
+                return CreateErrorMessage(((IModbusPDU)data).FunctionCode, ExceptionCode.IllegalFunction,1);
             }
         }
 
@@ -71,13 +71,13 @@ namespace Slave.CommandHandler
             return modbusPDU;
         }
 
-        private IMessageData CreateErrorMessage(FunctionCode code,ExceptionCode exceptionCode)
+        private IMessageData CreateErrorMessage(FunctionCode code,ExceptionCode exceptionCode,byte errorCode)
         {
-            byte errorFunctionCode = (byte)(((byte)code) & 0x80);
+            byte errorFunctionCode = (byte)(((byte)code) + 0x80);
             ModbusPDU modbusPDU = new ModbusPDU();
 
-            modbusPDU.FunctionCode = (FunctionCode)errorFunctionCode;
-            modbusPDU.Data= new ModbusError(errorFunctionCode, exceptionCode);
+            modbusPDU.FunctionCode = (FunctionCode)errorFunctionCode;                                                       //ERRORCODE
+            modbusPDU.Data= new ModbusError(errorCode, exceptionCode);      //should go the error code
 
             return modbusPDU;
         }

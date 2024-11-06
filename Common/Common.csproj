@@ -46,6 +46,7 @@
     <Compile Include="Command\IMessageDataCommand.cs" />
     <Compile Include="Command\ICommandHandler.cs" />
     <Compile Include="Command\IResponseMessageDataCommand.cs" />
+    <Compile Include="Command\IResponseMessageDataHandler.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionErrorException.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionNotExisting.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Communication\Exceptions\SecureExceptions\AuthenticationFailedException.cs" />
     <Compile Include="Communication\IAsyncSecureCommunication.cs" />
     <Compile Include="Communication\ICommunication.cs" />
+    <Compile Include="Message\Interface\IMessageInitiateCommand.cs" />
     <Compile Include="PointsDataBase\Exceptions\CantWriteInputException.cs" />
     <Compile Include="PointsDataBase\Exceptions\InvalidAddressException.cs" />
     <Compile Include="PointsDataBase\Exceptions\PointTypeDifferenceException.cs" />
@@ -120,6 +122,8 @@
     <Compile Include="Serialization\Exceptions\NotEnoughBytesException.cs" />
     <Compile Include="Serialization\Exceptions\SerializationException.cs" />
     <Compile Include="Utilities\ByteValueConverter.cs" />
+    <Compile Include="Utilities\MessageDTOBadValuesExceptioncs.cs" />
+    <Compile Include="Utilities\ModbusMessageDTO.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

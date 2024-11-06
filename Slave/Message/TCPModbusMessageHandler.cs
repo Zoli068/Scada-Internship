@@ -49,22 +49,26 @@ namespace Slave.Communication
             }
         }
 
-        private void SendMessage(IMessageData messageData)
+        public void SendMessage(IMessageData messageData)
         {
-            List<byte> dataToSend = new List<byte>();
+            try
+            {
+                List<byte> dataToSend = new List<byte>();
 
-            byte[] messsageDataSerialized=messageData.Serialize();
+                byte[] messsageDataSerialized = messageData.Serialize();
 
-            TCPModbusHeader header = new TCPModbusHeader();
-            header.ProtocolID = 0;
-            header.TransactionID = (modbusMessage.MessageHeader as TCPModbusHeader).TransactionID;
-            header.UnitID = (modbusMessage.MessageHeader as TCPModbusHeader).UnitID;
-            header.Length = (byte)messsageDataSerialized.Length;
+                TCPModbusHeader header = new TCPModbusHeader();
+                header.ProtocolID = 0;
+                header.TransactionID = (modbusMessage.MessageHeader as TCPModbusHeader).TransactionID;
+                header.UnitID = (modbusMessage.MessageHeader as TCPModbusHeader).UnitID;
+                header.Length = (byte)messsageDataSerialized.Length;
 
-            dataToSend.AddRange(header.Serialize());
-            dataToSend.AddRange(messsageDataSerialized);
+                dataToSend.AddRange(header.Serialize());
+                dataToSend.AddRange(messsageDataSerialized);
 
-            sendBytes(dataToSend.ToArray());
+                sendBytes(dataToSend.ToArray());
+            }
+            catch { }
         }
     }
 }

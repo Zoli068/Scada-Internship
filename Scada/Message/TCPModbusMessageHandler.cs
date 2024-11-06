@@ -1,9 +1,13 @@
 ﻿using Common;
+using Common.Command;
 using Common.Message;
 using Common.Message.Exceptions;
 using Common.Message.Modbus;
 using Common.Serialization;
 using Common.Utilities;
+using Master.CommandHandler;
+using Master.Message;
+using Master.Message.MessageHistory;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -18,10 +22,15 @@ namespace Master.Communication
     public class TCPModbusMessageHandler : IMessageHandler
     {
         private Action<byte[]> sendBytes;
-
-        public TCPModbusMessageHandler(Action<byte[]> sendBytes)
+        private ushort transactionIdentificator = 0;
+        private ModbusMessageDataHistory messageDataHistory;
+        private IResponseMessageDataHandler responseMessageDataHandler;
+        
+        public TCPModbusMessageHandler(Action<byte[]> sendBytes, IResponseMessageDataHandler responseMessageDataHandler)
         {
             this.sendBytes = sendBytes;
+            messageDataHistory = new ModbusMessageDataHistory();
+            this.responseMessageDataHandler=responseMessageDataHandler;
         }
 
         public void ProcessBytes(byte[] data)
@@ -32,33 +41,36 @@ namespace Master.Communication
             {
                 modbusMessage = Serialization.CreateMessageObject<ModbusMessage>(data);
 
-                if(data.Length -7 == (modbusMessage.MessageData as TCPModbusHeader).Length)
-                {
-                    //commandhandler.handle(messagPDU);
-                }
-                else
-                {
-                    //commandHandle.handle(ErrorInTheMessage)
+                if(data.Length -7 == (modbusMessage.MessageHeader as TCPModbusHeader).Length)
+                {                     
+                    IMessageData response = messageDataHistory.GetMessageData(((TCPModbusHeader)modbusMessage.MessageHeader).TransactionID);
+                    responseMessageDataHandler.ProcessMessageData(response, modbusMessage.MessageData);      
                 }
             }
             catch (Exception) 
             {
-                //errorhandling //NotSupportedException ex||
+                return;
             }
         }
 
-        private void SendMessage(IMessageData messageData)
+        public void SendMessage(IMessageData messageData)
         {
             try
             {
-                //creating header
-                //adding the messageData
-              //  sendBytes(Serialization.ExtractMessageBytes<ModbusMessage>(message as ModbusMessage));
+                List<byte> bytes = new List<byte>();
+
+                byte[] messageDataSerialized = messageData.Serialize();
+                TCPModbusHeader header = new TCPModbusHeader(transactionIdentificator, 0, (ushort)messageDataSerialized.Length, 255);
+
+                bytes.AddRange(header.Serialize());
+                bytes.AddRange(messageDataSerialized);
+
+                messageDataHistory.AddMessageData(messageData, transactionIdentificator);
+                sendBytes(bytes.ToArray());
+                transactionIdentificator++;
             }
-            catch
-            {
-                ///todo
-            }
+            catch { }
         }
+        
     }
 }

@@ -8,11 +8,11 @@ namespace Common.Message.Modbus
 {
     public interface ITCPModbusHeader:IMessageHeader
     {
-        short TransactionID { get; set; }
+        ushort TransactionID { get; set; }
 
-        short ProtocolID { get; set; }
+        ushort ProtocolID { get; set; }
 
-        short Length { get; set; }
+        ushort Length { get; set; }
 
         byte UnitID { get; set; }
     }

@@ -31,7 +31,16 @@ namespace Common.Message
             }
             catch (Exception)
             {
-                this.data = null;
+                try
+                {
+                   this.data = new ModbusError();
+                   this.data.Deserialize(data,ref startIndex);
+                }
+                catch (Exception)
+                {
+                    this.data = null;
+
+                }
             }
         }
 

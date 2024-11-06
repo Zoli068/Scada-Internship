@@ -10,14 +10,14 @@ namespace Common.Message
 {
     public class TCPModbusHeader : ITCPModbusHeader 
     {
-        private short transactionID;
-        private short protocolID=0x0000;
-        private short length;
+        private ushort transactionID;
+        private ushort protocolID =0x0000;
+        private ushort length;
         private byte unitID;
 
         public TCPModbusHeader() { }
 
-        public TCPModbusHeader(short transactionID, short protocolID, short length, byte unitID)
+        public TCPModbusHeader(ushort transactionID, ushort protocolID, ushort length, byte unitID)
         {
             this.transactionID = transactionID;
             this.protocolID = protocolID;
@@ -45,7 +45,7 @@ namespace Common.Message
             return bytes.ToArray();
         }
 
-        public short TransactionID
+        public ushort TransactionID
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Common.Message
             }
         }
 
-        public short ProtocolID
+        public ushort ProtocolID
         {
             get
             {
@@ -69,7 +69,7 @@ namespace Common.Message
             }
         }
 
-        public short Length
+        public ushort Length
         {
             get
             {
