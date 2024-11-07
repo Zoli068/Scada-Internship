@@ -1,16 +1,15 @@
 ﻿using Common.IPointsDataBase;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.PointsDataBase
 {
+    /// <summary>
+    /// Implementation of <see cref="IPointsDataBase"/> interface, in memory database for modbus points
+    /// </summary>
     public class PointsDataBase : IPointsDataBase.IPointsDataBase
     {
-        private Dictionary<ushort, (PointsType,short)> RegistersDictionary= new Dictionary<ushort, (PointsType, short)>();
-        private Dictionary<ushort, (PointsType,byte)> DiscreteDictionary= new Dictionary<ushort, (PointsType, byte)>();
+        private Dictionary<ushort, (PointsType, short)> RegistersDictionary = new Dictionary<ushort, (PointsType, short)>();
+        private Dictionary<ushort, (PointsType, byte)> DiscreteDictionary = new Dictionary<ushort, (PointsType, byte)>();
 
         public PointsDataBase()
         {
@@ -31,9 +30,9 @@ namespace Common.PointsDataBase
 
         public byte ReadDiscreteValue(ushort address, PointsType pointType)
         {
-            (PointsType,byte) value;
+            (PointsType, byte) value;
 
-            if(DiscreteDictionary.TryGetValue(address,out value))
+            if (DiscreteDictionary.TryGetValue(address, out value))
             {
                 if (pointType == value.Item1)
                 {
@@ -77,9 +76,9 @@ namespace Common.PointsDataBase
 
             if (DiscreteDictionary.TryGetValue(address, out point))
             {
-                if(point.Item1== PointsType.COILS)
+                if (point.Item1 == PointsType.COILS)
                 {
-                    if(point.Item1 == pointType)
+                    if (point.Item1 == pointType)
                     {
                         point.Item2 = value;
                         DiscreteDictionary[address] = point;

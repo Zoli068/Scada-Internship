@@ -1,9 +1,4 @@
 ﻿using Common.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
@@ -16,7 +11,7 @@ namespace Common.Message
         private ExceptionCode exceptionCode;
 
         public ModbusError() { }
-        public ModbusError( byte errorCode, ExceptionCode exceptionCode)
+        public ModbusError(byte errorCode, ExceptionCode exceptionCode)
         {
             this.errorCode = errorCode;
             this.exceptionCode = exceptionCode;
@@ -24,13 +19,13 @@ namespace Common.Message
 
         public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out errorCode,data,ref startIndex);
-            exceptionCode =(ExceptionCode)data[startIndex++];
+            ByteValueConverter.GetValue(out errorCode, data, ref startIndex);
+            exceptionCode = (ExceptionCode)data[startIndex++];
         }
 
         public byte[] Serialize()
         {
-            return new byte[2] {errorCode, (byte)exceptionCode};
+            return new byte[2] { errorCode, (byte)exceptionCode };
         }
 
         public byte ErrorCode

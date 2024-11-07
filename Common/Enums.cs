@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common
+﻿namespace Common
 {
     /// <summary>
     /// Enumeration of the possible communication type
     /// </summary>
-    public enum CommunicationType: short
+    public enum CommunicationType : short
     {
         TCP,
         SERIAL
@@ -18,7 +12,7 @@ namespace Common
     /// <summary>
     /// Enumeration of the possible security modes
     /// </summary>
-    public enum SecurityMode: short
+    public enum SecurityMode : short
     {
         SECURE,
         INSECURE
@@ -27,7 +21,7 @@ namespace Common
     /// <summary>
     /// Enumeration of the possible communication state
     /// </summary>
-    public enum CommunicationState: short
+    public enum CommunicationState : short
     {
         CLOSED,
         UNSUCCESSFULL_CONNECTION,
@@ -44,6 +38,9 @@ namespace Common
         OFF
     }
 
+    /// <summary>
+    /// Enumeration of the possible message types
+    /// </summary>
     public enum MessageType : short
     {
         TCPModbus,

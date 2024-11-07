@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common
+namespace Common.StateHandler
 {
     /// <summary>
     /// Class with implemented <see cref="IStateHandler{T}"/>, used for managing a state typeof:<see cref="T"/>, and also provides event if the state changed
@@ -20,7 +17,7 @@ namespace Common
         /// <param name="newState">The new value for the state</param>
         public void ChangeState(T newState)
         {
-            if (!EqualityComparer<T>.Default.Equals(state,newState))
+            if (!EqualityComparer<T>.Default.Equals(state, newState))
             {
                 state = newState;
 

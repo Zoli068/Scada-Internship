@@ -1,13 +1,12 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class ModbusReadInputRegistersRequest:IModbusReadInputRegistersRequest
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadInputRegistersRequest"/> interface
+    /// </summary>
+    public class ModbusReadInputRegistersRequest : IModbusReadInputRegistersRequest
     {
         private ushort startingAddress;
         private ushort quantityOfInputRegisters;
@@ -16,8 +15,8 @@ namespace Common.Message
 
         public ModbusReadInputRegistersRequest(ushort startingAddress, ushort quantityOfInputRegisters)
         {
-            this.startingAddress=startingAddress;
-            this.quantityOfInputRegisters=quantityOfInputRegisters;
+            this.startingAddress = startingAddress;
+            this.quantityOfInputRegisters = quantityOfInputRegisters;
         }
 
         public void Deserialize(byte[] data, ref int startIndex)

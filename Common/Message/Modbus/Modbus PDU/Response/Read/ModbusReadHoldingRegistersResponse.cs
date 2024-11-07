@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadHoldingRegistersResponse"/> interface
+    /// </summary>
     public class ModbusReadHoldingRegistersResponse : IModbusReadHoldingRegistersResponse
     {
         private byte byteCount;
@@ -26,7 +25,7 @@ namespace Common.Message
 
             registerValue = new short[byteCount];
 
-            for (int i = 0; i < byteCount/2; i++)
+            for (int i = 0; i < byteCount / 2; i++)
             {
                 ByteValueConverter.GetValue(out registerValue[i], data, ref startIndex);
             }
@@ -37,7 +36,7 @@ namespace Common.Message
             List<byte> data = new List<byte>();
             data.Add(byteCount);
 
-            for (int i = 0; i < byteCount/2; i++)
+            for (int i = 0; i < byteCount / 2; i++)
             {
                 data.AddRange(ByteValueConverter.ExtractBytes(registerValue[i]));
             }

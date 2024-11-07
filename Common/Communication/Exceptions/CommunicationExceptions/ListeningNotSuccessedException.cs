@@ -1,15 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.Exceptioons.CommunicationExceptions
+namespace Common.CommunicationExceptions
 {
-    public class ListeningNotSuccessedException:Exception
+    /// <summary>
+    /// The exception that is thrown when the server can't listen for incoming connections
+    /// </summary>
+    public class ListeningNotSuccessedException : Exception
     {
-        public ListeningNotSuccessedException():base("The server can't listening for incoming connections") { }
-    
-        public ListeningNotSuccessedException(string message):base(message) { }
+        /// <summary>
+        /// The exception that is thrown when the server can't listen for incoming connections
+        /// </summary>
+        public ListeningNotSuccessedException() : base("The server can't listening for incoming connections") { }
+
+        /// <summary>
+        /// The exception that is thrown when the server can't listen for incoming connections
+        /// </summary>
+        public ListeningNotSuccessedException(string message) : base(message) { }
     }
 }

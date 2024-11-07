@@ -1,15 +1,11 @@
 ﻿using Common;
+using Common.Communication;
 using Common.CommunicationExceptions;
-using Common.Exceptioons.SecureExceptions;
-using Common.ICommunication;
-using Common.Message;
+using Common.SecureExceptions;
+using Common.StateHandler;
 using Common.TaskHandler;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,20 +30,20 @@ namespace Slave.Communication
         private ICommunicationStream communicationStream;
         private IAsyncSecureCommunication secureCommunication;
         private IStateHandler<CommunicationState> stateHandler = new StateHandler<CommunicationState>();
-        
-        public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions,ICommunicationOptions communicationOptions, Action<byte[]> RaiseRecivedBytes)
+
+        public CommunicationHandler(ICommunicationHandlerOptions communicationHandlerOptions, ICommunicationOptions communicationOptions, Action<byte[]> RaiseRecivedBytes)
         {
             this.raiseRecivedBytes = RaiseRecivedBytes;
-            options= communicationHandlerOptions;
+            options = communicationHandlerOptions;
 
             stateHandler.StateChanged += connectionStateChanged;
 
-            if (options.SecurityMode == SecurityMode.SECURE){ secureCommunication=new SecureCommunication(); }
+            if (options.SecurityMode == SecurityMode.SECURE) { secureCommunication = new SecureCommunication(); }
 
             if (communicationOptions.CommunicationType == CommunicationType.TCP)
                 communicationStream = new TcpCommunicationStream(communicationOptions as ITcpCommunicationOptions);
-            
-            acceptingConnectionTask = new TaskHandler(startAcceptingConnections, false, 0,cts);
+
+            acceptingConnectionTask = new TaskHandler(startAcceptingConnections, false, 0, cts);
             reciverTask = new TaskHandler(recivingData, false, 0, cts);
             sendingTask = new TaskHandler(sendingData, false, 0, cts);
 
@@ -60,7 +56,7 @@ namespace Slave.Communication
             {
                 await communicationStream.Accept();
 
-                if (options.SecurityMode == SecurityMode.SECURE) 
+                if (options.SecurityMode == SecurityMode.SECURE)
                     communicationStream.Stream = await secureCommunication.SecureStream(communicationStream.Stream);
 
                 stateHandler.ChangeState(CommunicationState.CONNECTED);
@@ -86,12 +82,12 @@ namespace Slave.Communication
 
                 currentlySendingBytes = null;
             }
-            catch(Exception ex) when(ex is ConnectionErrorException || ex is ConnectionNotExisting)
+            catch (Exception ex) when (ex is ConnectionErrorException || ex is ConnectionNotExisting)
             {
                 Console.WriteLine(ex.Message);
                 stateHandler.ChangeState(CommunicationState.DISCONNECTED);
             }
-            catch (Exception ex) when(ex is ObjectDisposedException) { }; ;
+            catch (Exception ex) when (ex is ObjectDisposedException) { }; ;
         }
 
         private async Task recivingData()
@@ -111,11 +107,12 @@ namespace Slave.Communication
             catch (Exception ex) when (ex is ObjectDisposedException) { };
         }
 
-        public void connectionStateChanged() {
+        public void connectionStateChanged()
+        {
 
             Console.WriteLine("Connection changed to: " + stateHandler.State);
-            
-            if(stateHandler.State== CommunicationState.CONNECTED)
+
+            if (stateHandler.State == CommunicationState.CONNECTED)
             {
                 acceptingConnectionTask.TaskShouldWait();
                 sendingTask.TaskShouldContinue();
@@ -126,7 +123,7 @@ namespace Slave.Communication
                 sendingTask.TaskShouldWait();
                 reciverTask.TaskShouldWait();
 
-                communicationStream.Close(); 
+                communicationStream.Close();
                 acceptingConnectionTask.TaskShouldContinue();
             }
         }

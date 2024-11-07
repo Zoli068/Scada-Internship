@@ -2,14 +2,12 @@
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.PointsDataBase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slave.CommandHandler.Commands
 {
+    /// <summary>
+    /// Class that will handle the incoming <see cref="ModbusWriteMultipleRegistersRequest"/>
+    /// </summary>
     public class WriteMultipleRegistersCommand : IMessageDataCommand<IModbusData>
     {
         private IPointsDataBase pointsDataBase;
@@ -39,12 +37,12 @@ namespace Slave.CommandHandler.Commands
                 throw new InvalidAddressException();
             }
 
-            for(int i=0;i<request.QuantityOfRegisters;i++)
+            for (int i = 0; i < request.QuantityOfRegisters; i++)
             {
                 pointsDataBase.WriteRegisterValue((ushort)(request.StartingAddress + i), PointsType.HOLDING_REGISTERS, request.RegisterValue[i]);
             }
 
-            return new ModbusWriteMultipleRegistersResponse(request.StartingAddress, request.QuantityOfRegisters);  
+            return new ModbusWriteMultipleRegistersResponse(request.StartingAddress, request.QuantityOfRegisters);
         }
     }
 }

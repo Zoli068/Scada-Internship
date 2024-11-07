@@ -1,15 +1,11 @@
-﻿using Common.CommunicationExceptions;
-using Common.Exceptioons.SecureExceptions;
-using Common.ICommunication;
+﻿using Common.Communication;
+using Common.SecureExceptions;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +14,7 @@ namespace Slave.Communication
     /// <summary>
     /// SecureCommunication provides possibility to secure a <see cref="Stream"/> with TLS1.2 with x509 authentication
     /// </summary>
-    public class SecureCommunication: IAsyncSecureCommunication
+    public class SecureCommunication : IAsyncSecureCommunication
     {
         /// <summary>
         /// Server Certificate
@@ -34,18 +30,18 @@ namespace Slave.Communication
         {
             SslStream sslStream = new SslStream(stream, false, new RemoteCertificateValidationCallback(ValidateClientCertificate), null);
 
-            if(certificate == null)
+            if (certificate == null)
             {
                 certificate = LoadCertificate();
             }
 
             try
             {
-                Task authTask=sslStream.AuthenticateAsServerAsync(certificate, true, SslProtocols.Tls12, false);
-               
-                using( CancellationTokenSource cts= new CancellationTokenSource(TimeSpan.FromSeconds(5))) 
+                Task authTask = sslStream.AuthenticateAsServerAsync(certificate, true, SslProtocols.Tls12, false);
+
+                using (CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5)))
                 {
-                    if(await Task.WhenAny(authTask, Task.Delay(Timeout.Infinite, cts.Token)) == authTask)
+                    if (await Task.WhenAny(authTask, Task.Delay(Timeout.Infinite, cts.Token)) == authTask)
                     {
                         await authTask;
                     }
@@ -60,7 +56,7 @@ namespace Slave.Communication
                 throw new AuthenticationFailedException("Authentication can't be done, check out the certificate");
             }
 
-            if(!sslStream.IsMutuallyAuthenticated)
+            if (!sslStream.IsMutuallyAuthenticated)
             {
                 throw new AuthenticationFailedException("Authentication can't be done, check out the certificate");
             }

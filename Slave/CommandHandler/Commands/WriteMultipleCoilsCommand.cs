@@ -2,14 +2,12 @@
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.PointsDataBase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slave.CommandHandler.Commands
 {
+    /// <summary>
+    /// Class that will handle the incoming <see cref="ModbusWriteMultipleCoilsRequest"/>
+    /// </summary>
     public class WriteMultipleCoilsCommand : IMessageDataCommand<IModbusData>
     {
         private IPointsDataBase pointsDataBase;
@@ -34,7 +32,7 @@ namespace Slave.CommandHandler.Commands
             {
                 throw new ValueOutOfIntervalException();
             }
-            else if(byteCount != request.ByteCount)
+            else if (byteCount != request.ByteCount)
             {
                 throw new ValueOutOfIntervalException();
             }
@@ -56,7 +54,7 @@ namespace Slave.CommandHandler.Commands
                 pointsDataBase.WriteDiscreteValue((ushort)(request.StartingAddress + i), PointsType.COILS, temp);
             }
 
-            return new ModbusWriteMultipleCoilsResponse(request.StartingAddress,request.QuantityOfOutputs);
+            return new ModbusWriteMultipleCoilsResponse(request.StartingAddress, request.QuantityOfOutputs);
         }
     }
 }

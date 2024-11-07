@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +22,7 @@ namespace Common.TaskHandler
         private AutoResetEvent stopEvent;
         private readonly Func<Task> taskFunction;
 
-        public TaskHandler(Func<Task> taskFunctionParam,bool executeOnceParam,int intervalParam, CancellationTokenSource cancellationTokenSource)
+        public TaskHandler(Func<Task> taskFunctionParam, bool executeOnceParam, int intervalParam, CancellationTokenSource cancellationTokenSource)
         {
             taskShouldWait = true;
             executeOnce = executeOnceParam;
@@ -33,7 +30,7 @@ namespace Common.TaskHandler
             stopEvent = new AutoResetEvent(false);
             interval = intervalParam;
 
-            if(interval < 0 ) interval = 0;
+            if (interval < 0) interval = 0;
 
             task = new Task(async () =>
             {

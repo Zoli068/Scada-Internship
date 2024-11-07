@@ -92,7 +92,7 @@
       <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Scada\Master.csproj">
-      <Project>{B2D63C91-0CD3-4862-8878-EDC0A6BD3565}</Project>
+      <Project>{b2d63c91-0cd3-4862-8878-edc0a6bd3565}</Project>
       <Name>Master</Name>
     </ProjectReference>
     <ProjectReference Include="..\Slave\Slave.csproj">

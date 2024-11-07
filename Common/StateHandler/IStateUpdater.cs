@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.ICommunication
+﻿namespace Common.StateHandler
 {
     /// <summary>
     /// Contains a method description that allows us to subscribe to an <see cref="IStateHandler{T}.StateChanged"/> event

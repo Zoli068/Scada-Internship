@@ -1,12 +1,11 @@
-﻿using Common.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusPDU"/> interface
+    /// </summary>
     public class ModbusPDU : IModbusPDU
     {
         private FunctionCode functionCode;
@@ -33,8 +32,8 @@ namespace Common.Message
             {
                 try
                 {
-                   this.data = new ModbusError();
-                   this.data.Deserialize(data,ref startIndex);
+                    this.data = new ModbusError();
+                    this.data.Deserialize(data, ref startIndex);
                 }
                 catch (Exception)
                 {
@@ -64,7 +63,8 @@ namespace Common.Message
             }
         }
 
-        public IModbusData Data{
+        public IModbusData Data
+        {
             get
             {
                 return data;

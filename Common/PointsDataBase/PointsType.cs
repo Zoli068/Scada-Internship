@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.IPointsDataBase
+﻿namespace Common.IPointsDataBase
 {
+    /// <summary>
+    /// Possible types for Points
+    /// </summary>
     public enum PointsType
     {
         COILS,

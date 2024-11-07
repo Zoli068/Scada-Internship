@@ -2,16 +2,13 @@
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.PointsDataBase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slave.CommandHandler.Commands
 {
-    public class ReadDiscreteInputsCommand:IMessageDataCommand<IModbusData>
+    /// <summary>
+    /// Class that will handle the incoming <see cref="ModbusReadDiscreteInputsRequest"/>
+    /// </summary>
+    public class ReadDiscreteInputsCommand : IMessageDataCommand<IModbusData>
     {
         private IPointsDataBase pointsDataBase;
 
@@ -24,7 +21,7 @@ namespace Slave.CommandHandler.Commands
         {
             ModbusReadDiscreteInputsRequest data = modbusData as ModbusReadDiscreteInputsRequest;
 
-            if (data.QuantityOfInputs <1 || data.QuantityOfInputs > 2000)
+            if (data.QuantityOfInputs < 1 || data.QuantityOfInputs > 2000)
             {
                 throw new ValueOutOfIntervalException();
             }

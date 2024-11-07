@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.Utilities { 
+namespace Common.Utilities
+{
     /// <summary>
     /// The exception that is thrown when an we got an error in the process of serialization/deserialization
     /// </summary>

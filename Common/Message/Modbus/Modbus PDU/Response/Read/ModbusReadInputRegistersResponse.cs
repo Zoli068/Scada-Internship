@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadInputRegistersResponse"/> interface
+    /// </summary>
     public class ModbusReadInputRegistersResponse : IModbusReadInputRegistersResponse
     {
         private byte byteCount;

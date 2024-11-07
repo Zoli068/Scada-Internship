@@ -3,9 +3,6 @@ using Common.CommunicationExceptions;
 using Common.Exceptioons.CommunicationExceptions;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -21,7 +18,7 @@ namespace Test
         private Slave.Communication.TcpCommunicationStream tcpSlaveCommunication;
 
         [SetUp]
-        public  async void Setup()
+        public async void Setup()
         {
             options = new Slave.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8001, CommunicationType.TCP, 8192);
             tcpSlaveCommunication = new Slave.Communication.TcpCommunicationStream(options);
@@ -54,7 +51,7 @@ namespace Test
             //Arange
             tcpSlaveCommunication.Close();
             byte[] data = new byte[] { 1, 2, 3 };
-            
+
             //Act & Assert
             Assert.ThrowsAsync<ConnectionNotExisting>(async () => await tcpSlaveCommunication.Send(data));
         }
@@ -64,7 +61,7 @@ namespace Test
         {
             //Arrange
             TcpClient client = new TcpClient();
-            byte[] dataToSend =new byte[]{ 1,2,3};
+            byte[] dataToSend = new byte[] { 1, 2, 3 };
             byte[] receiveBuffer = new byte[3];
             tcpSlaveCommunication.Close();
 
@@ -72,7 +69,7 @@ namespace Test
             client.Connect("127.0.0.1", 8001);
             await tcpSlaveCommunication.Accept();
             await tcpSlaveCommunication.Send(dataToSend);
-            await client.GetStream().ReadAsync(receiveBuffer,0,3);
+            await client.GetStream().ReadAsync(receiveBuffer, 0, 3);
 
             //Assert
             ClassicAssert.AreEqual(dataToSend, receiveBuffer);
@@ -92,7 +89,7 @@ namespace Test
             await tcpSlaveCommunication.Accept();
             await client.GetStream().WriteAsync(dataToSend, 0, dataToSend.Length);
             var dataReceived = await tcpSlaveCommunication.Receive();
-            
+
             //Assert
             ClassicAssert.AreEqual(dataToSend, dataReceived);
         }

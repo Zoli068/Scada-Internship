@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace Common.ICommunication
+namespace Common.Communication
 {
+    /// <summary>
+    /// Interfaces for describing method for Async Securing the Communication
+    /// </summary>
     public interface IAsyncSecureCommunication
     {
         /// <summary>

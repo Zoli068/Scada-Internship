@@ -1,9 +1,4 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Master.Communication
 {
@@ -15,13 +10,14 @@ namespace Master.Communication
         private readonly int reconnectInterval;
         private readonly SecurityMode securityMode;
 
-        public CommunicationHandlerOptions(int reconnectInterval,SecurityMode securityMode)
+        public CommunicationHandlerOptions(int reconnectInterval, SecurityMode securityMode)
         {
             this.reconnectInterval = reconnectInterval;
             this.securityMode = securityMode;
         }
 
-        public int ReconnectInterval{
+        public int ReconnectInterval
+        {
             get
             {
                 return reconnectInterval;

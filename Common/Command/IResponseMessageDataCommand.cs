@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Command
+﻿namespace Common.Command
 {
+    /// <summary>
+    /// Interfaces which describes the method that need to be 
+    /// implemented inside a ResponseCommand for MessageDatas
+    /// </summary>
     public interface IResponseMessageDataCommand<T>
     {
-        void Execute(T request,T response);
+        /// <summary>
+        /// The method which have to be called to process a messageData response
+        /// </summary>
+        /// <param name="request">The original request messageData</param>
+        /// <param name="response">The response messageData</param>
+        void Execute(T request, T response);
     }
 }

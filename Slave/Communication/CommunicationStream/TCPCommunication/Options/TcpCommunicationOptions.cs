@@ -1,10 +1,5 @@
 ﻿using Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
@@ -25,7 +20,7 @@ namespace Slave.Communication
         /// <param name="portNumber">Port number of the server</param>
         /// <param name="communicationType">Indicates the communication type which will be used</param>
         /// <param name="bufferSize">Size of the connection buffer in bytes</param>
-        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType,int bufferSize)
+        public TcpCommunicationOptions(IPAddress address, int portNumber, CommunicationType communicationType, int bufferSize)
         {
             this.address = address;
             this.portNumber = portNumber;

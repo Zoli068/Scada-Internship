@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusWriteMultipleCoilsRequest"/> interface
+    /// </summary>
     public class ModbusWriteMultipleCoilsRequest : IModbusWriteMultipleCoilsRequest
     {
         private ushort startingAddress;
@@ -32,7 +31,7 @@ namespace Common.Message
 
             outputsValue = new byte[byteCount];
 
-            for(int i=0;i<byteCount;i++)
+            for (int i = 0; i < byteCount; i++)
             {
                 ByteValueConverter.GetValue(out outputsValue[i], data, ref startIndex);
             }
@@ -45,7 +44,7 @@ namespace Common.Message
             data.AddRange(ByteValueConverter.ExtractBytes(quantityOfOutputs));
             data.AddRange(ByteValueConverter.ExtractBytes(byteCount));
 
-            for(int i=0;i< byteCount; i++)
+            for (int i = 0; i < byteCount; i++)
             {
                 data.AddRange(ByteValueConverter.ExtractBytes(outputsValue[i]));
             }
@@ -57,7 +56,7 @@ namespace Common.Message
         {
             get
             {
-                return startingAddress; 
+                return startingAddress;
             }
             set
             {

@@ -1,19 +1,10 @@
-﻿using Master.Communication;
-using Slave;
-using Common;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework.Legacy;
+﻿using Common;
 using Common.CommunicationExceptions;
-using Slave.Communication;
+using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using System.Net;
 using System.Threading;
-using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Test
 {
@@ -24,14 +15,15 @@ namespace Test
         private Master.Communication.TcpCommunicationStream tcpCommunicationStream;
         private Slave.Communication.TcpCommunicationStream tcpServerCommunicationStream;
         private CancellationTokenSource cancellationTokenSource;
-        
+
         [SetUp]
         public async void Setup()
         {
             cancellationTokenSource = new CancellationTokenSource();
 
             tcpServerCommunicationStream = new Slave.Communication.TcpCommunicationStream(new Slave.Communication.TcpCommunicationOptions(IPAddress.Loopback, 8000, CommunicationType.TCP, 8192));
-            Task serverTask = Task.Run(async () => {
+            Task serverTask = Task.Run(async () =>
+            {
                 while (true)
                 {
                     await tcpServerCommunicationStream.Accept();
@@ -103,7 +95,7 @@ namespace Test
             //Act
 
             await tcpServerCommunicationStream.Send(sendingdata);
-            Assert.DoesNotThrow(async () => receiveingdata= await tcpCommunicationStream.Receive());
+            Assert.DoesNotThrow(async () => receiveingdata = await tcpCommunicationStream.Receive());
             CollectionAssert.AreEqual(sendingdata, receiveingdata);
         }
 

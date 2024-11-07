@@ -62,9 +62,11 @@
     <Compile Include="Communication\CommunicationStream\ICommunicationStream.cs" />
     <Compile Include="Communication\CommunicationStream\TCPCommunication\Options\ITcpCommunicationOptions.cs" />
     <Compile Include="Communication\CommunicationStream\TCPCommunication\Options\TcpCommunicationOptions.cs" />
+    <Compile Include="Message\ModbusMessageProcesser.cs" />
     <Compile Include="Message\TCPModbusMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Slave.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

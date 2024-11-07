@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Message 
-{ 
+﻿namespace Common.Message
+{
+    /// <summary>
+    /// Describes a Modbus Write Multiple Register Response attrbutes
+    /// </summary>
     public interface IModbusWriteMultipleRegistersResponse : IModbusData
     {
+        /// <summary>
+        /// Address from we want to get the values
+        /// </summary>
         ushort StartingAddress { get; set; }
-        ushort QuantityOfRegisters {  get; set; }
+
+        /// <summary>
+        /// Indicates how many values we want to read 
+        /// </summary>
+        ushort QuantityOfRegisters { get; set; }
     }
 }

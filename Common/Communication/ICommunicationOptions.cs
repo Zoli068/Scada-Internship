@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.ICommunication
+﻿namespace Common.Communication
 {
     /// <summary>
     /// Interface which contains the important values for a communication

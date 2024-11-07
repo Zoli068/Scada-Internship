@@ -1,9 +1,5 @@
-﻿using Common;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Slave.Communication
@@ -11,8 +7,8 @@ namespace Slave.Communication
     /// <summary>
     /// Describes all the required methods for a communication stream
     /// </summary>
-    public interface ICommunicationStream : IDisposable 
-    { 
+    public interface ICommunicationStream : IDisposable
+    {
         /// <summary>
         /// Async accepting an incoming connection
         /// </summary>

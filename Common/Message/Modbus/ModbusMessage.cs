@@ -1,21 +1,16 @@
-﻿using Common.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Common.Message.Modbus
+namespace Common.Message
 {
     /// <summary>
     /// The implementation of a Modbus Message
     /// </summary>
-    public class  ModbusMessage : IMessage
+    public class ModbusMessage : IMessage
     {
         private IMessageData messageData;
         private IMessageHeader messageHeader;
 
-        public ModbusMessage() 
+        public ModbusMessage()
         {
             messageHeader = new TCPModbusHeader();
             messageData = new ModbusPDU();
@@ -27,10 +22,10 @@ namespace Common.Message.Modbus
             this.messageHeader = messageHeader;
         }
 
-        public void Deserialize(byte[] data,ref int startIndex)
+        public void Deserialize(byte[] data, ref int startIndex)
         {
-               messageHeader.Deserialize(data,ref startIndex);
-               messageData.Deserialize(data,ref startIndex);
+            messageHeader.Deserialize(data, ref startIndex);
+            messageData.Deserialize(data, ref startIndex);
         }
 
         public byte[] Serialize()

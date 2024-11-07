@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common.Message.Exceptions
+namespace Common.Message
 {
     /// <summary>
     /// The exception that is thrown when can't parse a supported message from the bytes
     /// </summary>
-    public class NotSupportedMessageException:Exception
+    public class NotSupportedMessageException : Exception
     {
         /// <summary>
         /// The exception that is thrown when can't parse a supported message from the bytes

@@ -1,17 +1,16 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusWriteSingleCoilResponse"/> interface
+    /// </summary>
     public class ModbusWriteSingleCoilResponse : IModbusWriteSingleCoilResponse
     {
         private ushort outputAddress;
         private ushort outputValue;
-        
+
         public ModbusWriteSingleCoilResponse() { }
 
         public ModbusWriteSingleCoilResponse(ushort outputAddress, ushort outputValue)
@@ -55,7 +54,7 @@ namespace Common.Message
             }
             set
             {
-                outputValue= value;
+                outputValue = value;
             }
         }
     }

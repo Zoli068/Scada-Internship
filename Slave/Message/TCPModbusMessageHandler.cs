@@ -1,21 +1,14 @@
-﻿using Common;
-using Common.Command;
+﻿using Common.Command;
 using Common.Message;
-using Common.Message.Exceptions;
-using Common.Message.Modbus;
 using Common.Serialization;
-using Common.Utilities;
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Slave.Communication
 {
+    /// <summary>
+    /// The class which converts the bytes to ModbusMessages,  and ModbusMessages back to bytes and send for the communication layer
+    /// </summary>
     public class TCPModbusMessageHandler : IMessageHandler
     {
         private Action<byte[]> sendBytes;
@@ -38,14 +31,14 @@ namespace Slave.Communication
 
                 if (data.Length - 7 == (modbusMessage.MessageHeader as TCPModbusHeader).Length)
                 {
-                    messageDataToSend=messageDataHandler.ProcessMessageData(modbusMessage.MessageData);
+                    messageDataToSend = messageDataHandler.ProcessMessageData(modbusMessage.MessageData);
                     SendMessage(messageDataToSend);
                     modbusMessage = null;
                 }
             }
             catch (Exception)
             {
-                return;    
+                return;
             }
         }
 

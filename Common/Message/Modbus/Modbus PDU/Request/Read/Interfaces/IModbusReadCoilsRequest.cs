@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Message
+﻿namespace Common.Message
 {
-    public interface IModbusReadCoilsRequest:IModbusData
+    /// <summary>
+    /// Describes a Modbus Read Coils Request attributes
+    /// </summary>
+    public interface IModbusReadCoilsRequest : IModbusData
     {
-        ushort StartingAddress {get;set;}
+        /// <summary>
+        /// Address from we want to get the values
+        /// </summary>
+        ushort StartingAddress { get; set; }
 
-        ushort QuantityOfCoils { get;set;}
+        /// <summary>
+        /// Indicates how many values we want to read 
+        /// </summary>
+        ushort QuantityOfCoils { get; set; }
     }
 }

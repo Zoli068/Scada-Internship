@@ -1,14 +1,10 @@
-﻿using Common;
+﻿using Common.Communication;
 using Common.CommunicationExceptions;
-using Common.Exceptioons.CommunicationExceptions;
-using Common.ICommunication;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Slave.Communication
@@ -16,7 +12,7 @@ namespace Slave.Communication
     /// <summary>
     /// The <see cref="TcpCommunicationStream"/> responsible for the TCP Communication
     /// </summary>
-    public class TcpCommunicationStream :ICommunicationStream
+    public class TcpCommunicationStream : ICommunicationStream
     {
         private Stream stream;
         private TcpClient tcpClient;
@@ -31,7 +27,7 @@ namespace Slave.Communication
         {
             options = communicationOwptions as ITcpCommunicationOptions;
             IPEndPoint endPoint = new IPEndPoint(options.Address, options.PortNumber);
-            
+
             try
             {
                 tcpListener = new TcpListener(endPoint);
@@ -51,14 +47,14 @@ namespace Slave.Communication
         {
             //TODO in the future, if we wan't to drop the old communication when we got a new one, the we have to change
             //the definitions 
-            if(tcpClient==null || !tcpClient.Connected)
+            if (tcpClient == null || !tcpClient.Connected)
             {
                 try
                 {
                     tcpClient = await tcpListener.AcceptTcpClientAsync();
                     stream = tcpClient.GetStream();
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     throw new UnsuccessfullConnectionException();
                 }
@@ -89,7 +85,7 @@ namespace Slave.Communication
         /// <returns>Task object, which is representing the async byte sending</returns>
         public async Task Send(byte[] data)
         {
-            if (stream != null && tcpClient!=null && tcpClient.Connected)
+            if (stream != null && tcpClient != null && tcpClient.Connected)
             {
                 try
                 {
@@ -121,7 +117,8 @@ namespace Slave.Communication
                 {
                     readedBytes = await stream.ReadAsync(recvData, 0, options.BufferSize);
 
-                }catch (Exception)
+                }
+                catch (Exception)
                 {
                     throw new ConnectionErrorException();
                 }
@@ -154,7 +151,7 @@ namespace Slave.Communication
 
             set
             {
-                stream=value;
+                stream = value;
             }
         }
 
@@ -171,13 +168,13 @@ namespace Slave.Communication
                     {
                         stream.Close();
                     }
-                    
-                    if(tcpClient != null)
+
+                    if (tcpClient != null)
                     {
                         tcpClient.Close();
                     }
-                
-                    if(tcpListener!= null)
+
+                    if (tcpListener != null)
                     {
                         //important to do bcs after a Slave restart, otherwise the socket would be still in use
                         tcpListener.Stop();

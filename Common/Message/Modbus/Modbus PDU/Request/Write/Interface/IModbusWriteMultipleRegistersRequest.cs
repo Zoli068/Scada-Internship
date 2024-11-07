@@ -1,16 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Message
+﻿namespace Common.Message
 {
+    /// <summary>
+    /// Describes a Modbus Write Multiple Registers Request attributes
+    /// </summary>
     public interface IModbusWriteMultipleRegistersRequest : IModbusData
     {
+        /// <summary>
+        /// Address where we want to write the values
+        /// </summary>
         ushort StartingAddress { get; set; }
-        ushort QuantityOfRegisters {  get; set; }
-        byte ByteCount {  get; set; }
+
+        /// <summary>
+        /// Indicates how many values we want to write
+        /// </summary>
+        ushort QuantityOfRegisters { get; set; }
+
+        /// <summary>
+        /// Indicates the number of bytes inside the <see cref="RegisterValue"/>
+        /// </summary>
+        byte ByteCount { get; set; }
+
+        /// <summary>
+        /// Contains the values that have to be written
+        /// </summary>
         short[] RegisterValue { get; set; }
     }
 }

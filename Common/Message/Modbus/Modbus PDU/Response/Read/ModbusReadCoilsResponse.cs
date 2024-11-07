@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadCoilsResponse"/> interface
+    /// </summary>
     public class ModbusReadCoilsResponse : IModbusReadCoilsResponse
     {
         private byte byteCount;
@@ -22,11 +21,11 @@ namespace Common.Message
 
         public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out byteCount,data,ref startIndex);
+            ByteValueConverter.GetValue(out byteCount, data, ref startIndex);
 
             coilStatus = new byte[byteCount];
 
-            for(int i=0;i<byteCount;i++)
+            for (int i = 0; i < byteCount; i++)
             {
                 ByteValueConverter.GetValue(out coilStatus[i], data, ref startIndex);
             }
@@ -36,8 +35,8 @@ namespace Common.Message
         {
             List<byte> data = new List<byte>();
             data.Add(byteCount);
-            
-            for(int i = 0; i < byteCount; i++)
+
+            for (int i = 0; i < byteCount; i++)
             {
                 data.Add(coilStatus[i]);
             }

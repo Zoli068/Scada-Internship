@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadDiscreteInputsResponse"/> interface
+    /// </summary>
     public class ModbusReadDiscreteInputsResponse : IModbusReadDiscreteInputsResponse
     {
         private byte byteCount;
@@ -17,7 +16,7 @@ namespace Common.Message
         public ModbusReadDiscreteInputsResponse(byte byteCount, byte[] inputStatus)
         {
             this.byteCount = byteCount;
-            this.inputStatus= inputStatus;
+            this.inputStatus = inputStatus;
         }
 
         public void Deserialize(byte[] data, ref int startIndex)

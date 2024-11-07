@@ -1,13 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.PerformanceData;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadDiscreteInputsRequest"/> interface
+    /// </summary>
     public class ModbusReadDiscreteInputsRequest : IModbusReadDiscreteInputsRequest
     {
         private ushort startingAddress;

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Common
+namespace Common.StateHandler
 {
     /// <summary>
     /// Describes all the neccessary things for implementing a <typeparamref name="T"/> type state, and to trigger an event if <see cref="ChangeState(T)"/> happens

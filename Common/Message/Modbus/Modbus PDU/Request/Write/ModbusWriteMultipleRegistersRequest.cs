@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusWriteMultipleRegistersRequest"/> interface
+    /// </summary>
     public class ModbusWriteMultipleRegistersRequest : IModbusWriteMultipleRegistersRequest
     {
         private ushort startingAddress;
@@ -22,7 +21,6 @@ namespace Common.Message
             this.quantityOfRegisters = quantityOfRegisters;
             this.byteCount = byteCount;
             this.registerValue = registerValue;
-
         }
 
         public void Deserialize(byte[] data, ref int startIndex)
@@ -33,7 +31,7 @@ namespace Common.Message
 
             registerValue = new short[byteCount];
 
-            for (int i = 0; i < byteCount/2; i++)
+            for (int i = 0; i < byteCount / 2; i++)
             {
                 ByteValueConverter.GetValue(out registerValue[i], data, ref startIndex);
             }
@@ -46,7 +44,7 @@ namespace Common.Message
             data.AddRange(ByteValueConverter.ExtractBytes(quantityOfRegisters));
             data.AddRange(ByteValueConverter.ExtractBytes(byteCount));
 
-            for (int i = 0; i < byteCount/2; i++)
+            for (int i = 0; i < byteCount / 2; i++)
             {
                 data.AddRange(ByteValueConverter.ExtractBytes(registerValue[i]));
             }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Helper class for creating the right ModbusData for each function code
+    /// For Slave side it will create a Request object
+    /// For Master side it will create a Response object
+    /// </summary>
     public static class ModbusFunctionFactory
     {
         public static Dictionary<FunctionCode, Func<IModbusData>> TypeMap;
@@ -15,7 +17,7 @@ namespace Common.Message
         {
             string mode = ConfigurationManager.AppSettings["ModbusMode"];
 
-            if(mode == "Slave")
+            if (mode == "Slave")
             {
                 TypeMap = new Dictionary<FunctionCode, Func<IModbusData>>()
                 {

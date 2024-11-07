@@ -1,17 +1,15 @@
-﻿using Common.Message.Modbus;
-using Common.Utilities;
-using System;
+﻿using Common.Utilities;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class TCPModbusHeader : ITCPModbusHeader 
+    /// <summary>
+    /// Implementation of the <see cref="ITCPModbusHeader"/> interface
+    /// </summary>
+    public class TCPModbusHeader : ITCPModbusHeader
     {
         private ushort transactionID;
-        private ushort protocolID =0x0000;
+        private ushort protocolID = 0x0000;
         private ushort length;
         private byte unitID;
 
@@ -25,12 +23,12 @@ namespace Common.Message
             this.unitID = unitID;
         }
 
-        public void Deserialize(byte[] data,ref int startIndex)
+        public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out transactionID, data,ref startIndex);
-            ByteValueConverter.GetValue(out protocolID, data,ref startIndex);
-            ByteValueConverter.GetValue(out length, data,ref startIndex);
-            ByteValueConverter.GetValue(out unitID, data,ref startIndex);
+            ByteValueConverter.GetValue(out transactionID, data, ref startIndex);
+            ByteValueConverter.GetValue(out protocolID, data, ref startIndex);
+            ByteValueConverter.GetValue(out length, data, ref startIndex);
+            ByteValueConverter.GetValue(out unitID, data, ref startIndex);
         }
 
         public byte[] Serialize()
@@ -53,7 +51,7 @@ namespace Common.Message
             }
             set
             {
-               transactionID = value;
+                transactionID = value;
             }
         }
 
@@ -77,7 +75,7 @@ namespace Common.Message
             }
             set
             {
-                length= value;
+                length = value;
             }
         }
 
@@ -89,7 +87,7 @@ namespace Common.Message
             }
             set
             {
-                unitID= value;
+                unitID = value;
             }
         }
     }

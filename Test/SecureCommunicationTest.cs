@@ -1,17 +1,10 @@
-﻿using Common.CommunicationExceptions;
-using Common.Exceptioons.SecureExceptions;
-using Master.Communication;
+﻿using Common.Exceptioons.SecureExceptions;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
-using Slave.Communication;
-using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Test
@@ -20,10 +13,10 @@ namespace Test
     public class SecureCommunicationTest
     {
         private Master.Communication.SecureCommunication secureMasterCommunication;
-        private Slave.Communication.SecureCommunication  secureSlaveCommunication;
+        private Slave.Communication.SecureCommunication secureSlaveCommunication;
 
         [SetUp]
-        public void Setup() 
+        public void Setup()
         {
             secureMasterCommunication = new Master.Communication.SecureCommunication();
             secureSlaveCommunication = new Slave.Communication.SecureCommunication();
@@ -33,24 +26,24 @@ namespace Test
         public async Task SecureStream_BothSideDoingAuthentication_SuccessfullAuth()
         {
             //Arrange
-            ConfigurationManager.AppSettings.Set("CA_ThumbPrintSlave","0a76b16c5eff2e78155776f439b603ce73617f0b");
+            ConfigurationManager.AppSettings.Set("CA_ThumbPrintSlave", "0a76b16c5eff2e78155776f439b603ce73617f0b");
             ConfigurationManager.AppSettings.Set("CA_ThumbPrintMaster", "8565dae6c27502af7ec18e856c41b63c5a026306");
 
-            TcpClient client=new TcpClient();
-            TcpListener tcpListener = new TcpListener(System.Net.IPAddress.Loopback,8002);
-            
+            TcpClient client = new TcpClient();
+            TcpListener tcpListener = new TcpListener(System.Net.IPAddress.Loopback, 8002);
+
             tcpListener.Start(1);
             client.Connect("127.0.0.1", 8002);
 
-            TcpClient acceptedClient=await tcpListener.AcceptTcpClientAsync();
-  
+            TcpClient acceptedClient = await tcpListener.AcceptTcpClientAsync();
+
             Stream clientStream = client.GetStream();
             Stream serverStream = acceptedClient.GetStream();
 
             //Act
-            SslStream sslServer=null;
-            Task secureSlave = secureSlaveCommunication.SecureStream(serverStream).ContinueWith(t => { sslServer =(SslStream)t.Result; });
-            SslStream sslClient=(await secureMasterCommunication.SecureStream(clientStream)) as SslStream;
+            SslStream sslServer = null;
+            Task secureSlave = secureSlaveCommunication.SecureStream(serverStream).ContinueWith(t => { sslServer = (SslStream)t.Result; });
+            SslStream sslClient = (await secureMasterCommunication.SecureStream(clientStream)) as SslStream;
 
             //Assert
             ClassicAssert.NotNull(sslClient);
@@ -65,7 +58,7 @@ namespace Test
         [Test, Timeout(10000)]
         public async Task SecureStream_NoCertificates_ShouldThrowAuthFailed()
         {
-           //Arrange
+            //Arrange
             ConfigurationManager.AppSettings.Set("CA_ThumbPrintSlave", "fakeThumb");
             ConfigurationManager.AppSettings.Set("CA_ThumbPrintMaster", "fakeThumb");
 

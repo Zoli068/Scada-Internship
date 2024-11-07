@@ -2,14 +2,12 @@
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.PointsDataBase;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Slave.CommandHandler.Commands
 {
+    /// <summary>
+    /// Class that will handle the incoming <see cref="ModbusReadCoilsRequest"/>
+    /// </summary>
     public class ReadCoilsCommand : IMessageDataCommand<IModbusData>
     {
         private IPointsDataBase pointsDataBase;
@@ -21,14 +19,14 @@ namespace Slave.CommandHandler.Commands
 
         public IModbusData Execute(IModbusData modbusData)
         {
-            ModbusReadCoilsRequest data= modbusData as ModbusReadCoilsRequest;
+            ModbusReadCoilsRequest data = modbusData as ModbusReadCoilsRequest;
 
             if (data.QuantityOfCoils < 1 || data.QuantityOfCoils > 2000)
             {
                 throw new ValueOutOfIntervalException();
             }
 
-            if(!(pointsDataBase.CheckAddress(data.StartingAddress) & pointsDataBase.CheckAddress((ushort)(data.StartingAddress+data.QuantityOfCoils-1))))
+            if (!(pointsDataBase.CheckAddress(data.StartingAddress) & pointsDataBase.CheckAddress((ushort)(data.StartingAddress + data.QuantityOfCoils - 1))))
             {
                 throw new InvalidAddressException();
             }
@@ -51,7 +49,7 @@ namespace Slave.CommandHandler.Commands
                 bitPosition = i % 8;
                 address = (ushort)(data.StartingAddress + i);
 
-                if (pointsDataBase.ReadDiscreteValue(address,PointsType.COILS) != 0)
+                if (pointsDataBase.ReadDiscreteValue(address, PointsType.COILS) != 0)
                 {
                     bytes[byteIndex] |= (byte)(1 << bitPosition);
                 }

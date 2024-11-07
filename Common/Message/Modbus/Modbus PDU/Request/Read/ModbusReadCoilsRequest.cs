@@ -1,12 +1,11 @@
 ﻿using Common.Utilities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Message
 {
+    /// <summary>
+    /// Implementation of the <see cref="IModbusReadCoilsRequest"/> interface
+    /// </summary>
     public class ModbusReadCoilsRequest : IModbusReadCoilsRequest
     {
         private ushort startingAddress;
@@ -55,7 +54,7 @@ namespace Common.Message
             }
             set
             {
-                quantityOfCoils=value;
+                quantityOfCoils = value;
             }
         }
 

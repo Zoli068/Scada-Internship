@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Common.Message
+﻿namespace Common.Message
 {
-    public interface IModbusReadDiscreteInputsResponse: IModbusData
+    /// <summary>
+    /// Describes a Modbus Read Discrete Inputs Response attributes
+    /// </summary>
+    public interface IModbusReadDiscreteInputsResponse : IModbusData
     {
+        /// <summary>
+        /// Number of bytes contained inside the <see cref="InputStatus"/>
+        /// </summary>
         byte ByteCount { get; set; }
+
+        /// <summary>
+        /// Contains the readed Discrete Inputs
+        /// </summary>
         byte[] InputStatus { get; set; }
     }
 }

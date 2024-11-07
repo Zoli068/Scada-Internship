@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Command\Exception\ValueOutOfIntervalException.cs" />
     <Compile Include="Command\IMessageDataCommand.cs" />
-    <Compile Include="Command\ICommandHandler.cs" />
+    <Compile Include="Command\IMessageDataHandler.cs" />
     <Compile Include="Command\IResponseMessageDataCommand.cs" />
     <Compile Include="Command\IResponseMessageDataHandler.cs" />
     <Compile Include="Communication\Exceptions\CommunicationExceptions\ConnectionAlreadyExisting.cs" />
@@ -56,6 +56,7 @@
     <Compile Include="Communication\IAsyncSecureCommunication.cs" />
     <Compile Include="Communication\ICommunication.cs" />
     <Compile Include="Message\Interface\IMessageInitiateCommand.cs" />
+    <Compile Include="Message\Interface\IMessageProcesser.cs" />
     <Compile Include="PointsDataBase\Exceptions\CantWriteInputException.cs" />
     <Compile Include="PointsDataBase\Exceptions\InvalidAddressException.cs" />
     <Compile Include="PointsDataBase\Exceptions\PointTypeDifferenceException.cs" />
@@ -122,8 +123,8 @@
     <Compile Include="Serialization\Exceptions\NotEnoughBytesException.cs" />
     <Compile Include="Serialization\Exceptions\SerializationException.cs" />
     <Compile Include="Utilities\ByteValueConverter.cs" />
+    <Compile Include="Utilities\IMessageDTO.cs" />
     <Compile Include="Utilities\MessageDTOBadValuesExceptioncs.cs" />
-    <Compile Include="Utilities\ModbusMessageDTO.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
