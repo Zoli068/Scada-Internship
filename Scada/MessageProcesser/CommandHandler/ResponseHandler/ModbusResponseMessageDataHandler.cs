@@ -1,6 +1,7 @@
 ﻿using Common.Command;
 using Common.Message;
 using Master.CommandHandler.ResponseCommands;
+using Master.MessageProcesser;
 using System;
 using System.Collections.Generic;
 
@@ -25,6 +26,7 @@ namespace Master.CommandHandler
                 {FunctionCode.WriteMultipleRegisters,new WriteMultipleRegistersResponseCommand() },
                 {FunctionCode.WriteSingleCoil, new WriteSingleCoilResponseCommand() },
                 {FunctionCode.WriteSingleRegister,new WriteSingleRegisterResponseCommand() },
+                {FunctionCode.MaskWriteRegister,new MaskWriteRegisterResponseCommand() },
             };
         }
 

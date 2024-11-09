@@ -28,7 +28,8 @@ namespace Common.Message
                     { FunctionCode.WriteSingleCoil, () => new ModbusWriteSingleCoilRequest() },
                     { FunctionCode.WriteSingleRegister, () => new ModbusWriteSingleRegisterRequest() },
                     { FunctionCode.WriteMultipleCoils, () => new ModbusWriteMultipleCoilsRequest() },
-                    { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersRequest() }
+                    { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersRequest() },
+                    { FunctionCode.MaskWriteRegister, () => new ModbusMaskWriteRegisterRequest() },
                 };
             }
             else
@@ -42,7 +43,8 @@ namespace Common.Message
                     { FunctionCode.WriteSingleCoil, () => new ModbusWriteSingleCoilResponse() },
                     { FunctionCode.WriteSingleRegister, () => new ModbusWriteSingleRegisterResponse() },
                     { FunctionCode.WriteMultipleCoils, () => new ModbusWriteMultipleCoilsResponse() },
-                    { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersResponse() }
+                    { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersResponse() },
+                    {FunctionCode.MaskWriteRegister, () => new ModbusMaskWriteRegisterResponse() },
                 };
             }
         }

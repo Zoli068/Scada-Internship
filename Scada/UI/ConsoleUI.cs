@@ -36,6 +36,7 @@ namespace Master.UI
                 Console.WriteLine("6 - Write Single Register");
                 Console.WriteLine("7 - Write Multiple Coils");
                 Console.WriteLine("8 - Write Multiple Registers");
+                Console.WriteLine("9 - Mask Write Register");
 
                 if (!int.TryParse(Console.ReadLine(), out selectedOption))
                 {
@@ -70,6 +71,9 @@ namespace Master.UI
                         break;
                     case 8:
                         WriteMultipleRegisters();
+                        break;
+                    case 9:
+                        MaskWriteRegister();
                         break;
                 }
                 Thread.Sleep(200);
@@ -254,6 +258,32 @@ namespace Master.UI
             initiateWriteMultipleModbusDTO.Values = values;
 
             initateMessage(FunctionCode.WriteMultipleCoils, initiateWriteMultipleModbusDTO);
+        }
+
+        private void MaskWriteRegister()
+        {
+            ushort address;
+            ushort orMask;
+            ushort andMask;
+
+            Console.Clear();
+            Console.WriteLine("Mask Write Register");
+            Console.WriteLine("Enter the address:");
+            if (!ushort.TryParse(Console.ReadLine(), out address)) { return; }
+
+            Console.WriteLine("Enter the or mask:");
+            if (!ushort.TryParse(Console.ReadLine(), out orMask)) { return; }
+
+            Console.WriteLine("Enter the and mask:");
+            if (!ushort.TryParse(Console.ReadLine(), out andMask)) { return; }
+
+            InitiateMaskWriteModbusDTO initiateMaskWriteModbusDTO = new InitiateMaskWriteModbusDTO();
+
+            initiateMaskWriteModbusDTO.Address = address;
+            initiateMaskWriteModbusDTO.OrMask = orMask;
+            initiateMaskWriteModbusDTO.AndMask = andMask;
+
+            initateMessage(FunctionCode.MaskWriteRegister, initiateMaskWriteModbusDTO);
         }
     }
 }

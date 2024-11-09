@@ -26,6 +26,7 @@ namespace Slave.CommandHandler
                 {FunctionCode.WriteMultipleRegisters, new WriteMultipleRegistersCommand(pointsDataBase)},
                 {FunctionCode.WriteSingleCoil, new WriteSingleCoilCommand(pointsDataBase)},
                 {FunctionCode.WriteSingleRegister, new WriteSingleRegisterCommand(pointsDataBase)},
+                {FunctionCode.MaskWriteRegister,new MaskWriteRegisterCommand(pointsDataBase)},
             };
         }
 

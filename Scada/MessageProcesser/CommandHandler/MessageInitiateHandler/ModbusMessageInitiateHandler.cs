@@ -25,6 +25,7 @@ namespace Master.CommandHandler
                 {FunctionCode.WriteMultipleRegisters,new ModbusWriteMultipleRegistersInitiateCommand()},
                 {FunctionCode.WriteSingleCoil,new ModbusWriteSingleCoilInitiateCommand()},
                 {FunctionCode.WriteSingleRegister,new ModbusWriteSingleRegisterInitiateCommand()},
+                {FunctionCode.MaskWriteRegister,new ModbusMaskWriteRegisterInitiateCommand()}
             };
             this.sendMessage = sendMessage;
         }

@@ -11,11 +11,11 @@ namespace Master.CommandHandler.MessageInitiateHandler
         /// <summary>
         /// Address from where to read
         /// </summary>
-        public ushort Address;
+        public ushort Address { get; set; }
 
         /// <summary>
         /// Number of values to read
         /// </summary>
-        public ushort Quantity;
+        public ushort Quantity { get; set; }
     }
 }
