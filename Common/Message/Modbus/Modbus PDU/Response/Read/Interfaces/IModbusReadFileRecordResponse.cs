@@ -14,6 +14,6 @@ namespace Common.Message
 
         byte[] ReferenceType { get; set; }
 
-        ushort[][] RecordData { get; set; }
+        short[][] RecordData { get; set; }
     }
 }

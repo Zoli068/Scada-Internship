@@ -27,6 +27,10 @@ namespace Master.CommandHandler
                 {FunctionCode.WriteSingleCoil, new WriteSingleCoilResponseCommand() },
                 {FunctionCode.WriteSingleRegister,new WriteSingleRegisterResponseCommand() },
                 {FunctionCode.MaskWriteRegister,new MaskWriteRegisterResponseCommand() },
+                {FunctionCode.ReadFileRecord,new ReadFileRecordResponseCommand() },
+                {FunctionCode.WriteFileRecord,new WriteFileRecordResponseCommand() },
+                {FunctionCode.ReadWriteMultipleRegisters,new ReadWriteMultipleRegistersResponseCommand() },
+                {FunctionCode.ReadFIFOQueue,new ReadFIFOQueueResponseCommand() },
             };
         }
 

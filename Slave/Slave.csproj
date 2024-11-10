@@ -47,8 +47,12 @@
     <Compile Include="CommandHandler\Commands\MaskWriteRegisterCommand.cs" />
     <Compile Include="CommandHandler\Commands\ReadCoilsCommand.cs" />
     <Compile Include="CommandHandler\Commands\ReadDiscreteInputsCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadFIFOQueueCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadFileRecordCommand.cs" />
     <Compile Include="CommandHandler\Commands\ReadHoldingRegistersCommand.cs" />
     <Compile Include="CommandHandler\Commands\ReadInputRegistersCommand.cs" />
+    <Compile Include="CommandHandler\Commands\ReadWriteMultipleRegistersCommand.cs" />
+    <Compile Include="CommandHandler\Commands\WriteFileRecordCommand.cs" />
     <Compile Include="CommandHandler\Commands\WriteMultipleCoilsCommand.cs" />
     <Compile Include="CommandHandler\Commands\WriteMultipleRegistersCommand.cs" />
     <Compile Include="CommandHandler\Commands\WriteSingleCoilCommand.cs" />

@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public interface IModbusWriteFileRecordRequest:IModbusData
+    public interface IModbusWriteFileRecordResponse:IModbusData
     {
-        byte RequestDataLength { get; set; }
-        
+        byte ResponseDataLength { get; set; }
+
         byte[] ReferenceType { get; set; }
 
         ushort[] FileNumber { get; set; }
 
-        ushort[] RecordNumber {  get; set; }
+        ushort[] RecordNumber { get; set; }
 
         ushort[] RecordLength { get; set; }
 

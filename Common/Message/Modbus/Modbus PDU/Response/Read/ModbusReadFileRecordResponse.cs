@@ -12,11 +12,11 @@ namespace Common.Message
         private byte responseDataLength;
         private byte[] fileResponseLength;
         private byte[] referenceType;
-        private ushort[][] recordData;
+        private short[][] recordData;
 
         public ModbusReadFileRecordResponse() { }
 
-        public ModbusReadFileRecordResponse(byte responseDataLength, byte[] fileResponseLength, byte[] referenceType, ushort[][] recordData)
+        public ModbusReadFileRecordResponse(byte responseDataLength, byte[] fileResponseLength, byte[] referenceType, short[][] recordData)
         {
             this.responseDataLength = responseDataLength;
             this.fileResponseLength = fileResponseLength;
@@ -30,11 +30,11 @@ namespace Common.Message
 
             List<byte> tempFileResponseLength= new List<byte>();
             List<byte> tempReferenceType= new List<byte>();
-            List <List<ushort>> tempRecordData = new List<List<ushort>> ();
-            List<ushort> shortHelper;
+            List <List<short>> tempRecordData = new List<List<short>> ();
+            List<short> shortHelper;
 
             byte byteTemp;
-            ushort ushortTemp;
+            short shortTemp;
 
             byte bytesLeftToRead=responseDataLength;
             int i = 0;
@@ -50,12 +50,12 @@ namespace Common.Message
                 tempReferenceType.Add(byteTemp);
 
 
-                shortHelper=new List<ushort>();
+                shortHelper=new List<short>();
 
                 for(int j=0;j < ((tempFileResponseLength.ElementAt(i)-1) / 2); j++)
                 {
-                    ByteValueConverter.GetValue(out ushortTemp, data, ref startIndex);
-                    shortHelper.Add(ushortTemp);
+                    ByteValueConverter.GetValue(out shortTemp, data, ref startIndex);
+                    shortHelper.Add(shortTemp);
                 }
                 tempRecordData.Add(shortHelper);
                 i++;
@@ -64,7 +64,7 @@ namespace Common.Message
             fileResponseLength=tempFileResponseLength.ToArray();
             referenceType=tempReferenceType.ToArray();
 
-            recordData = new ushort[tempRecordData.Count][];
+            recordData = new short[tempRecordData.Count][];
 
             for(int j=0;j<tempRecordData.Count;j++)
             {
@@ -132,7 +132,7 @@ namespace Common.Message
             }
         }
 
-        public ushort[][] RecordData
+        public short[][] RecordData
         {
             get
             {

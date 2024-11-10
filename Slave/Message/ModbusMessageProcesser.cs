@@ -1,5 +1,7 @@
 ﻿using Common.Command;
 using Common.Communication;
+using Common.FIFOQueue;
+using Common.FileRecord;
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.Utilities;
@@ -16,9 +18,9 @@ namespace Slave.Message
         IMessageHandler messageHandler;
         IMessageDataHandler messageDataHandler = null;
 
-        public ModbusMessageProcesser(IPointsDataBase pointsDataBase, ICommunication communication)
+        public ModbusMessageProcesser(IPointsDataBase pointsDataBase,IFileRecord fileRecord,IFIFOQueue fifoQueue, ICommunication communication)
         {
-            messageDataHandler = new ModbusMessageDataHandler(pointsDataBase);
+            messageDataHandler = new ModbusMessageDataHandler(pointsDataBase, fileRecord,fifoQueue);
             messageHandler = new TCPModbusMessageHandler(communication.SendBytes, messageDataHandler);
             communication.BytesRecived += messageHandler.ProcessBytes;
 

@@ -7,20 +7,21 @@ using System.Threading.Tasks;
 
 namespace Common.Message
 {
-    public class ModbusWriteFileRecordRequest : IModbusWriteFileRecordRequest
+    public class ModbusWriteFileRecordResponse : IModbusWriteFileRecordResponse
     {
-        private byte requestDataLength;
+        private byte responseDataLength;
         private byte[] referenceType;
         private ushort[] fileNumber;
         private ushort[] recordNumber;
         private ushort[] recordLength;
         private short[][] recordData;
 
-        public ModbusWriteFileRecordRequest() { }
 
-        public ModbusWriteFileRecordRequest(byte requestDataLength, byte[] referenceType, ushort[] fileNumber, ushort[] recordNumber, ushort[] recordLength, short[][] recordData)
+        public ModbusWriteFileRecordResponse() { }
+
+        public ModbusWriteFileRecordResponse(byte responseDataLength, byte[] referenceType, ushort[] fileNumber, ushort[] recordNumber, ushort[] recordLength, short[][] recordData)
         {
-            this.requestDataLength = requestDataLength;
+            this.responseDataLength = responseDataLength;
             this.referenceType = referenceType;
             this.fileNumber = fileNumber;
             this.recordNumber = recordNumber;
@@ -28,21 +29,22 @@ namespace Common.Message
             this.recordData = recordData;
         }
 
+
         public void Deserialize(byte[] data, ref int startIndex)
         {
-            ByteValueConverter.GetValue(out requestDataLength, data, ref startIndex);
-            List<byte> tempReferenceType= new List<byte>();
+            ByteValueConverter.GetValue(out responseDataLength, data, ref startIndex);
+            List<byte> tempReferenceType = new List<byte>();
             List<ushort> tempFileNumber = new List<ushort>();
             List<ushort> tempRecordNumber = new List<ushort>();
             List<ushort> tempRecordLength = new List<ushort>();
-            List<List<short>> tempRecordData= new List<List<short>>();
+            List<List<short>> tempRecordData = new List<List<short>>();
 
             List<short> shortHelper;
 
             byte byteTemp;
-            short shortTemp;
             ushort ushortTemp;
-            byte bytesLeftToRead=requestDataLength;
+            short shortTemp; 
+            byte bytesLeftToRead = responseDataLength;
             int i = 0;
 
             while (bytesLeftToRead > 0)
@@ -50,7 +52,7 @@ namespace Common.Message
                 ByteValueConverter.GetValue(out byteTemp, data, ref startIndex);
                 tempReferenceType.Add(byteTemp);
 
-                ByteValueConverter.GetValue(out ushortTemp,data, ref startIndex);
+                ByteValueConverter.GetValue(out ushortTemp, data, ref startIndex);
                 tempFileNumber.Add(ushortTemp);
 
                 ByteValueConverter.GetValue(out ushortTemp, data, ref startIndex);
@@ -61,11 +63,11 @@ namespace Common.Message
 
                 bytesLeftToRead = (byte)(bytesLeftToRead - (7 + tempRecordLength[i] * 2));
 
-                shortHelper= new List<short>();
+                shortHelper = new List<short>();
 
-                for(int j=0; j < tempRecordLength[i];j++)
+                for (int j = 0; j < tempRecordLength[i]; j++)
                 {
-                    ByteValueConverter.GetValue(out shortTemp, data,ref startIndex);
+                    ByteValueConverter.GetValue(out shortTemp, data, ref startIndex);
                     shortHelper.Add(shortTemp);
                 }
 
@@ -74,13 +76,13 @@ namespace Common.Message
             }
 
             referenceType = tempReferenceType.ToArray();
-            fileNumber= tempFileNumber.ToArray();
+            fileNumber = tempFileNumber.ToArray();
             recordNumber = tempRecordNumber.ToArray();
             recordLength = tempRecordLength.ToArray();
 
             recordData = new short[tempRecordData.Count][];
 
-            for(int j=0;j<tempRecordData.Count;j++)
+            for (int j = 0; j < tempRecordData.Count; j++)
             {
                 recordData[j] = tempRecordData[j].ToArray();
             }
@@ -89,34 +91,34 @@ namespace Common.Message
         public byte[] Serialize()
         {
             List<byte> bytes = new List<byte>();
-            bytes.Add(RequestDataLength);
+            bytes.Add(responseDataLength);
 
-            for(int i=0;i<referenceType.Length;i++)
+            for (int i = 0; i < referenceType.Length; i++)
             {
                 bytes.Add(referenceType[i]);
                 bytes.AddRange(ByteValueConverter.ExtractBytes(fileNumber[i]));
                 bytes.AddRange(ByteValueConverter.ExtractBytes(recordNumber[i]));
                 bytes.AddRange(ByteValueConverter.ExtractBytes(recordLength[i]));
 
-                for(int j = 0; j < recordLength[i];j++)
+                for (int j = 0; j < recordLength[i]; j++)
                 {
                     bytes.AddRange(ByteValueConverter.ExtractBytes(recordData[i][j]));
                 }
             }
 
-            return  bytes.ToArray();
+            return bytes.ToArray();
         }
 
 
-        public byte RequestDataLength
+        public byte ResponseDataLength
         {
             get
             {
-                return requestDataLength;
+                return responseDataLength;
             }
             set
             {
-                requestDataLength= value;
+                responseDataLength = value;
             }
         }
 
@@ -128,7 +130,7 @@ namespace Common.Message
             }
             set
             {
-                referenceType= value;
+                referenceType = value;
             }
         }
 
@@ -140,7 +142,7 @@ namespace Common.Message
             }
             set
             {
-                fileNumber= value;
+                fileNumber = value;
             }
         }
 
@@ -152,7 +154,7 @@ namespace Common.Message
             }
             set
             {
-                recordNumber= value;
+                recordNumber = value;
             }
         }
 
@@ -164,7 +166,7 @@ namespace Common.Message
             }
             set
             {
-                recordLength= value;
+                recordLength = value;
             }
         }
 
@@ -176,7 +178,7 @@ namespace Common.Message
             }
             set
             {
-                recordData= value;
+                recordData = value;
             }
         }
     }

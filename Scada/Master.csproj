@@ -64,8 +64,12 @@
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\MaskWriteRegisterResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadCoilsResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadDiscreteResponseCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadFIFOQueueResponseCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadFileRecordResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadHoldingRegistersResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadInputRegistersResponseCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\ReadWriteMultipleRegistersResponseCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\WriteFileRecordResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\WriteMultipleCoilsResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\WriteMultipleRegistersResponseCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\ResponseHandler\ResponseCommands\WriteSingleCoilResponseCommand.cs" />

@@ -1,4 +1,6 @@
 ﻿using Common.Command;
+using Common.FIFOQueue;
+using Common.FileRecord;
 using Common.IPointsDataBase;
 using Common.Message;
 using Common.PointsDataBase;
@@ -8,13 +10,13 @@ using System.Collections.Generic;
 namespace Slave.CommandHandler
 {
     /// <summary>
-    /// Handles all the possible modbus requests
+    /// Handles all the possible modbus requests 
     /// </summary>
     public class ModbusMessageDataHandler : IMessageDataHandler
     {
         private readonly Dictionary<FunctionCode, IMessageDataCommand<IModbusData>> commands;
 
-        public ModbusMessageDataHandler(IPointsDataBase pointsDataBase)
+        public ModbusMessageDataHandler(IPointsDataBase pointsDataBase,IFileRecord fileRecord,IFIFOQueue fIfoQueue)
         {
             commands = new Dictionary<FunctionCode, IMessageDataCommand<IModbusData>>()
             {
@@ -27,6 +29,10 @@ namespace Slave.CommandHandler
                 {FunctionCode.WriteSingleCoil, new WriteSingleCoilCommand(pointsDataBase)},
                 {FunctionCode.WriteSingleRegister, new WriteSingleRegisterCommand(pointsDataBase)},
                 {FunctionCode.MaskWriteRegister,new MaskWriteRegisterCommand(pointsDataBase)},
+                {FunctionCode.ReadWriteMultipleRegisters,new ReadWriteMultipleRegistersCommand(pointsDataBase)},
+                {FunctionCode.ReadFileRecord,new ReadFileRecordCommand(fileRecord)},
+                {FunctionCode.WriteFileRecord,new WriteFileRecordCommand(fileRecord)},
+                {FunctionCode.ReadFIFOQueue,new ReadFIFOQueueCommand(fIfoQueue)},
             };
         }
 
