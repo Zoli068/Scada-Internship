@@ -32,7 +32,7 @@ namespace Master.MessageProcesser
                 Console.WriteLine("Record Length:" + req.RecordLength[i]);
                 Console.WriteLine("File Response Length:" + res.FileResponseLength[i]);
 
-                for(int j=0;j < res.FileResponseLength[i]; j++)
+                for(int j=0;j <( res.FileResponseLength[i]-1)/2; j++)
                 {
                     Console.WriteLine(j+" value:" + res.RecordData[i][j]);
                 }

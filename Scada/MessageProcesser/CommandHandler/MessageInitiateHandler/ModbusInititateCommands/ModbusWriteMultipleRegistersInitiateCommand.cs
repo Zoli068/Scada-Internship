@@ -17,7 +17,7 @@ namespace Master.CommandHandler.MessageInitiateHandler
 
             if (DTO.Address < 1 || DTO.Quantity < 1 || DTO.Quantity > 123 || DTO.Values.Length < DTO.Quantity)
             {
-                throw new MessageDTOBadValuesExceptioncs();
+                throw new MessageDTOBadValuesException();
             }
 
             request.StartingAddress = DTO.Address;

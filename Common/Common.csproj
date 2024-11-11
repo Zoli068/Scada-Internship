@@ -150,7 +150,7 @@
     <Compile Include="Serialization\Exceptions\SerializationException.cs" />
     <Compile Include="Utilities\ByteValueConverter.cs" />
     <Compile Include="Utilities\IMessageDTO.cs" />
-    <Compile Include="Utilities\MessageDTOBadValuesExceptioncs.cs" />
+    <Compile Include="Utilities\MessageDTOBadValuesException.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

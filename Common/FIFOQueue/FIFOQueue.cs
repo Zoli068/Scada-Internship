@@ -20,7 +20,7 @@ namespace Common.FIFOQueue
         {
             List<short> responseValues = new List<short>();
 
-            if(CheckAddress(startingAddress))
+            if(!CheckAddress(startingAddress))
             {
                 return null;
             }
@@ -30,6 +30,7 @@ namespace Common.FIFOQueue
             while((startingAddress+i)<fifoQueue.Count())
             { 
                 responseValues.Add(fifoQueue.ElementAt(startingAddress+i));
+                i++;
             }
 
             return responseValues.ToArray();
@@ -37,7 +38,7 @@ namespace Common.FIFOQueue
 
         public bool CheckAddress(ushort address)
         {
-            if(fifoQueue.Count - 1 < address)
+            if(fifoQueue.Count - 1 >= address)
             {
                 if(fifoQueue.Count - address > 31)
                 {

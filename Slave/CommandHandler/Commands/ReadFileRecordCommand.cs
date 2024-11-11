@@ -28,6 +28,11 @@ namespace Slave.CommandHandler
                 throw new ValueOutOfIntervalException();
             }
 
+            if (request.ReferenceType.Length == 0 || request.ReferenceType.Length != request.FileNumber.Length
+            || request.ReferenceType.Length != request.RecordNumber.Length || request.ReferenceType.Length != request.RecordLength.Length)
+            {
+                throw new ValueOutOfIntervalException();
+            }
             ModbusReadFileRecordResponse response=new ModbusReadFileRecordResponse();
 
             int numOfGroups = request.ReferenceType.Length;
@@ -51,6 +56,8 @@ namespace Slave.CommandHandler
                 {
                     temp = fileRecord.ReadFileRecord(request.FileNumber[i], request.RecordNumber[i], request.RecordLength[i]);
                     response.RecordData[i] = temp;
+                    response.ReferenceType[i] = request.ReferenceType[i];
+                    response.FileResponseLength[i] = (byte)(request.RecordLength[i]*2 + 1);
                     datasize += temp.Length * 2;    //recordData size
                 }
             }
@@ -59,7 +66,7 @@ namespace Slave.CommandHandler
                 throw new InvalidAddressException();
             }
 
-            response.ResponseDataLength = (byte)(1 + response.FileResponseLength.Length + response.ReferenceType.Length + datasize);
+            response.ResponseDataLength = (byte)(response.FileResponseLength.Length + response.ReferenceType.Length + datasize);
 
             return response;
         }

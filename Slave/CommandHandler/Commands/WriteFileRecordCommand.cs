@@ -28,6 +28,20 @@ namespace Slave.CommandHandler
                 throw new ValueOutOfIntervalException();
             }
 
+            if (request.ReferenceType.Length == 0 || request.ReferenceType.Length != request.FileNumber.Length
+            || request.ReferenceType.Length != request.RecordNumber.Length || request.ReferenceType.Length != request.RecordLength.Length)
+            {
+                throw new ValueOutOfIntervalException();
+            }
+
+            for(int i = 0; i < request.RecordLength.Length; i++)
+            {
+                if (request.RecordLength[i] != request.RecordData[i].Length)
+                {
+                    throw new ValueOutOfIntervalException();
+                }
+            }
+
             short[] temp;
             try
             {

@@ -16,7 +16,7 @@ namespace Master.CommandHandler.MessageInitiateHandler
 
             if (DTO.Address < 1)
             {
-                throw new MessageDTOBadValuesExceptioncs();
+                throw new MessageDTOBadValuesException();
             }
             request.RegisterAddress = DTO.Address;
             request.RegisterValue = DTO.Value;

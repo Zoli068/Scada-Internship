@@ -1,6 +1,7 @@
 ﻿using Common.Message;
 using Common.Utilities;
 using Master.CommandHandler.MessageInitiateHandler;
+using Master.MessageProcesser.MessageInitiateHandler;
 using System;
 using System.Collections.Generic;
 
@@ -25,7 +26,11 @@ namespace Master.CommandHandler
                 {FunctionCode.WriteMultipleRegisters,new ModbusWriteMultipleRegistersInitiateCommand()},
                 {FunctionCode.WriteSingleCoil,new ModbusWriteSingleCoilInitiateCommand()},
                 {FunctionCode.WriteSingleRegister,new ModbusWriteSingleRegisterInitiateCommand()},
-                {FunctionCode.MaskWriteRegister,new ModbusMaskWriteRegisterInitiateCommand()}
+                {FunctionCode.MaskWriteRegister,new ModbusMaskWriteRegisterInitiateCommand()},
+                {FunctionCode.ReadWriteMultipleRegisters,new ModbusReadWriteMultipleRegistersInitiateCommand() },
+                {FunctionCode.ReadFileRecord,new ModbusReadFileRecordInitiateCommand()},
+                {FunctionCode.WriteFileRecord,new ModbusWriteFileRecordInitiateCommand()},
+                {FunctionCode.ReadFIFOQueue,new ModbusReadFIFOQueueInitiateCommand()},
             };
             this.sendMessage = sendMessage;
         }

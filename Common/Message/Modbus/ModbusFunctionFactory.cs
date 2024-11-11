@@ -30,6 +30,10 @@ namespace Common.Message
                     { FunctionCode.WriteMultipleCoils, () => new ModbusWriteMultipleCoilsRequest() },
                     { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersRequest() },
                     { FunctionCode.MaskWriteRegister, () => new ModbusMaskWriteRegisterRequest() },
+                    { FunctionCode.ReadWriteMultipleRegisters, () =>new ModbusReadWriteMultipleRegistersRequest() },
+                    { FunctionCode.ReadFileRecord, () =>new ModbusReadFileRecordRequest() },
+                    { FunctionCode.WriteFileRecord, () =>new ModbusWriteFileRecordRequest() },
+                    { FunctionCode.ReadFIFOQueue, () =>new ModbusReadFIFOQueueRequest() },
                 };
             }
             else
@@ -44,7 +48,11 @@ namespace Common.Message
                     { FunctionCode.WriteSingleRegister, () => new ModbusWriteSingleRegisterResponse() },
                     { FunctionCode.WriteMultipleCoils, () => new ModbusWriteMultipleCoilsResponse() },
                     { FunctionCode.WriteMultipleRegisters, () => new ModbusWriteMultipleRegistersResponse() },
-                    {FunctionCode.MaskWriteRegister, () => new ModbusMaskWriteRegisterResponse() },
+                    { FunctionCode.MaskWriteRegister, () => new ModbusMaskWriteRegisterResponse() },
+                    { FunctionCode.ReadWriteMultipleRegisters, () => new ModbusReadWriteMultipleRegistersResponse()},
+                    { FunctionCode.ReadFileRecord, () =>new ModbusReadFileRecordResponse() },
+                    { FunctionCode.WriteFileRecord, () =>new ModbusWriteFileRecordResponse() },
+                    { FunctionCode.ReadFIFOQueue, () =>new ModbusReadFIFOQueueResponse() },
                 };
             }
         }

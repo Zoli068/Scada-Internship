@@ -34,8 +34,8 @@ namespace Common.Message
             ByteValueConverter.GetValue(out quantityToRead, data,ref startIndex);
             ByteValueConverter.GetValue(out writeStartingAddress, data,ref startIndex);
             ByteValueConverter.GetValue(out quantityToWrite, data,ref startIndex);
+            ByteValueConverter.GetValue(out writeByteCount, data,ref startIndex);
 
-            writeByteCount = (byte)(quantityToWrite * 2);
             writeRegistersValue = new short[quantityToWrite];
             
             for(int i=0; i < quantityToWrite; i++)

@@ -46,15 +46,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateMaskWriteModbusDTO.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateReadFIFOModbusDTO.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateReadFileRecordModbusDTO.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateReadModbusDTO.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateReadWriteMultipleRegistersModbusDTO.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateWriteFileRecordModbusDTO.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateWriteMultipleModbusDTO.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\DTOFromUIToInitiate\InitiateWriteSingleModbusDTO.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\IMessageInitiateHandler.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusMaskWriteRegisterInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadCoilsInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadDiscreteInputsInitiateCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadFIFOQueueInitiateCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadFileRecordInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadHoldingRegistersInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadInputRegistersInitiateCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusReadWriteMultipleRegistersInitiateCommand.cs" />
+    <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusWriteFileRecordInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusWriteMultipleCoilsInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusWriteMultipleRegistersInitiateCommand.cs" />
     <Compile Include="MessageProcesser\CommandHandler\MessageInitiateHandler\ModbusInititateCommands\ModbusWriteSingleCoilInitiateCommand.cs" />

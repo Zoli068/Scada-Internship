@@ -1,6 +1,7 @@
 ﻿using Common.Command;
 using Common.FIFOQueue;
 using Common.Message;
+using Common.PointsDataBase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Slave.CommandHandler.Commands
             }
             else
             {
-                throw new ValueOutOfIntervalException();
+                throw new InvalidAddressException();
             }
         }
     }
